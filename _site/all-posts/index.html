@@ -13,6 +13,9 @@
             <div class="logo">
                 <a href="/">Hasan's Knowledge Hub</a>
             </div>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <span>☰</span>
+            </button>
             <nav class="main-nav">
                 <ul>
                     <li><a href="/">Home</a></li>
@@ -365,5 +368,18 @@
       }
     });
   </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const navToggle = document.querySelector('.nav-toggle');
+        const mainNav = document.querySelector('.main-nav');
+        
+        navToggle.addEventListener('click', () => {
+            mainNav.classList.toggle('active');
+        });
+    });
+</script>
+
+
 </body>
 </html>
