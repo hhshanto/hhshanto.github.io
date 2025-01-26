@@ -1,0 +1,8 @@
+[
+    {
+        "title": "Example Post Title",
+        "content": "This is the content of the post...",
+        "url": "/path-to-post",
+        "tags": ["tag1", "tag2"]
+    }
+]
