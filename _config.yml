@@ -1,5 +1,21 @@
 title: "Hasan's Notes"
-description: "Personal knowledge repository"
+description: "A personal journey through knowledge and ideas"
 remote_theme: pages-themes/minimal@v0.2.0
 plugins:
   - jekyll-remote-theme
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Social links (if you want to add)
+social:
+  github: hhshanto
+  # Add other social media if needed
+
+# For better SEO
+lang: en
+author: Hasan
+
+# Additional settings
+show_downloads: false
+google_analytics: # your GA tag if needed
