@@ -1,0 +1,63 @@
+---
+layout: default
+title: Home
+---
+<div class="hero-section">
+    <h1 class="fade-in">Hasan's Notes</h1>
+    <p class="subtitle fade-in">A Personal Knowledge Repository</p>
+</div>
+
+<div class="category-grid">
+    <a href="/physics" class="category-card">
+        <div class="card-content">
+            <i class="fas fa-atom"></i>
+            <h2>Physics</h2>
+            <p>Quantum mechanics, relativity, and more</p>
+        </div>
+    </a>
+
+    <a href="/philosophy" class="category-card">
+        <div class="card-content">
+            <i class="fas fa-brain"></i>
+            <h2>Philosophy</h2>
+            <p>Metaphysics, epistemology, and consciousness</p>
+        </div>
+    </a>
+
+    <a href="/science" class="category-card">
+        <div class="card-content">
+            <i class="fas fa-flask"></i>
+            <h2>Science</h2>
+            <p>Biology, chemistry, and scientific methods</p>
+        </div>
+    </a>
+
+    <a href="/misc" class="category-card">
+        <div class="card-content">
+            <i class="fas fa-lightbulb"></i>
+            <h2>Misc</h2>
+            <p>Random thoughts and insights</p>
+        </div>
+    </a>
+</div>
+
+<div class="search-section">
+    <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" id="search-input" placeholder="Search notes...">
+    </div>
+    <div id="results-container"></div>
+</div>
+
+<div class="recent-notes">
+    <h2>Recent Notes</h2>
+    <div class="notes-list">
+        {% for post in site.posts limit:5 %}
+        <a href="{{ post.url }}" class="note-card">
+            <h3>{{ post.title }}</h3>
+            <p class="note-meta">{{ post.date | date: "%Y-%m-%d" }} • {{ post.category }}</p>
+            <p class="note-excerpt">{{ post.excerpt | strip_html | truncatewords: 30 }}</p>
+        </a>
+        {% endfor %}
+    </div>
+</div>
