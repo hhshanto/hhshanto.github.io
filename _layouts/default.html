@@ -37,16 +37,6 @@
     </footer>
 
 
-    <script>
-      document.getElementById('searchInput').addEventListener('keyup', function(e) {
-          if (e.key === 'Enter') {
-              const query = this.value;
-              if (query) {
-                  window.location.href = '/search?q=' + encodeURIComponent(query);
-              }
-          }
-      });
-      </script>
 
 
 
@@ -103,6 +93,10 @@
     });
 </script>
 
+
+
+<!-- Add this before the closing </body> tag -->
+<script src="{{ '/assets/js/search.js' | relative_url }}"></script>
 
 </body>
 </html>

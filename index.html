@@ -26,7 +26,11 @@ title: Home
             </div>
             
             <div class="search-container">
-                <input type="text" class="search-box" placeholder="Explore topics..." id="searchInput">
+                <input type="text" 
+                       class="search-box" 
+                       placeholder="Explore topics..." 
+                       id="searchInput"
+                       onkeypress="return event.keyCode != 13;">
                 <div class="popular-tags">
                     Popular: 
                     <span class="tag">Data Science</span>
