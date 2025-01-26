@@ -1,0 +1,121 @@
+// Post styling
+.post {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+
+    // Title styling
+    .post-header {
+        margin-bottom: 40px;
+        text-align: center;
+        
+        h1 {
+            font-family: 'Playfair Display', serif;  // Elegant serif font for titles
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            line-height: 1.3;
+            font-weight: 700;
+        }
+
+        .post-meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            font-family: 'Open Sans', sans-serif;
+
+            .date {
+                margin-right: 15px;
+            }
+        }
+    }
+
+    // Content styling
+    .post-content {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 1.1em;
+        line-height: 1.8;
+        color: #2c3e50;
+        text-align: justify;
+
+        p {
+            margin-bottom: 1.5em;
+        }
+
+        // Headings within content
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin: 1.5em 0 1em;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.5em;
+        }
+
+        h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em;
+            color: #34495e;
+            margin: 1.2em 0 0.8em;
+        }
+
+        // Lists
+        ul, ol {
+            margin-bottom: 1.5em;
+            padding-left: 1.5em;
+        }
+
+        // Blockquotes
+        blockquote {
+            margin: 1.5em 0;
+            padding: 0.5em 1.5em;
+            border-left: 4px solid #3498db;
+            background-color: #f9f9f9;
+            font-style: italic;
+            color: #34495e;
+        }
+
+        // Links
+        a {
+            color: #3498db;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s ease;
+
+            &:hover {
+                border-bottom-color: #3498db;
+            }
+        }
+
+        // Code blocks
+        pre {
+            background: #f8f9fa;
+            padding: 1em;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 1.5em 0;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            background: #f8f9fa;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+        }
+    }
+}
+
+// Add responsive design
+@media (max-width: 768px) {
+    .post {
+        padding: 15px;
+
+        .post-header h1 {
+            font-size: 2em;
+        }
+
+        .post-content {
+            font-size: 1em;
+        }
+    }
+}

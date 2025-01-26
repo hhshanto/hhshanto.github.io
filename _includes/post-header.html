@@ -1,0 +1,28 @@
+<header class="post-header">
+    <div class="post-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">
+            {{ page.date | date: "%B %-d, %Y" }}
+        </time>
+        {% if page.last_updated %}
+        <span class="last-updated">
+            Last updated: {{ page.last_updated | date: "%B %-d, %Y" }}
+        </span>
+        {% endif %}
+        <span class="reading-time">
+            {{ page.reading_time }}
+        </span>
+    </div>
+
+    <h1 class="post-title">{{ page.title }}</h1>
+    
+
+
+    {% if page.tags.size > 0 %}
+    <div class="post-tags">
+        <i class="fas fa-tags"></i>
+        {% for tag in page.tags %}
+        <a href="/tags/{{ tag | downcase }}" class="tag">{{ tag }}</a>
+        {% endfor %}
+    </div>
+    {% endif %}
+</header>

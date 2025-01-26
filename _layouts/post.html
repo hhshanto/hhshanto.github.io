@@ -1,0 +1,26 @@
+---
+layout: default
+---
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+<article class="post">
+    <!-- Post Header -->
+    {% include post-header.html %}
+
+    <!-- Table of Contents -->
+    {% if page.toc %}
+        {% include toc.html %}
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="post-content">
+        {{ content }}
+    </div>
+
+    <!-- Post Footer -->
+    {% include post-footer.html %}
+
+    <!-- Post Navigation -->
+    {% include post-navigation.html %}
+
+</article>

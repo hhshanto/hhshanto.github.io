@@ -1,21 +1,71 @@
-title: "Hasan's Notes"
-description: "A personal journey through knowledge and ideas"
-remote_theme: pages-themes/minimal@v0.2.0
-plugins:
-  - jekyll-remote-theme
-  - jekyll-feed
-  - jekyll-sitemap
-  - jekyll-seo-tag
-
-# Social links (if you want to add)
-social:
-  github: hhshanto
-  # Add other social media if needed
-
-# For better SEO
-lang: en
+# Site Settings
+title: Hasan's Knowledge Hub
+description: A personal knowledge repository exploring various domains of knowledge
+baseurl: "" # Leave empty if your site is at root level
+url: "https://hhshanto.github.io"
 author: Hasan
 
-# Additional settings
-show_downloads: false
-google_analytics: # your GA tag if needed
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: /:categories/:title/
+
+# Collections
+collections:
+  natural-sciences:
+    output: true
+    permalink: /natural-sciences/:path/
+  social-sciences:
+    output: true
+    permalink: /social-sciences/:path/
+  arts-literature:
+    output: true
+    permalink: /arts-literature/:path/
+  reflections:
+    output: true
+    permalink: /reflections/:path/
+  contemporary:
+    output: true
+    permalink: /contemporary/:path/
+
+# Defaults for collections
+defaults:
+  - scope:
+      path: ""
+      type: "reflections"
+    values:
+      layout: "post"
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .git
+  - .github
+  - README.md
+  - dir.py
+
+# Social Media (you can add or remove as needed)
+social:
+  github: hhshanto
+  # twitter: yourusername
+  # linkedin: yourusername
+  # email: your.email@example.com
+
+# Analytics (uncomment if you want to add Google Analytics)
+# google_analytics: UA-XXXXXXXX-X
+
+# Compression settings
+sass:
+  style: compressed
+
+# Timezone
+timezone: Asia/Dhaka

@@ -1,0 +1,35 @@
+<div class="table-of-contents">
+    <h2>Table of Contents</h2>
+    <div id="toc">
+        <!-- JavaScript will populate this -->
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headings = document.querySelectorAll('.post-content h2, .post-content h3');
+    const toc = document.getElementById('toc');
+    const tocList = document.createElement('ul');
+
+    headings.forEach((heading, index) => {
+        // Create ID for heading if it doesn't exist
+        if (!heading.id) {
+            heading.id = `heading-${index}`;
+        }
+
+        const listItem = document.createElement('li');
+        const link = document.createElement('a');
+        
+        link.textContent = heading.textContent;
+        link.href = `#${heading.id}`;
+        
+        // Add class based on heading level
+        listItem.className = heading.tagName.toLowerCase();
+        
+        listItem.appendChild(link);
+        tocList.appendChild(listItem);
+    });
+
+    toc.appendChild(tocList);
+});
+</script>
