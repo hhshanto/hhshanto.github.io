@@ -100,8 +100,23 @@
         const navToggle = document.querySelector('.nav-toggle');
         const mainNav = document.querySelector('.main-nav');
         
+        // Toggle menu
         navToggle.addEventListener('click', () => {
             mainNav.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mainNav.contains(e.target) && !navToggle.contains(e.target)) {
+                mainNav.classList.remove('active');
+            }
+        });
+
+        // Close menu when window is resized past mobile breakpoint
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                mainNav.classList.remove('active');
+            }
         });
     });
 </script>
