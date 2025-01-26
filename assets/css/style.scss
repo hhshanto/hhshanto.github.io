@@ -183,6 +183,7 @@ body {
 
 // Hero section styles
 .hero-section {
+    margin-top: -70px;
     padding: 60px 20px;
     background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
     color: white;

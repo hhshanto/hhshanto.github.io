@@ -16,7 +16,7 @@ img {
 .post {
 
     width: 100%;
-    max-width: 900px;
+    max-width: clamp(300px, 90vw, 1000px);
     margin: 0 auto;
     padding: 20px;
 
