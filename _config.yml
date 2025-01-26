@@ -1,0 +1,24 @@
+# Site settings
+title: "HH Shanto's Blog"
+description: "A blog about Data Science, RAG Systems, and Machine Learning"
+author: "HH Shanto"
+baseurl: ""
+url: "https://hhshanto.github.io"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: jekyll-theme-minimal
+
+# Social links
+github_username: hhshanto
+linkedin_username: your-linkedin-username
+
+# Pagination
+paginate: 5
+paginate_path: "/blog/page:num/"
+
+# Collections
+collections:
+  projects:
+    output: true
