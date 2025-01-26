@@ -61,34 +61,50 @@ body {
             }
         }
     }
-
+    
+    .nav-toggle {
+        display: none; // Hidden by default
+        cursor: pointer;
+        padding: 10px;
+    }
+    
     @media (max-width: 768px) {
         .header-container {
-            flex-direction: column;
-            padding: 10px;
+            flex-wrap: wrap;
+        }
+    
+        .nav-toggle {
+            display: block; // Show on mobile
         }
     
         .main-nav {
             width: 100%;
-            margin-top: 10px;
+            display: none; // Hidden by default on mobile
+    
+            &.active {
+                display: block; // Show when active
+            }
     
             ul {
                 flex-direction: column;
-                align-items: center;
-                gap: 10px;
+                width: 100%;
+                padding: 0;
+                margin: 0;
             }
     
             li {
                 width: 100%;
                 text-align: center;
+                border-top: 1px solid #eee;
             }
     
             a {
                 display: block;
-                padding: 8px 0;
+                padding: 15px;
             }
         }
     }
+
     .logo {
         a {
             color: white;
