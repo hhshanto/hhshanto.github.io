@@ -13,6 +13,9 @@
             <div class="logo">
                 <a href="/">Hasan's Knowledge Hub</a>
             </div>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <span>☰</span>
+            </button>
             <nav class="main-nav">
                 <ul>
                     <li><a href="/">Home</a></li>
@@ -76,21 +79,16 @@
                 <div class="post-content">
                     <header class="post-header">
                         <div class="post-meta">
-                            <time datetime="2025-01-26T00:00:00+06:00">
-                                January 26, 2025
+                            <time datetime="2025-01-25T00:00:00+06:00">
+                                January 25, 2025
                             </time>
                             
                         </div>
                         <h2 class="post-title">
-                            <a href="/reflections/philosophy/stoicism/">What is Stoicism? Ancient Wisdom for Modern Life</a>
+                            <a href="/reflections/philosophy/stoicism/">What is Stoicism? The Basics of the World’s Greatest Practical Philosophy</a>
                         </h2>
                     </header>
                     
-                    
-                        <div class="post-abstract">
-                            An exploration of Stoicism, its core principles, and how this ancient philosophy  remains remarkably relevant in today's world, offering practical wisdom for  navigating modern challenges.
-
-                        </div>
                     
                     
                     <footer class="post-footer">
@@ -99,10 +97,6 @@
                                 
                             </div>
                         
-                        
-                            <div class="confidence-indicator" data-level="high">
-                                high
-                            </div>
                         
                     </footer>
                 </div>
@@ -332,5 +326,18 @@
       }
     });
   </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const navToggle = document.querySelector('.nav-toggle');
+        const mainNav = document.querySelector('.main-nav');
+        
+        navToggle.addEventListener('click', () => {
+            mainNav.classList.toggle('active');
+        });
+    });
+</script>
+
+
 </body>
 </html>
