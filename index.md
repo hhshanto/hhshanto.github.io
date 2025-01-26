@@ -1,7 +1,3 @@
----
-layout: default
----
-
 # Welcome to Hasan's Notes
 
 This is my personal knowledge repository.
