@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://localhost:4000/natural-sciences/physics/2025-01-27-higgs-boson-explained/</loc>
+<lastmod>2025-01-27T00:00:00+06:00</lastmod>
+</url>
+<url>
 <loc>http://localhost:4000/reflections/philosophy/2025-01-26-artificial-intelligence-ethics/</loc>
 <lastmod>2025-01-26T00:00:00+06:00</lastmod>
 </url>
@@ -12,19 +16,22 @@
 <loc>http://localhost:4000/about/</loc>
 </url>
 <url>
+<loc>http://localhost:4000/all-posts/</loc>
+</url>
+<url>
 <loc>http://localhost:4000/</loc>
 </url>
 <url>
 <loc>http://localhost:4000/reflections/</loc>
 </url>
 <url>
+<loc>http://localhost:4000/natural-sciences/</loc>
+</url>
+<url>
 <loc>http://localhost:4000/arts-literature/</loc>
 </url>
 <url>
 <loc>http://localhost:4000/contemporary/</loc>
-</url>
-<url>
-<loc>http://localhost:4000/natural-sciences/</loc>
 </url>
 <url>
 <loc>http://localhost:4000/social-sciences/</loc>

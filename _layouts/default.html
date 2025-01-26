@@ -11,7 +11,7 @@
     <header class="site-header">
         <div class="header-container">
             <div class="logo">
-                <a href="{{ '/' | relative_url }}">Knowledge Hub</a>
+                <a href="{{ '/' | relative_url }}">Hasan's Knowledge Hub</a>
             </div>
             <nav class="main-nav">
                 <ul>
@@ -52,39 +52,44 @@
 
 
 <script>
-  // Smooth scrolling for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-          e.preventDefault();
-          const targetId = this.getAttribute('href');
-          const targetElement = document.querySelector(targetId);
-          
-          // Calculate header height
-          const headerHeight = document.querySelector('.site-header').offsetHeight;
-          
-          // Scroll to element with header offset
-          window.scrollTo({
-              top: targetElement.offsetTop - headerHeight,
-              behavior: 'smooth'
+    // Smooth scrolling for anchor links
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+          anchor.addEventListener('click', function (e) {
+              e.preventDefault();
+              const targetId = this.getAttribute('href');
+              const targetElement = document.querySelector(targetId);
+              
+              if (targetElement) {  // Check if element exists
+                  // Calculate header height
+                  const headerHeight = document.querySelector('.site-header').offsetHeight;
+                  
+                  // Scroll to element with header offset
+                  window.scrollTo({
+                      top: targetElement.offsetTop - headerHeight,
+                      behavior: 'smooth'
+                  });
+              }
           });
       });
-  });
-
-  // Add active state to button when about section is in view
-  const aboutSection = document.querySelector('#about');
-  const aboutButton = document.querySelector('a[href="#about"]');
-
-  window.addEventListener('scroll', () => {
-      const rect = aboutSection.getBoundingClientRect();
-      const headerHeight = document.querySelector('.site-header').offsetHeight;
-      
-      if (rect.top <= headerHeight && rect.bottom >= headerHeight) {
-          aboutButton.classList.add('active');
-      } else {
-          aboutButton.classList.remove('active');
+  
+      // Add active state to button when about section is in view
+      const aboutSection = document.querySelector('#about');
+      const aboutButton = document.querySelector('a[href="#about"]');
+  
+      if (aboutSection && aboutButton) {  // Check if elements exist
+          window.addEventListener('scroll', () => {
+              const rect = aboutSection.getBoundingClientRect();
+              const headerHeight = document.querySelector('.site-header').offsetHeight;
+              
+              if (rect.top <= headerHeight && rect.bottom >= headerHeight) {
+                  aboutButton.classList.add('active');
+              } else {
+                  aboutButton.classList.remove('active');
+              }
+          });
       }
-  });
-</script>
-
+    });
+  </script>
 </body>
 </html>

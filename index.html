@@ -38,7 +38,7 @@ title: Home
         <div class="hero-image">
             <img src="{{ '/assets/images/profile.jpg' | relative_url }}" alt="Hasan's Profile" />
             <div class="social-links">
-                <a href="https://linkedin.com/in/yourprofile" target="_blank" class="social-btn"><i class="fab fa-linkedin"></i></a>
+                <a href="https://linkedin.com/in//mhasan-shanto/" target="_blank" class="social-btn"><i class="fab fa-linkedin"></i></a>
                 <a href="https://github.com/hhshanto" target="_blank" class="social-btn"><i class="fab fa-github"></i></a>
                 <a href="mailto:hasanibnesaleh@gmail.com" class="social-btn"><i class="fas fa-envelope"></i></a>
             </div>
@@ -47,10 +47,10 @@ title: Home
     <div class="scroll-indicator">
         <i class="fas fa-chevron-down"></i>
     </div>
-</section
+</section>
 
 
-<section class="about-section">
+<section class="about-section" id="about">
     <div class="about-container">
         <div class="about-grid">
             <!-- Personal Introduction -->
@@ -146,6 +146,54 @@ title: Home
                     <li>Learning German (currently at A1 level)</li>
                 </ul>
             </div>
+        </div>
+    </div>
+</section>
+
+<section id="latest" class="latest-posts-section">
+    <div class="section-container">
+        <h2 class="section-title">Latest Posts</h2>
+        <div class="posts-grid">
+            {% assign all_posts = '' | split: '' %}
+            {% assign all_posts = all_posts | concat: site.reflections %}
+            {% assign all_posts = all_posts | concat: site.natural-sciences %}
+            {% assign all_posts = all_posts | concat: site.arts-literature %}
+            {% assign all_posts = all_posts | concat: site.contemporary %}
+            {% assign all_posts = all_posts | concat: site.social-sciences %}
+            {% assign sorted_posts = all_posts | sort: 'date' | reverse %}
+            {% for post in sorted_posts limit:2 %}
+                <article class="post-card">
+                    <div class="post-content">
+                        <header class="post-header">
+                            <div class="post-meta">
+                                <time datetime="{{ post.date | date_to_xmlschema }}">
+                                    {{ post.date | date: "%B %-d, %Y" }}
+                                </time>
+                            </div>
+                            <h3 class="post-title">
+                                <a href="{{ post.url }}">{{ post.title }}</a>
+                            </h3>
+                        </header>
+                        
+                        {% if post.abstract %}
+                            <div class="post-abstract">
+                                {{ post.abstract }}
+                            </div>
+                        {% endif %}
+                        
+                        <footer class="post-footer">
+                            {% if post.confidence %}
+                                <div class="confidence-indicator" data-level="{{ post.confidence }}">
+                                    {{ post.confidence }}
+                                </div>
+                            {% endif %}
+                        </footer>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+        <div class="view-all">
+            <a href="{{ '/all-posts' | relative_url }}" class="view-all-btn">View All Posts</a>
         </div>
     </div>
 </section>

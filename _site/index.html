@@ -11,7 +11,7 @@
     <header class="site-header">
         <div class="header-container">
             <div class="logo">
-                <a href="/">Knowledge Hub</a>
+                <a href="/">Hasan's Knowledge Hub</a>
             </div>
             <nav class="main-nav">
                 <ul>
@@ -62,7 +62,7 @@
         <div class="hero-image">
             <img src="/assets/images/profile.jpg" alt="Hasan's Profile" />
             <div class="social-links">
-                <a href="https://linkedin.com/in/yourprofile" target="_blank" class="social-btn"><i class="fab fa-linkedin"></i></a>
+                <a href="https://linkedin.com/in//mhasan-shanto/" target="_blank" class="social-btn"><i class="fab fa-linkedin"></i></a>
                 <a href="https://github.com/hhshanto" target="_blank" class="social-btn"><i class="fab fa-github"></i></a>
                 <a href="mailto:hasanibnesaleh@gmail.com" class="social-btn"><i class="fas fa-envelope"></i></a>
             </div>
@@ -71,10 +71,10 @@
     <div class="scroll-indicator">
         <i class="fas fa-chevron-down"></i>
     </div>
-</section
+</section>
 
 
-<section class="about-section">
+<section class="about-section" id="about">
     <div class="about-container">
         <div class="about-grid">
             <!-- Personal Introduction -->
@@ -174,6 +174,85 @@
     </div>
 </section>
 
+<section id="latest" class="latest-posts-section">
+    <div class="section-container">
+        <h2 class="section-title">Latest Posts</h2>
+        <div class="posts-grid">
+            
+            
+            
+            
+            
+            
+            
+            
+                <article class="post-card">
+                    <div class="post-content">
+                        <header class="post-header">
+                            <div class="post-meta">
+                                <time datetime="2025-01-27T00:00:00+06:00">
+                                    January 27, 2025
+                                </time>
+                            </div>
+                            <h3 class="post-title">
+                                <a href="/natural-sciences/physics/2025-01-27-higgs-boson-explained/">The Higgs Boson: Understanding the 'God Particle'</a>
+                            </h3>
+                        </header>
+                        
+                        
+                            <div class="post-abstract">
+                                A comprehensive exploration of the Higgs boson, its discovery at CERN,  and its fundamental role in giving mass to other particles, explaining  why this particle is crucial to our understanding of the universe.
+
+                            </div>
+                        
+                        
+                        <footer class="post-footer">
+                            
+                                <div class="confidence-indicator" data-level="high">
+                                    high
+                                </div>
+                            
+                        </footer>
+                    </div>
+                </article>
+            
+                <article class="post-card">
+                    <div class="post-content">
+                        <header class="post-header">
+                            <div class="post-meta">
+                                <time datetime="2025-01-26T00:00:00+06:00">
+                                    January 26, 2025
+                                </time>
+                            </div>
+                            <h3 class="post-title">
+                                <a href="/reflections/philosophy/2025-01-26-artificial-intelligence-ethics/">The Ethical Imperatives of Artificial Intelligence Development</a>
+                            </h3>
+                        </header>
+                        
+                        
+                            <div class="post-abstract">
+                                An examination of the fundamental ethical challenges in AI development and deployment,  exploring the balance between technological advancement and moral responsibility in  shaping the future of artificial intelligence.
+
+                            </div>
+                        
+                        
+                        <footer class="post-footer">
+                            
+                                <div class="confidence-indicator" data-level="high">
+                                    high
+                                </div>
+                            
+                        </footer>
+                    </div>
+                </article>
+            
+        </div>
+        <div class="view-all">
+            <a href="/all-posts" class="view-all-btn">View All Posts</a>
+        </div>
+    </div>
+</section>
+
     </main>
 
     <footer class="site-footer">
@@ -198,39 +277,44 @@
 
 
 <script>
-  // Smooth scrolling for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-          e.preventDefault();
-          const targetId = this.getAttribute('href');
-          const targetElement = document.querySelector(targetId);
-          
-          // Calculate header height
-          const headerHeight = document.querySelector('.site-header').offsetHeight;
-          
-          // Scroll to element with header offset
-          window.scrollTo({
-              top: targetElement.offsetTop - headerHeight,
-              behavior: 'smooth'
+    // Smooth scrolling for anchor links
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+          anchor.addEventListener('click', function (e) {
+              e.preventDefault();
+              const targetId = this.getAttribute('href');
+              const targetElement = document.querySelector(targetId);
+              
+              if (targetElement) {  // Check if element exists
+                  // Calculate header height
+                  const headerHeight = document.querySelector('.site-header').offsetHeight;
+                  
+                  // Scroll to element with header offset
+                  window.scrollTo({
+                      top: targetElement.offsetTop - headerHeight,
+                      behavior: 'smooth'
+                  });
+              }
           });
       });
-  });
-
-  // Add active state to button when about section is in view
-  const aboutSection = document.querySelector('#about');
-  const aboutButton = document.querySelector('a[href="#about"]');
-
-  window.addEventListener('scroll', () => {
-      const rect = aboutSection.getBoundingClientRect();
-      const headerHeight = document.querySelector('.site-header').offsetHeight;
-      
-      if (rect.top <= headerHeight && rect.bottom >= headerHeight) {
-          aboutButton.classList.add('active');
-      } else {
-          aboutButton.classList.remove('active');
+  
+      // Add active state to button when about section is in view
+      const aboutSection = document.querySelector('#about');
+      const aboutButton = document.querySelector('a[href="#about"]');
+  
+      if (aboutSection && aboutButton) {  // Check if elements exist
+          window.addEventListener('scroll', () => {
+              const rect = aboutSection.getBoundingClientRect();
+              const headerHeight = document.querySelector('.site-header').offsetHeight;
+              
+              if (rect.top <= headerHeight && rect.bottom >= headerHeight) {
+                  aboutButton.classList.add('active');
+              } else {
+                  aboutButton.classList.remove('active');
+              }
+          });
       }
-  });
-</script>
-
+    });
+  </script>
 </body>
 </html>

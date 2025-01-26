@@ -1,17 +1,23 @@
 ---
 layout: default
-title: Natural Sciences
-description: Exploring the fundamental laws and phenomena of our universe
+title: All Posts
+description: A curated collection of writings across all topics
 ---
 
 <div class="reflections-container">
     <header class="page-header">
-        <h1>Natural Sciences</h1>
-        <p class="header-description">Understanding the physical world through observation, experimentation, and theoretical analysis</p>
+        <h1>All Posts</h1>
+        <p class="header-description">A comprehensive collection of writings spanning natural sciences, social sciences, arts, literature, and personal reflections</p>
     </header>
 
     <div class="posts-container">
-        {% assign sorted_posts = site.natural-sciences | sort: 'date' | reverse %}
+        {% assign all_posts = '' | split: '' %}
+        {% assign all_posts = all_posts | concat: site.reflections %}
+        {% assign all_posts = all_posts | concat: site.natural-sciences %}
+        {% assign all_posts = all_posts | concat: site.arts-literature %}
+        {% assign all_posts = all_posts | concat: site.contemporary %}
+        {% assign all_posts = all_posts | concat: site.social-sciences %}
+        {% assign sorted_posts = all_posts | sort: 'date' | reverse %}
         {% for post in sorted_posts %}
             <article class="post-item">
                 <div class="post-content">
@@ -20,9 +26,7 @@ description: Exploring the fundamental laws and phenomena of our universe
                             <time datetime="{{ post.date | date_to_xmlschema }}">
                                 {{ post.date | date: "%B %-d, %Y" }}
                             </time>
-                            {% if post.category %}
-                                <span class="category-badge">{{ post.category | first }}</span>
-                            {% endif %}
+                            <span class="category-badge">{{ post.collection | replace: '-', ' ' | capitalize }}</span>
                         </div>
                         <h2 class="post-title">
                             <a href="{{ post.url }}">{{ post.title }}</a>
