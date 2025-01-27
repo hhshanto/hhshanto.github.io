@@ -14,28 +14,25 @@ class SpotifyNowPlaying {
         this.redirectUri = 'https://hhshanto.github.io'; // Your site URL
         this.scope = 'user-read-currently-playing user-read-playback-state';
         
-        // Check if we're coming back from Spotify auth
         if (window.location.search.includes('code=')) {
             this.handleAuthCallback();
         } else if (!this.getAccessToken()) {
             this.authorize();
         } else {
             this.updateNowPlaying();
-            // Update every 30 seconds
             setInterval(() => this.updateNowPlaying(), 30000);
         }
     }
 
-    authorize() {
-        // Generate random state
+    async authorize() {
         const state = Math.random().toString(36).substring(7);
         localStorage.setItem('spotify_auth_state', state);
 
-        // Generate code verifier and challenge
         const codeVerifier = this.generateCodeVerifier();
         localStorage.setItem('code_verifier', codeVerifier);
+        
+        const codeChallenge = await this.generateCodeChallenge(codeVerifier);
 
-        // Build authorization URL
         const params = new URLSearchParams({
             client_id: this.clientId,
             response_type: 'code',
@@ -43,11 +40,29 @@ class SpotifyNowPlaying {
             state: state,
             scope: this.scope,
             code_challenge_method: 'S256',
-            code_challenge: codeVerifier
+            code_challenge: codeChallenge
         });
 
-        // Redirect to Spotify authorization
         window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
+    }
+
+    generateCodeVerifier() {
+        const array = new Uint32Array(56);
+        crypto.getRandomValues(array);
+        return btoa(String.fromCharCode.apply(null, array))
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
+    }
+
+    async generateCodeChallenge(codeVerifier) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(codeVerifier);
+        const digest = await crypto.subtle.digest('SHA-256', data);
+        return btoa(String.fromCharCode.apply(null, new Uint8Array(digest)))
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
     }
 
     async handleAuthCallback() {
@@ -55,8 +70,8 @@ class SpotifyNowPlaying {
         const code = urlParams.get('code');
         const state = urlParams.get('state');
         const storedState = localStorage.getItem('spotify_auth_state');
+        const codeVerifier = localStorage.getItem('code_verifier');
 
-        // Clear stored state
         localStorage.removeItem('spotify_auth_state');
 
         if (!state || !storedState || state !== storedState) {
@@ -76,13 +91,12 @@ class SpotifyNowPlaying {
                     code: code,
                     redirect_uri: this.redirectUri,
                     client_id: this.clientId,
-                    code_verifier: localStorage.getItem('code_verifier')
+                    code_verifier: codeVerifier
                 })
             });
 
             const data = await response.json();
             this.saveTokens(data);
-            // Remove code from URL
             window.history.replaceState({}, document.title, '/');
             this.updateNowPlaying();
         } catch (error) {
@@ -123,14 +137,6 @@ class SpotifyNowPlaying {
         document.getElementById('artist-name').textContent = artistName;
     }
 
-    // Helper methods for PKCE
-    generateCodeVerifier() {
-        const array = new Uint32Array(56);
-        crypto.getRandomValues(array);
-        return Array.from(array, dec => ('0' + dec.toString(16)).substr(-2)).join('');
-    }
-
-    // Token management
     saveTokens(data) {
         localStorage.setItem('spotify_access_token', data.access_token);
         localStorage.setItem('spotify_refresh_token', data.refresh_token);
