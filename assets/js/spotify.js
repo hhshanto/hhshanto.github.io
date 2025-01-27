@@ -1,6 +1,17 @@
+// This is your complete spotify.js file content
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeSpotify);
+} else {
+    initializeSpotify();
+}
+
+function initializeSpotify() {
+    new SpotifyNowPlaying();
+}
+
 class SpotifyNowPlaying {
     constructor() {
-        this.clientId = 'a232f71a59cc43f2b2047319ab3d8502'; // Replace with your client ID
+        this.clientId = 'a232f71a59cc43f2b2047319ab3d8502'; // Your client ID
         this.redirectUri = 'https://hhshanto.github.io'; // Your site URL
         this.scope = 'user-read-currently-playing user-read-playback-state';
         
@@ -46,10 +57,13 @@ class SpotifyNowPlaying {
         const code = urlParams.get('code');
         const state = urlParams.get('state');
         const storedState = localStorage.getItem('spotify_auth_state');
-        const codeVerifier = localStorage.getItem('code_verifier');
 
-        if (state !== storedState) {
-            console.error('State mismatch!');
+        // Clear stored state
+        localStorage.removeItem('spotify_auth_state');
+
+        if (!state || !storedState || state !== storedState) {
+            console.log('Starting new authorization flow');
+            this.authorize();
             return;
         }
 
@@ -64,7 +78,7 @@ class SpotifyNowPlaying {
                     code: code,
                     redirect_uri: this.redirectUri,
                     client_id: this.clientId,
-                    code_verifier: codeVerifier
+                    code_verifier: localStorage.getItem('code_verifier')
                 })
             });
 
@@ -173,8 +187,3 @@ class SpotifyNowPlaying {
         }
     }
 }
-
-// Initialize when document is ready
-document.addEventListener('DOMContentLoaded', () => {
-    new SpotifyNowPlaying();
-});
