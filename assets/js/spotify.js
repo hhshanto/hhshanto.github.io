@@ -1,4 +1,3 @@
-// This is your complete spotify.js file content
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeSpotify);
 } else {
@@ -34,7 +33,6 @@ class SpotifyNowPlaying {
 
         // Generate code verifier and challenge
         const codeVerifier = this.generateCodeVerifier();
-        const codeChallenge = this.generateCodeChallenge(codeVerifier);
         localStorage.setItem('code_verifier', codeVerifier);
 
         // Build authorization URL
@@ -45,7 +43,7 @@ class SpotifyNowPlaying {
             state: state,
             scope: this.scope,
             code_challenge_method: 'S256',
-            code_challenge: codeChallenge
+            code_challenge: codeVerifier
         });
 
         // Redirect to Spotify authorization
@@ -130,17 +128,6 @@ class SpotifyNowPlaying {
         const array = new Uint32Array(56);
         crypto.getRandomValues(array);
         return Array.from(array, dec => ('0' + dec.toString(16)).substr(-2)).join('');
-    }
-
-    generateCodeChallenge(verifier) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(verifier);
-        return crypto.subtle.digest('SHA-256', data).then(buffer => {
-            return btoa(String.fromCharCode(...new Uint8Array(buffer)))
-                .replace(/\+/g, '-')
-                .replace(/\//g, '_')
-                .replace(/=+$/, '');
-        });
     }
 
     // Token management
