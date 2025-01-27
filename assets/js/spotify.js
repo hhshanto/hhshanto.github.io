@@ -121,12 +121,9 @@ class SpotifyNowPlaying {
     }
 
     generateCodeVerifier() {
-        const array = new Uint32Array(56);
-        crypto.getRandomValues(array);
-        return btoa(String.fromCharCode.apply(null, array))
-            .replace(/\+/g, '-')
-            .replace(/\//g, '_')
-            .replace(/=+$/, '');
+        const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+        const values = crypto.getRandomValues(new Uint8Array(128));
+        return values.reduce((acc, x) => acc + possible[x % possible.length], '');
     }
 
     async generateCodeChallenge(verifier) {
