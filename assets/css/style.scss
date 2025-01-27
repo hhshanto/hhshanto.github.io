@@ -40,26 +40,50 @@ body {
     z-index: 1000;
 
     .header-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
+        // remove max-width and margin
+        width: 100%;
+        padding: 0 20px;  // This will give some space from the edge
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 10px; 
     }
     
     .main-nav {
+        flex: 1;  // Add this
+        display: flex;
+        justify-content: flex-start;  // Change this to move nav options to the left
+        margin-top: 10px;
+        margin-left: 80px;
+    
         ul {
             list-style: none;
             display: flex;
-            gap: 20px;
-        }
+            
+            li {
+                a {
+                    color: white;
+                    text-decoration: none;
+                    padding: 8px 30px;
+                    border-radius: 20px;
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    font-size: 16px;
+                    transition: all 0.3s ease;
+                    background: rgba(255, 255, 255, 0.1);
+                    white-space: nowrap; // Prevents text wrapping
     
-        a {
-            text-decoration: none;
-            color: #333;
-            &:hover {
-                color: #666;
+                    i {
+                        font-size: 18px;
+                    }
+    
+                    &:hover {
+                        background: rgba(255, 255, 255, 0.2);
+                        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+                        transform: translateY(-2px);
+                    }
+                }
             }
         }
     }
@@ -108,6 +132,7 @@ body {
     }
 
     .logo {
+        margin-left: 5px; 
         a {
             color: white;
             text-decoration: none;
@@ -120,7 +145,8 @@ body {
         ul {
             list-style: none;
             display: flex;
-            gap: 20px;
+            gap: 10px;
+            
 
             li {
                 a {
@@ -171,6 +197,7 @@ body {
         }
 
         .main-nav {
+            
             ul {
                 flex-direction: column;
                 text-align: center;
@@ -192,12 +219,12 @@ body {
     margin-bottom: 40px;
 
     .hero-container {
-        max-width: 900px;
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 40px;
+        width: 100%;
+        padding: 0 20px;
+        display: flex;
+        justify-content: flex-start;  // Keep this
         align-items: center;
+        gap: 50px;
 
         @media (max-width: 768px) {
             grid-template-columns: 1fr;
@@ -712,7 +739,7 @@ a {
 // Theme toggle button styles
 .theme-toggle {
     position: absolute;
-    top: 20px;  /* Adjust this value */
+    top: 15px;  /* Adjust this value */
     right: 20px;  /* Adjust this value */
 }
 
