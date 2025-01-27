@@ -2,7 +2,7 @@ class SpotifyNowPlaying {
     constructor() {
         this.clientId = 'a232f71a59cc43f2b2047319ab3d8502'; // Replace with your client ID
         this.redirectUri = 'https://hhshanto.github.io'; // Your site URL
-        this.scope = 'user-read-currently-playing';
+        this.scope = 'user-read-currently-playing user-read-playback-state';
         
         // Check if we're coming back from Spotify auth
         if (window.location.search.includes('code=')) {
