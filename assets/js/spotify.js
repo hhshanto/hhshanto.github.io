@@ -121,10 +121,16 @@ class SpotifyNowPlaying {
     }
 
     generateCodeVerifier() {
-        const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
-        const values = crypto.getRandomValues(new Uint8Array(128));
-        return values.reduce((acc, x) => acc + possible[x % possible.length], '');
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+        const array = new Uint8Array(43);
+        crypto.getRandomValues(array);
+        
+        return Array.from(array)
+            .map(x => characters.charCodeAt(x % characters.length))
+            .map(x => String.fromCharCode(x))
+            .join('');
     }
+    
 
     async generateCodeChallenge(verifier) {
         const encoder = new TextEncoder();
