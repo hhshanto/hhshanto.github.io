@@ -11,9 +11,12 @@ function initializeSpotify() {
 class SpotifyNowPlaying {
     constructor() {
         this.clientId = 'a232f71a59cc43f2b2047319ab3d8502'; // Your client ID
+        this.clientSecret = 'c80190a561b949729fdbb161629b69c1'; // Your client secret
         this.redirectUri = 'https://hhshanto.github.io'; // Your site URL
         this.scope = 'user-read-currently-playing user-read-playback-state';
-        
+        this.tokenEndpoint = 'https://accounts.spotify.com/api/token';
+        this.apiEndpoint = 'https://api.spotify.com/v1/me/player/currently-playing';
+
         if (window.location.search.includes('code=')) {
             this.handleAuthCallback();
         } else if (!this.getAccessToken()) {
@@ -29,159 +32,86 @@ class SpotifyNowPlaying {
         localStorage.setItem('spotify_auth_state', state);
 
         const codeVerifier = this.generateCodeVerifier();
-        localStorage.setItem('code_verifier', codeVerifier);
-        
+        localStorage.setItem('spotify_code_verifier', codeVerifier);
+
         const codeChallenge = await this.generateCodeChallenge(codeVerifier);
 
-        const params = new URLSearchParams({
-            client_id: this.clientId,
-            response_type: 'code',
-            redirect_uri: this.redirectUri,
-            state: state,
-            scope: this.scope,
-            code_challenge_method: 'S256',
-            code_challenge: codeChallenge
-        });
-
-        window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
+        const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${this.clientId}&scope=${encodeURIComponent(this.scope)}&redirect_uri=${encodeURIComponent(this.redirectUri)}&state=${state}&code_challenge_method=S256&code_challenge=${codeChallenge}`;
+        window.location = authUrl;
     }
 
     async handleAuthCallback() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        const state = urlParams.get('state');
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('code');
+        const state = params.get('state');
         const storedState = localStorage.getItem('spotify_auth_state');
-        const codeVerifier = localStorage.getItem('code_verifier');
 
-        localStorage.removeItem('spotify_auth_state');
-
-        if (!state || !storedState || state !== storedState) {
-            console.log('Starting new authorization flow');
-            this.authorize();
+        if (state !== storedState) {
+            console.error('State mismatch');
             return;
         }
 
-        try {
-            const response = await fetch('https://accounts.spotify.com/api/token', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams({
-                    grant_type: 'authorization_code',
-                    code: code,
-                    redirect_uri: this.redirectUri,
-                    client_id: this.clientId,
-                    code_verifier: codeVerifier
-                })
-            });
+        const codeVerifier = localStorage.getItem('spotify_code_verifier');
+        const tokenResponse = await fetch(this.tokenEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                grant_type: 'authorization_code',
+                code: code,
+                redirect_uri: this.redirectUri,
+                client_id: this.clientId,
+                code_verifier: codeVerifier
+            })
+        });
 
-            const data = await response.json();
-            this.saveTokens(data);
-            window.history.replaceState({}, document.title, '/');
-            this.updateNowPlaying();
-        } catch (error) {
-            console.error('Error getting access token:', error);
-        }
+        const tokenData = await tokenResponse.json();
+        localStorage.setItem('spotify_access_token', tokenData.access_token);
+        window.history.replaceState({}, document.title, '/');
+        this.updateNowPlaying();
+    }
+
+    getAccessToken() {
+        return localStorage.getItem('spotify_access_token');
     }
 
     async updateNowPlaying() {
         const accessToken = this.getAccessToken();
         if (!accessToken) return;
 
-        try {
-            const response = await fetch('https://api.spotify.com/v1/me/player', {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            });
-
-            if (response.status === 204) {
-                this.updateUI('Not Playing', '');
-                return;
+        const response = await fetch(this.apiEndpoint, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
             }
+        });
 
-            const data = await response.json();
-            if (data && data.item) {
-                this.updateUI(data.item.name, data.item.artists[0].name);
-            } else {
-                this.updateUI('Not Playing', '');
-            }
-        } catch (error) {
-            console.error('Error fetching now playing:', error);
-            if (error.status === 401) {
-                await this.refreshToken();
-            }
-        }
-    }
-
-    updateUI(trackName, artistName) {
-        document.getElementById('track-name').textContent = trackName;
-        document.getElementById('artist-name').textContent = artistName;
-    }
-
-    generateCodeVerifier() {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
-        const array = new Uint8Array(43);
-        crypto.getRandomValues(array);
-        
-        return Array.from(array)
-            .map(x => characters.charCodeAt(x % characters.length))
-            .map(x => String.fromCharCode(x))
-            .join('');
-    }
-    
-
-    async generateCodeChallenge(verifier) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(verifier);
-        const digest = await crypto.subtle.digest('SHA-256', data);
-        return btoa(String.fromCharCode.apply(null, new Uint8Array(digest)))
-            .replace(/\+/g, '-')
-            .replace(/\//g, '_')
-            .replace(/=+$/, '');
-    }
-
-    saveTokens(data) {
-        localStorage.setItem('spotify_access_token', data.access_token);
-        localStorage.setItem('spotify_refresh_token', data.refresh_token);
-        localStorage.setItem('spotify_token_expires', Date.now() + (data.expires_in * 1000));
-    }
-
-    getAccessToken() {
-        const expiry = localStorage.getItem('spotify_token_expires');
-        if (expiry && Date.now() > parseInt(expiry)) {
-            this.refreshToken();
-            return null;
-        }
-        return localStorage.getItem('spotify_access_token');
-    }
-
-    async refreshToken() {
-        const refreshToken = localStorage.getItem('spotify_refresh_token');
-        if (!refreshToken) {
-            this.authorize();
+        if (response.status === 204) {
+            document.getElementById('track-name').textContent = 'Not Playing';
+            document.getElementById('artist-name').textContent = '';
             return;
         }
 
-        try {
-            const response = await fetch('https://accounts.spotify.com/api/token', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams({
-                    grant_type: 'refresh_token',
-                    refresh_token: refreshToken,
-                    client_id: this.clientId
-                })
-            });
-
-            const data = await response.json();
-            this.saveTokens(data);
-        } catch (error) {
-            console.error('Error refreshing token:', error);
-            this.authorize();
+        const data = await response.json();
+        if (data && data.item) {
+            document.getElementById('track-name').textContent = data.item.name;
+            document.getElementById('artist-name').textContent = data.item.artists.map(artist => artist.name).join(', ');
         }
+    }
+
+    generateCodeVerifier() {
+        const array = new Uint32Array(56 / 2);
+        window.crypto.getRandomValues(array);
+        return Array.from(array, dec => ('0' + dec.toString(16)).substr(-2)).join('');
+    }
+
+    async generateCodeChallenge(codeVerifier) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(codeVerifier);
+        const digest = await window.crypto.subtle.digest('SHA-256', data);
+        return btoa(String.fromCharCode(...new Uint8Array(digest)))
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
     }
 }
