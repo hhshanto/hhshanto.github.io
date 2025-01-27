@@ -25,7 +25,12 @@
             </nav>
         </div>
 
-
+        <div class="theme-toggle">
+            <button id="themeToggle" class="theme-toggle-btn">
+                <i class="fas fa-sun"></i>
+                <span class="theme-text">Light Mode</span>
+            </button>
+        </div>
 
         
     </header>
@@ -93,6 +98,43 @@
 <!-- Add this before the closing </body> tag -->
 <script src="{{ '/assets/js/search.js' | relative_url }}"></script>
 
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeToggle = document.getElementById('themeToggle');
+        const icon = themeToggle.querySelector('i');
+    
+        // Check for saved theme preference or default to 'light'
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        updateIcon(currentTheme);
+    
+        // Toggle theme on button click
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcon(newTheme);
+        });
+    
+        // Update icon based on theme
+        function updateIcon(theme) {
+    if (theme === 'dark') {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        document.querySelector('.theme-text').textContent = 'Dark';
+    } else {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        document.querySelector('.theme-text').textContent = 'Light';
+    }
+}
+    });
+    </script>
 
 </body>
 </html>

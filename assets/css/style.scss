@@ -658,3 +658,205 @@ body {
     }
 }
 
+:root {
+    // Light theme (default)
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --header-bg: #2c3e50;
+    --card-bg: #ffffff;
+    --card-border: #eaeaea;
+    --link-color: #3498db;
+    --heading-color: #2c3e50;
+}
+
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;    /* Lighter text for dark mode */
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --header-bg: #2c3e50;
+    --card-bg: #2d2d2d;
+    --card-border: #404040;
+    --link-color: #61dafb;    /* Brighter blue for links in dark mode */
+    --heading-color: #ffffff; /* White headings for dark mode */
+}
+
+/* Add these specific color rules */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--heading-color);
+}
+
+a {
+    color: var(--link-color);
+}
+
+.post-card {
+    color: var(--text-color);
+}
+
+.post-title {
+    color: var(--heading-color);
+}
+
+.post-abstract {
+    color: var(--text-color);
+}
+
+// Theme toggle button styles
+.theme-toggle {
+    position: absolute;
+    top: 20px;  /* Adjust this value */
+    right: 20px;  /* Adjust this value */
+}
+
+.theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);  /* Slight background */
+    border: none;
+    border-radius: 25px;  /* Makes it round */
+    padding: 8px 15px;    /* Adjust padding for comfort */
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.2);  /* Lighter on hover */
+    transform: translateY(-2px);           /* Slight lift effect */
+}
+
+.theme-text {
+    color: white;
+    font-size: 14px;
+}
+
+.site-header {
+    background-color: var(--header-bg);
+}
+
+.about-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+}
+
+.post-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+}
+
+[data-theme="dark"] {
+    .about-section {
+        background: linear-gradient(to bottom, #1a1a1a, #2d2d2d);
+    }
+
+    .about-card {
+        background: #2d2d2d;
+        color: #e0e0e0;
+    }
+
+    .latest-posts-section {
+        background: #1a1a1a;
+    }
+
+    .post-card {
+        background: #2d2d2d;
+        color: #e0e0e0;
+    }
+}
+
+[data-theme="dark"] {
+    .post-content, 
+    .post-abstract, 
+    .post-card,
+    article {
+        color: #e0e0e0 !important;  /* Light gray, very readable */
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        color: #ffffff !important;  /* White headings */
+    }
+
+    a {
+        color: #61dafb !important;  /* Bright blue links */
+    }
+}
+
+[data-theme="dark"] {
+    .post-content, 
+    .post-abstract, 
+    .post-card,
+    article {
+        color: #e0e0e0 !important;  /* Light gray, very readable */
+        background: #1a1a1a !important;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        color: #ffffff !important;  /* White headings */
+    }
+
+    a {
+        color: #61dafb !important;  /* Bright blue links */
+    }
+
+    /* For all sections and pages */
+    .about-section,
+    .latest-posts-section,
+    .reflections,
+    .natural-sciences,
+    .arts-literature,
+    .contemporary,
+    .social-sciences,
+    main,
+    .content,
+    .page-content {
+        background: #1a1a1a !important;
+    }
+
+    /* For cards and content containers */
+    .about-card,
+    .post-card,
+    .content-container,
+    .post-container {
+        background: #2d2d2d !important;
+        color: #e0e0e0 !important;
+    }
+}
+[data-theme="dark"] {
+    .about-card {
+        background: #2d2d2d !important;
+        
+        p, li {
+            color: #e0e0e0 !important;  /* Light gray for better readability */
+        }
+
+        h2 {
+            color: #ffffff !important;  /* White for headings */
+        }
+
+        .timeline-item p,
+        .education-item p,
+        .content-list li {
+            color: #e0e0e0 !important;
+        }
+    }
+}
+
+.theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;  /* Space between icon and text */
+}
+
+.theme-text {
+    color: white;
+    font-size: 14px;
+}
