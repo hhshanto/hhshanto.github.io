@@ -1,20 +1,7 @@
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeSpotify);
-} else {
-    initializeSpotify();
-}
-
-function initializeSpotify() {
-    new SpotifyNowPlaying();
-}
-
 class SpotifyNowPlaying {
     constructor() {
-        this.clientId = 'a232f71a59cc43f2b2047319ab3d8502'; // Your client ID
-        this.clientSecret = 'c80190a561b949729fdbb161629b69c1'; // Your client secret
         this.redirectUri = 'https://hhshanto.github.io'; // Your site URL
         this.scope = 'user-read-currently-playing user-read-playback-state';
-        this.tokenEndpoint = 'https://accounts.spotify.com/api/token';
         this.apiEndpoint = 'https://api.spotify.com/v1/me/player/currently-playing';
 
         if (window.location.search.includes('code=')) {
@@ -36,7 +23,7 @@ class SpotifyNowPlaying {
 
         const codeChallenge = await this.generateCodeChallenge(codeVerifier);
 
-        const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${this.clientId}&scope=${encodeURIComponent(this.scope)}&redirect_uri=${encodeURIComponent(this.redirectUri)}&state=${state}&code_challenge_method=S256&code_challenge=${codeChallenge}`;
+        const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${encodeURIComponent(this.scope)}&redirect_uri=${encodeURIComponent(this.redirectUri)}&state=${state}&code_challenge_method=S256&code_challenge=${codeChallenge}`;
         window.location = authUrl;
     }
 
@@ -51,22 +38,15 @@ class SpotifyNowPlaying {
             return;
         }
 
-        const codeVerifier = localStorage.getItem('spotify_code_verifier');
-        const tokenResponse = await fetch(this.tokenEndpoint, {
+        const response = await fetch('/auth', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/json'
             },
-            body: new URLSearchParams({
-                grant_type: 'authorization_code',
-                code: code,
-                redirect_uri: this.redirectUri,
-                client_id: this.clientId,
-                code_verifier: codeVerifier
-            })
+            body: JSON.stringify({ code: code })
         });
 
-        const tokenData = await tokenResponse.json();
+        const tokenData = await response.json();
         localStorage.setItem('spotify_access_token', tokenData.access_token);
         window.history.replaceState({}, document.title, '/');
         this.updateNowPlaying();
@@ -89,6 +69,7 @@ class SpotifyNowPlaying {
         if (response.status === 204) {
             document.getElementById('track-name').textContent = 'Not Playing';
             document.getElementById('artist-name').textContent = '';
+            document.getElementById('album-cover').src = '';
             return;
         }
 
@@ -96,6 +77,7 @@ class SpotifyNowPlaying {
         if (data && data.item) {
             document.getElementById('track-name').textContent = data.item.name;
             document.getElementById('artist-name').textContent = data.item.artists.map(artist => artist.name).join(', ');
+            document.getElementById('album-cover').src = data.item.album.images[0].url;
         }
     }
 
