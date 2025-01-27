@@ -46,25 +46,6 @@ class SpotifyNowPlaying {
         window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
     }
 
-    generateCodeVerifier() {
-        const array = new Uint32Array(56);
-        crypto.getRandomValues(array);
-        return btoa(String.fromCharCode.apply(null, array))
-            .replace(/\+/g, '-')
-            .replace(/\//g, '_')
-            .replace(/=+$/, '');
-    }
-
-    async generateCodeChallenge(codeVerifier) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(codeVerifier);
-        const digest = await crypto.subtle.digest('SHA-256', data);
-        return btoa(String.fromCharCode.apply(null, new Uint8Array(digest)))
-            .replace(/\+/g, '-')
-            .replace(/\//g, '_')
-            .replace(/=+$/, '');
-    }
-
     async handleAuthCallback() {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
@@ -109,7 +90,7 @@ class SpotifyNowPlaying {
         if (!accessToken) return;
 
         try {
-            const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+            const response = await fetch('https://api.spotify.com/v1/me/player', {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`
                 }
@@ -121,8 +102,10 @@ class SpotifyNowPlaying {
             }
 
             const data = await response.json();
-            if (data.item) {
+            if (data && data.item) {
                 this.updateUI(data.item.name, data.item.artists[0].name);
+            } else {
+                this.updateUI('Not Playing', '');
             }
         } catch (error) {
             console.error('Error fetching now playing:', error);
@@ -135,6 +118,25 @@ class SpotifyNowPlaying {
     updateUI(trackName, artistName) {
         document.getElementById('track-name').textContent = trackName;
         document.getElementById('artist-name').textContent = artistName;
+    }
+
+    generateCodeVerifier() {
+        const array = new Uint32Array(56);
+        crypto.getRandomValues(array);
+        return btoa(String.fromCharCode.apply(null, array))
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
+    }
+
+    async generateCodeChallenge(verifier) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(verifier);
+        const digest = await crypto.subtle.digest('SHA-256', data);
+        return btoa(String.fromCharCode.apply(null, new Uint8Array(digest)))
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
     }
 
     saveTokens(data) {
