@@ -887,3 +887,44 @@ a {
     color: white;
     font-size: 14px;
 }
+
+// Existing styles...
+
+// Add media query for mobile devices
+@media (max-width: 768px) {
+    .hero-section {
+        // Adjust the height and padding for the hero section
+        height: auto;
+        padding: 20px 10px;
+        text-align: center;
+
+        // Adjust the font size for the hero text
+        h1 {
+            font-size: 24px;
+        }
+
+        p {
+            font-size: 16px;
+        }
+    }
+
+    .main-nav {
+        flex-direction: column;  // Stack the nav items vertically
+        margin-left: 0;  // Remove left margin
+
+        ul {
+            flex-direction: column;  // Stack the nav items vertically
+            gap: 10px;  // Increase gap between items
+
+            li {
+                a {
+                    padding: 10px 20px;  // Adjust padding for smaller buttons
+                    font-size: 14px;  // Adjust font size for smaller text
+                    i {
+                        font-size: 16px;  // Adjust icon size
+                    }
+                }
+            }
+        }
+    }
+}
