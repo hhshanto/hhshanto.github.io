@@ -74,13 +74,14 @@ The site's styling is organized into modular SCSS files:
 - `_forms.scss` - Form styling for content creation
 - `_dark-mode.scss` - Dark theme styling
 
-## Creating Content
+## Personal Content
 
-Content can be created in several ways:
+This is my personal digital garden and knowledge repository. All content is created and maintained by me. The site is not open for public content contributions.
 
-1. Directly add Markdown files to the appropriate collection folders
-2. Use the built-in post creation form at `/create-post`
-3. Clone the repository and commit new markdown files
+Content management is handled through:
+
+1. Direct commits to the repository (personal use only)
+2. The built-in post creation form (authenticated access)
 
 ## Directory Structure
 
@@ -100,7 +101,7 @@ Content can be created in several ways:
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project's code is licensed under the MIT License, which allows for reuse of the technical implementation. However, all content (articles, posts, images, and personal information) is copyrighted and not available for reproduction without permission. See the LICENSE file for details on code reuse.
 
 ## Contact
 
