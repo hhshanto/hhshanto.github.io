@@ -48,15 +48,6 @@
         <div class="footer-container">
             <p>&copy; {{ site.time | date: '%Y' }} Noema. All rights reserved.</p>
         </div>
-        <div class="visitor-counter">
-            <p>Visitors: <span id="visitor-count">Loading...</span></p>
-            <script src="https://api.countapi.xyz/hit/hhshanto.github.io/visits?callback=countVisitor"></script>
-            <script>
-              function countVisitor(response) {
-                document.getElementById('visitor-count').innerText = response.value;
-              }
-            </script>
-          </div>
     </footer>
 
 
