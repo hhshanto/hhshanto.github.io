@@ -1,0 +1,146 @@
+// About section styles
+.about-section {
+    padding: 60px 20px;
+    background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+
+    .about-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .about-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+        
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .about-card {
+        background: rgb(223, 221, 221);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+
+        &:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 2em;
+            color: $secondary-color;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: $primary-color;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        p {
+            color: $text-color;
+            line-height: 1.6;
+        }
+    }
+}
+
+// Timeline component styles
+.timeline {
+    .timeline-item {
+        margin-bottom: 15px;
+        padding-left: 20px;
+        border-left: 2px solid $secondary-color;
+        position: relative;
+
+        .date {
+            color: $secondary-color;
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        &:before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: $secondary-color;
+        }
+    }
+}
+
+// Education list styles
+.education-list {
+    .education-item {
+        margin-bottom: 20px;
+
+        h3 {
+            color: $primary-color;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        p {
+            margin-bottom: 5px;
+        }
+
+        .date, .grade {
+            font-size: 0.9em;
+            color: $secondary-color;
+            margin-right: 15px;
+        }
+    }
+}
+
+// Expertise grid styles
+.expertise-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    .expertise-tag {
+        background: rgba($secondary-color, 0.1);
+        color: $secondary-color;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        transition: all 0.3s ease;
+        margin-bottom: 8px;
+
+        &:hover {
+            background: $secondary-color;
+            color: white;
+            transform: translateY(-2px);
+        }
+    }
+}
+
+// Content list styles
+.content-list {
+    list-style: none;
+    
+    li {
+        margin-bottom: 12px;
+        padding-left: 25px;
+        position: relative;
+
+        &:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: $secondary-color;
+        }
+        
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}

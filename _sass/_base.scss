@@ -1,0 +1,71 @@
+// Reset and base styles
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: $text-color;
+    background-color: $background-color;
+}
+
+// Main content styles
+.content {
+    margin-top: $header-height;
+    padding: 20px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+// Footer styles
+.site-footer {
+    background-color: $primary-color;
+    color: white;
+    padding: 20px 0;
+    margin-top: 40px;
+
+    .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        text-align: center;
+    }
+}
+
+// Import fonts
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap');
+
+.gothic-font {
+    font-family: 'UnifrakturCook', cursive; // Fixed font name
+    font-size: 28px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+
+// Theme-based body styling
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--heading-color);
+}
+
+a {
+    color: var(--link-color);
+}

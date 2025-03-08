@@ -1,0 +1,209 @@
+// Dark mode variables
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;    /* Lighter text for dark mode */
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --header-bg: #2c3e50;
+    --card-bg: #2d2d2d;
+    --card-border: #404040;
+    --link-color: #61dafb;    /* Brighter blue for links in dark mode */
+    --heading-color: #ffffff; /* White headings for dark mode */
+    --search-bg: #2d2d2d;
+    --search-border: #444;
+    --search-hover: #3a3a3a;
+}
+
+// Dark mode base styles
+[data-theme="dark"] {
+    // Base element styles
+    body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        color: #ffffff !important;  /* White headings */
+    }
+    
+    a {
+        color: #61dafb !important;  /* Bright blue links */
+    }
+    
+    // Layout elements
+    .site-header {
+        background-color: var(--header-bg);
+    }
+    
+    // Section backgrounds
+    .about-section {
+        background: linear-gradient(to bottom, #1a1a1a, #2d2d2d);
+    }
+    
+    .latest-posts-section {
+        background: #1a1a1a;
+    }
+    
+    /* For all sections and pages */
+    .about-section,
+    .latest-posts-section,
+    .reflections,
+    .natural-sciences,
+    .arts-literature,
+    .contemporary,
+    .social-sciences,
+    main,
+    .content,
+    .page-content {
+        background: #1a1a1a !important;
+    }
+}
+
+// Dark mode card styles
+[data-theme="dark"] {
+    .about-card {
+        background: #2d2d2d !important;
+        color: #e0e0e0 !important;
+        
+        p, li {
+            color: #e0e0e0 !important;  /* Light gray for better readability */
+        }
+
+        h2 {
+            color: #ffffff !important;  /* White for headings */
+        }
+
+        .timeline-item p,
+        .education-item p,
+        .content-list li {
+            color: #e0e0e0 !important;
+        }
+    }
+    
+    .post-card {
+        background: #2d2d2d !important;
+        color: #e0e0e0 !important;
+    }
+    
+    /* For cards and content containers */
+    .about-card,
+    .post-card,
+    .content-container,
+    .post-container {
+        background: #2d2d2d !important;
+        color: #e0e0e0 !important;
+    }
+}
+
+// Dark mode post content
+[data-theme="dark"] {
+    .post-content, 
+    .post-abstract, 
+    .post-card,
+    article {
+        color: #e0e0e0 !important;  /* Light gray, very readable */
+        background: #1a1a1a !important;
+    }
+    
+    .post-title a {
+        color: #ffffff !important;
+    }
+}
+
+// Dark mode form styles
+[data-theme="dark"] {
+    .form-group {
+        label {
+            color: #e0e0e0;
+        }
+        
+        input, select, textarea {
+            background-color: #333;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+        
+        small {
+            color: #aaa;
+        }
+    }
+    
+    .instructions {
+        background-color: #2d2d2d;
+        border-left-color: #3498db;
+        
+        h3 {
+            color: #3498db;
+        }
+        
+        code, pre {
+            background-color: #222;
+            color: #e0e0e0;
+        }
+    }
+    
+    .preview-section {
+        background-color: #2d2d2d;
+        border-color: #555;
+        
+        pre {
+            background-color: #333;
+            color: #e0e0e0;
+        }
+    }
+}
+
+// Dark mode search styles - simplified and more specific
+[data-theme="dark"] {
+    // Search input
+    .search-box {
+        background: rgba(45, 45, 45, 0.9) !important;
+        color: #e0e0e0 !important;
+        
+        &::placeholder {
+            color: #aaa !important;
+        }
+        
+        &:focus {
+            background: #333 !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+        }
+    }
+    
+    // Search results container
+    .search-results {
+        background-color: #2d2d2d !important;
+        border-color: #444 !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5) !important;
+        
+        .search-result-item {
+            border-color: #444 !important;
+            transition: all 0.25s ease !important;
+            
+            &:hover {
+                background: linear-gradient(to right, #2d2d2d, #3a3a3a) !important; // Subtle gradient
+                transform: translateY(-2px) !important; // Subtle lift effect  
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important; // Shadow for depth
+                border-left: 3px solid #61dafb !important; // Left accent border
+            }
+        }
+        
+        .search-result-title {
+            color: #330303 !important;
+            transition: color 0.2s ease !important;
+            
+            .search-result-item:hover & {
+                color: #010c0f !important; // Bright blue on hover
+            }
+        }
+        
+        .search-result-abstract {
+            color: #180101 !important;
+            transition: color 0.2s ease !important;
+            
+            .search-result-item:hover & {
+                color: #050000 !important; // Brighter text on hover for better readability
+            }
+        }
+    }
+}

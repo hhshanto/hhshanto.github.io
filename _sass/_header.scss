@@ -1,0 +1,192 @@
+// Header styles
+.site-header {
+    background-color: $primary-color;
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: $header-height;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 1000;
+
+    .header-container {
+        width: 100%;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 80px; 
+    }
+    
+    .main-nav {
+        flex: 1;
+        display: center;
+        justify-content: flex-start;
+        margin-top: 10px;
+        margin-left: 80px;
+    
+        ul {
+            list-style: none;
+            display: flex;
+            gap: 10px;
+            
+            li {
+                a {
+                    color: white;
+                    text-decoration: none;
+                    padding: 8px 30px;
+                    border-radius: 20px;
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    font-size: 16px;
+                    transition: all 0.3s ease;
+                    background: rgba(255, 255, 255, 0.1);
+                    white-space: nowrap;
+    
+                    i {
+                        font-size: 18px;
+                    }
+    
+                    &:hover {
+                        background: rgba(255, 255, 255, 0.2);
+                        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+                        transform: translateY(-2px);
+                    }
+                }
+            }
+        }
+    }
+    
+    .nav-toggle {
+        display: none;
+        cursor: pointer;
+        padding: 10px;
+    }
+    
+    .logo {
+        margin-left: 5px; 
+        a {
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    }
+}
+
+// Theme toggle button styles
+.theme-toggle {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+}
+
+.theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 25px;
+    padding: 8px 15px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
+}
+
+.theme-text {
+    color: white;
+    font-size: 14px;
+}
+
+// Responsive styles for header
+@media (max-width: 768px) {
+    .site-header {
+        .header-container {
+            flex-wrap: wrap;
+            flex-direction: column;
+            padding: 10px;
+        }
+    
+        .nav-toggle {
+            display: block;
+        }
+    
+        .main-nav {
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            margin-left: 0;
+    
+            &.active {
+                display: block;
+            }
+    
+            ul {
+                flex-direction: column;
+                width: 100%;
+                padding: 0;
+                margin: 0;
+                gap: 10px;
+            }
+    
+            li {
+                width: 100%;
+                text-align: center;
+                border-top: 1px solid #eee;
+                
+                a {
+                    display: block;
+                    padding: 10px 20px;
+                    font-size: 14px;
+                    
+                    i {
+                        font-size: 16px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Theme-specific styles for header
+.site-header {
+    background-color: var(--header-bg);
+}
+.mobile-menu-toggle {
+    display: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+    margin-right: 15px;
+    
+    @media (max-width: 768px) {
+      display: block;
+    }
+  }
+
+  
+.logo {
+    a.gothic-font {
+      font-family: 'UnifrakturCook', cursive; // Use the font you're already importing
+      font-size: 32px;  // Larger size for impact
+      font-weight: bold;
+      color: white;  // Match your header text
+      text-decoration: none;
+      letter-spacing: 2px;  // Add spacing between letters
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);  // Add subtle shadow
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.05);  // Slight grow effect on hover
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+      }
+    }
+  }
+  

@@ -1,0 +1,212 @@
+// Hero section styles
+.hero-section {
+    margin-top: -70px;
+    padding: 60px 20px;
+    background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
+    color: white;
+    text-align: center;
+    border-radius: 0 0 20px 20px;
+    margin-bottom: 40px;
+
+    .hero-container {
+        width: 100%;
+        padding: 0 20px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 50px;
+
+        @media (max-width: 768px) {
+            flex-direction: column;
+            
+            .hero-image {
+              margin-top: 2rem;
+              order: -1; // Move image above content on mobile
+            }
+          }
+        }
+
+    .hero-content {
+        text-align: left;
+        width: 100%;
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: white;
+        }
+    
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+    }
+
+    .hero-image {
+        margin-top: 80px; // Reduced from 80px to move image down less
+    
+        img {
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            object-position: center;
+        }
+    }
+
+    .search-container {
+        margin-top: 30px;
+        max-width: 500px;
+
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+
+            &:focus {
+                outline: none;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                background: white;
+            }
+        }
+    }
+
+    .typing-effect h1 {
+        border-right: 3px solid white;
+        animation: typing 3.5s steps(40, end), blink-caret .75s step-end 5;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .role-slider {
+        display: flex;
+        gap: 10px;
+        align-items: baseline;
+        margin: 20px 0;
+        font-size: 1.5em;
+
+        .role-words {
+            height: 1.5em;
+            overflow: hidden;
+            
+            span {
+                display: block;
+                color: $secondary-color;
+                animation: slide 8s infinite;
+                padding: 2px 0;
+            }
+        }
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 20px;
+        margin: 30px 0;
+        justify-content: center;
+
+        .hero-btn {
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+
+            &.primary {
+                background: $secondary-color;
+                color: white;
+
+                &:hover {
+                    background: darken($secondary-color, 10%);
+                    transform: translateY(-2px);
+                }
+            }
+
+            &.secondary {
+                background: transparent;
+                border: 2px solid white;
+                color: white;
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                    transform: translateY(-2px);
+                }
+            }
+        }
+    }
+
+    .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+
+        .social-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background: $secondary-color;
+                transform: translateY(-3px);
+            }
+        }
+        .social-btn i {
+            font-size: 24px;
+        }
+    }
+}
+    
+// Hero animations
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: white }
+}
+
+@keyframes slide {
+    0% { transform: translateY(0); }
+    25% { transform: translateY(-100%); }
+    50% { transform: translateY(-200%); }
+    75% { transform: translateY(-300%); }
+    100% { transform: translateY(0); }
+}
+
+// Mobile styles for hero
+@media (max-width: 768px) {
+    .hero-section {
+        height: auto;
+        padding: 20px 10px;
+        text-align: center;
+
+        h1 {
+            font-size: 24px;
+        }
+
+        p {
+            font-size: 16px;
+        }
+        
+        .hero-container {
+            flex-direction: column;
+        }
+    }
+}
+
