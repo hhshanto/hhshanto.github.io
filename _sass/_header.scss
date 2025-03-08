@@ -1,4 +1,4 @@
-// Header styles (consolidated version)
+// Header styles
 .site-header {
     background-color: $primary-color;
     position: relative;
@@ -16,7 +16,27 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 80px; 
+        gap: 10px;
+        position: relative;
+    }
+    
+    .logo {
+        margin-left: 5px;
+        a.gothic-font {
+            font-family: 'UnifrakturCook', cursive;
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            
+            &:hover {
+                transform: scale(1.05);
+                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            }
+        }
     }
     
     .mobile-menu-toggle {
@@ -37,7 +57,7 @@
         ul {
             list-style: none;
             display: flex;
-            gap: 10px;
+            gap: 20px; // Increased gap between nav items
             
             li {
                 a {
@@ -63,25 +83,6 @@
                         transform: translateY(-2px);
                     }
                 }
-            }
-        }
-    }
-    
-    .logo {
-        margin-left: 5px; 
-        a.gothic-font {
-            font-family: 'UnifrakturCook', cursive;
-            font-size: 32px;
-            font-weight: bold;
-            color: white;
-            text-decoration: none;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
-            
-            &:hover {
-                transform: scale(1.05);
-                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
             }
         }
     }
@@ -117,56 +118,67 @@
     font-size: 14px;
 }
 
-// Responsive styles for header - CONSOLIDATED
+// Mobile header styles
 @media (max-width: 768px) {
     .site-header {
-        .mobile-menu-toggle {
-            display: block;
-        }
+        height: auto; // Allow flexible height on mobile
         
         .header-container {
-            flex-wrap: wrap;
             padding: 10px;
+            flex-wrap: nowrap; // Don't wrap items by default
         }
-    
+        
+        .logo {
+            flex: 1; // Take available space
+            z-index: 2; // Keep logo above menu
+        }
+        
+        .mobile-menu-toggle {
+            display: block;
+            z-index: 2; // Keep toggle button above menu
+            position: relative;
+        }
+        
         .main-nav {
+            display: block;
+            margin: 0;
             width: 100%;
-            display: none;
-            margin-left: 0;
+            position: absolute;
+            left: 0;
+            top: 100%; // Position below header
             
-            &.active {
-                display: block;
-            }
-    
             ul {
+                display: none;
                 flex-direction: column;
-                width: 100%;
+                background-color: var(--header-bg);
                 padding: 0;
                 margin: 0;
-                gap: 10px;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                background-color: var(--header-bg);
-                box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-                z-index: 1000;
-            }
-    
-            li {
                 width: 100%;
-                text-align: center;
-                border-top: 1px solid #eee;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.2);
                 
-                a {
-                    display: block;
-                    padding: 10px 20px;
-                    font-size: 14px;
+                &.active {
+                    display: flex;
+                }
+                
+                li {
+                    width: 100%;
+                    text-align: center;
+                    border-top: 1px solid rgba(255, 255, 255, 0.1);
                     
-                    i {
-                        font-size: 16px;
+                    a {
+                        display: block;
+                        padding: 15px;
+                        border-radius: 0;
+                        justify-content: center;
                     }
                 }
             }
+        }
+        
+        .theme-toggle {
+            position: static; // Reset absolute positioning
+            margin-left: 15px;
+            z-index: 2; // Keep above menu
         }
     }
 }

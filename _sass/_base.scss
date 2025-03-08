@@ -40,22 +40,6 @@ body {
     }
 }
 
-// Import fonts
-@import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap');
-
-.gothic-font {
-    font-family: 'UnifrakturCook', cursive; // Fixed font name
-    font-size: 28px;
-    font-weight: bold;
-    color: #fff;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-    transition: all 0.3s ease;
-    
-    &:hover {
-        transform: scale(1.05);
-    }
-}
-
 // Theme-based body styling
 body {
     background-color: var(--bg-color);
@@ -69,62 +53,11 @@ h1, h2, h3, h4, h5, h6 {
 a {
     color: var(--link-color);
 }
-// Mobile header styles
+
+// Mobile adjustments for content area
 @media (max-width: 768px) {
-    .header-container {
-      flex-direction: column;
-      align-items: flex-start;
+    .content {
+        margin-top: auto; // Allow flexible margin for variable header height
+        padding: 15px;
     }
-    
-    .logo {
-      margin-bottom: 10px;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .mobile-menu-toggle {
-      display: block;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--text-color);
-    }
-    
-    .main-nav {
-      width: 100%;
-      
-      ul {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        
-        &.active {
-          display: flex;
-        }
-        
-        li {
-          width: 100%;
-          margin: 0;
-          
-          a {
-            padding: 12px 0;
-            display: block;
-            border-bottom: 1px solid var(--border-color);
-          }
-        }
-      }
-    }
-    
-    .theme-toggle {
-      margin-top: 15px;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-  }
-  
-  // Hide mobile menu toggle on desktop
-  .mobile-menu-toggle {
-    display: none;
-  }
+}
