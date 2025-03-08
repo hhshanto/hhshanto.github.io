@@ -1,4 +1,4 @@
-// Header styles
+// Header styles (consolidated version)
 .site-header {
     background-color: $primary-color;
     position: relative;
@@ -8,6 +8,7 @@
     height: $header-height;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     z-index: 1000;
+    background-color: var(--header-bg);
 
     .header-container {
         width: 100%;
@@ -18,9 +19,17 @@
         gap: 80px; 
     }
     
+    .mobile-menu-toggle {
+        display: none;
+        cursor: pointer;
+        font-size: 24px;
+        color: white;
+        margin-right: 15px;
+    }
+    
     .main-nav {
         flex: 1;
-        display: center;
+        display: flex;
         justify-content: flex-start;
         margin-top: 10px;
         margin-left: 80px;
@@ -58,19 +67,22 @@
         }
     }
     
-    .nav-toggle {
-        display: none;
-        cursor: pointer;
-        padding: 10px;
-    }
-    
     .logo {
         margin-left: 5px; 
-        a {
+        a.gothic-font {
+            font-family: 'UnifrakturCook', cursive;
+            font-size: 32px;
+            font-weight: bold;
             color: white;
             text-decoration: none;
-            font-size: 24px;
-            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            
+            &:hover {
+                transform: scale(1.05);
+                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            }
         }
     }
 }
@@ -105,25 +117,23 @@
     font-size: 14px;
 }
 
-// Responsive styles for header
+// Responsive styles for header - CONSOLIDATED
 @media (max-width: 768px) {
     .site-header {
+        .mobile-menu-toggle {
+            display: block;
+        }
+        
         .header-container {
             flex-wrap: wrap;
-            flex-direction: column;
             padding: 10px;
-        }
-    
-        .nav-toggle {
-            display: block;
         }
     
         .main-nav {
             width: 100%;
             display: none;
-            flex-direction: column;
             margin-left: 0;
-    
+            
             &.active {
                 display: block;
             }
@@ -134,6 +144,12 @@
                 padding: 0;
                 margin: 0;
                 gap: 10px;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background-color: var(--header-bg);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+                z-index: 1000;
             }
     
             li {
@@ -154,39 +170,3 @@
         }
     }
 }
-
-// Theme-specific styles for header
-.site-header {
-    background-color: var(--header-bg);
-}
-.mobile-menu-toggle {
-    display: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: white;
-    margin-right: 15px;
-    
-    @media (max-width: 768px) {
-      display: block;
-    }
-  }
-
-  
-.logo {
-    a.gothic-font {
-      font-family: 'UnifrakturCook', cursive; // Use the font you're already importing
-      font-size: 32px;  // Larger size for impact
-      font-weight: bold;
-      color: white;  // Match your header text
-      text-decoration: none;
-      letter-spacing: 2px;  // Add spacing between letters
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);  // Add subtle shadow
-      transition: all 0.3s ease;
-      
-      &:hover {
-        transform: scale(1.05);  // Slight grow effect on hover
-        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
-      }
-    }
-  }
-  
