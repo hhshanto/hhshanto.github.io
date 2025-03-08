@@ -1,7 +1,7 @@
 // Hero section styles
 .hero-section {
     margin-top: -70px;
-    padding: 60px 20px;
+    padding: 60px 0; // Remove horizontal padding
     background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
     color: white;
     text-align: center;
@@ -10,21 +10,14 @@
 
     .hero-container {
         width: 100%;
-        padding: 0 20px;
+        max-width: 1200px; // Match your content max-width
+        margin: 0 auto; // Center the container
+        padding: 0 20px; // Add horizontal padding inside container
         display: flex;
         justify-content: flex-start;
         align-items: center;
         gap: 50px;
-
-        @media (max-width: 768px) {
-            flex-direction: column;
-            
-            .hero-image {
-              margin-top: 2rem;
-              order: -1; // Move image above content on mobile
-            }
-          }
-        }
+    }
 
     .hero-content {
         text-align: left;
