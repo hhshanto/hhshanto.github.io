@@ -3,6 +3,9 @@ layout: post
 title: "What is Stoicism? The Basics of the World’s Greatest Practical Philosophy"
 date: 2025-01-25
 description: "A practical guide to Stoicism, covering its core principles, key philosophers, and how to apply Stoic practices in everyday life."
+abstract: >
+  An exploration of Stoicism as a practical philosophy that teaches inner peace and resilience through the dichotomy of control, memento mori, and amor fati, with actionable strategies for applying its four cardinal virtues—wisdom, courage, justice, and temperance—in everyday modern life.
+
 ---
 
 ## Introduction
