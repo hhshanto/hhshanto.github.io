@@ -33,47 +33,6 @@ Noema is a digital garden where ideas across various domains, from data science 
 - **Reflections** - Personal thoughts and philosophical musings
 - **Contemporary** - Current events and modern issues
 
-## Setup and Development
-
-### Prerequisites
-
-- Ruby (version 2.5.0 or higher)
-- Bundler gem
-
-### Local Development
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/hhshanto/hhshanto.github.io.git
-   cd hhshanto.github.io
-   ```
-
-2. Install dependencies:
-   ```bash
-   bundle install
-   ```
-
-3. Start the development server:
-   ```bash
-   bundle exec jekyll serve
-   ```
-
-4. Visit `http://localhost:4000` in your browser
-
-## Customization
-
-The site's styling is organized into modular SCSS files:
-
-- `_variables.scss` - Color schemes and layout variables
-- `_base.scss` - Base styling elements
-- `_header.scss` - Navigation and header styling
-- `_hero.scss` - Hero section styling
-- `_about.scss` - About section styles
-- `_latest-posts.scss` - Blog post preview styling
-- `_post.scss` - Individual post styling
-- `_forms.scss` - Form styling for content creation
-- `_dark-mode.scss` - Dark theme styling
-
 ## Personal Content
 
 This is my personal digital garden and knowledge repository. All content is created and maintained by me. The site is not open for public content contributions.
