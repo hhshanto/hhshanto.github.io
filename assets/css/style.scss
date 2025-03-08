@@ -248,14 +248,14 @@ body {
         }
     }
 
-    .hero-image {
-        img {
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            border: 5px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
+    /* Add this to your existing CSS file */
+
+    .hero-image img {
+        border-radius: 50%;  /* This creates the circular shape */
+        width: 200px;        /* Set a fixed width */
+        height: 200px;       /* Equal to width for perfect circle */
+        object-fit: cover;   /* This ensures the image fills the container without distortion */
+        object-position: center; /* Centers the image within the circle */
     }
 
     .search-container {
@@ -937,4 +937,150 @@ a {
     font-size: 24px;  // Desired font size
     font-weight: bold;  // Desired font weight
     color: #333;  // Desired font color
+}
+
+.create-post-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.post-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.submit-btn {
+    padding: 0.75rem 1.5rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+.preview-section {
+    margin-top: 2rem;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.instructions {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border-left: 4px solid #007bff;
+
+    h3 {
+        margin-top: 0;
+        color: #007bff;
+    }
+
+    ol {
+        padding-left: 1.5rem;
+    }
+
+    code, pre {
+        background-color: #e9ecef;
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-size: 0.9em;
+    }
+
+    pre {
+        padding: 1rem;
+        margin: 0.5rem 0;
+        white-space: pre-wrap;
+    }
+}
+
+.create-post-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.submit-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.submit-btn:hover {
+    background-color: #45a049;
+}
+
+.preview-section {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+.success {
+    color: green;
+    font-weight: bold;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+}
+
+#markdownPreview {
+    white-space: pre-wrap;
+    background-color: #eee;
+    padding: 15px;
+    border-radius: 4px;
+    overflow-x: auto;
 }
