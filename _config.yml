@@ -52,6 +52,7 @@ exclude:
   - .github
   - README.md
   - dir.py
+  - 3d-portfolio
 
 # Social Media (you can add or remove as needed)
 social:
