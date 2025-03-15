@@ -209,5 +209,12 @@ description: Exploring human society and social relationships
         align-items: flex-start;
         gap: 1rem;
     }
+    .post-abstract {
+        color: #4a5568;
+        line-height: 1.6;
+        margin: 1rem 0;
+        text-align: justify;
+    }
 }
+
 </style>
