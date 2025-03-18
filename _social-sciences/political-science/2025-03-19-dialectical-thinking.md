@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Dialectical Thinking: Holding Contradictions About My Country Without Falling Apart"
-date: 2025-03-15
+date: 2025-03-19
 description: "An exploration of dialectical thinking and how it helps me navigate the contradictions of loving my country while grappling with its flaws."
 abstract: >
   Dialectical thinking—the ability to hold two seemingly contradictory truths at once—is crucial for making sense of my relationship with Bangladesh. It allows me to embrace both hope and frustration, progress and stagnation, pride and disappointment, without collapsing into cynicism or blind nationalism. This post explores how dialectical thinking helps me process my feelings about my country and why it is a necessary mindset in an ever-complex world.

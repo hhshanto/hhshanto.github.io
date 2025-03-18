@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Hopeful Pessimism and Tempered Optimism: Finding Balance in My View of Bangladesh"
-date: 2025-03-15
+date: 2025-03-19
 description: "An exploration of how hopeful pessimism and tempered optimism shape my perspective on Bangladesh—acknowledging its struggles while holding onto the possibility of change."
 abstract: >
   Living in Bangladesh means constantly navigating between the extremes of hope and despair. Hopeful pessimism allows me to recognize the deep-rooted challenges without giving in to total cynicism, while tempered optimism keeps me grounded, preventing naive idealism. This post explores how these mindsets help me stay engaged without losing perspective.
