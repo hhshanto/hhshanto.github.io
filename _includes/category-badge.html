@@ -8,12 +8,19 @@ renders as "Political Science" with no front matter changes required.
 
 Pass the document in as `post`:
     {% include category-badge.html post=post %}
+
+Or pass `text` to label the badge with something else, still title-cased
+by the same code - all-posts.html uses this to show the collection a post
+came from rather than its subcategory:
+    {% include category-badge.html text=post.collection %}
 {%- endcomment -%}
 
 {%- assign doc = include.post -%}
 {%- assign label = '' -%}
 
-{%- if doc.category -%}
+{%- if include.text and include.text != '' -%}
+    {%- assign label = include.text -%}
+{%- elsif doc.category -%}
     {%- if doc.category.first -%}
         {%- assign label = doc.category | first -%}
     {%- else -%}
