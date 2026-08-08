@@ -61,3 +61,57 @@ a {
         padding: 15px;
     }
 }
+
+// Not-found page
+// Self-contained because the section index pages define their layout
+// classes in their own inline <style> blocks, so none of them are
+// available to a new page.
+.error-page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 80px 20px;
+    text-align: center;
+
+    .error-code {
+        font-family: 'Playfair Display', serif;
+        font-size: 5em;
+        line-height: 1;
+        color: var(--heading-color);
+        opacity: 0.35;
+        margin-bottom: 10px;
+    }
+
+    h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8em;
+        margin-bottom: 16px;
+    }
+
+    p {
+        line-height: 1.7;
+        margin-bottom: 30px;
+        opacity: 0.85;
+    }
+
+    .error-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+
+        a {
+            display: inline-block;
+            padding: 10px 18px;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            background: var(--card-bg);
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            }
+        }
+    }
+}
