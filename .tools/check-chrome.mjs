@@ -78,6 +78,38 @@ const check = (name, pass, detail = '') =>
   check('aria-expanded true when open',
     (await page.getAttribute('.masthead-disclosure', 'aria-expanded')) === 'true');
 
+  // isVisible() is not enough: it returns true for an element that is painted
+  // but scrolled off the screen. The first version of this panel rendered at
+  // top: -125px — fully off the top of the viewport — and still passed.
+  const geo = await page.evaluate(() => {
+    const nav = document.getElementById('masthead-nav');
+    const bar = document.querySelector('.masthead-bar');
+    const n = nav.getBoundingClientRect();
+    const b = bar.getBoundingClientRect();
+    return {
+      top: n.top, left: n.left, right: n.right, bottom: n.bottom,
+      barBottom: b.bottom, vw: window.innerWidth, vh: window.innerHeight,
+    };
+  });
+  check('open panel sits below the bar, not over or above it',
+    geo.top >= geo.barBottom - 1, `panel top ${geo.top.toFixed(0)}px vs bar bottom ${geo.barBottom.toFixed(0)}px`);
+  check('open panel is inside the viewport',
+    geo.top >= 0 && geo.left >= 0 && geo.right <= geo.vw + 1,
+    `top ${geo.top.toFixed(0)} left ${geo.left.toFixed(0)} right ${geo.right.toFixed(0)} vw ${geo.vw}`);
+  check('open panel spans the full width',
+    Math.abs(geo.right - geo.left - geo.vw) <= 1,
+    `${(geo.right - geo.left).toFixed(0)}px of ${geo.vw}px`);
+
+  // Every link must be reachable by tapping, not just present in the DOM.
+  const links = await page.locator('.masthead-link').all();
+  let offscreen = 0;
+  for (const l of links) {
+    const r = await l.boundingBox();
+    if (!r || r.y < 0 || r.y + r.height > geo.vh) offscreen++;
+  }
+  check('all five domain links are on screen when open', offscreen === 0,
+    `${offscreen} of ${links.length} off screen`);
+
   await page.keyboard.press('Escape');
   check('Escape closes', !(await page.isVisible('.masthead-links')));
   check('focus returns to the button after Escape',

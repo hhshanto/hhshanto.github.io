@@ -97,7 +97,15 @@
     display: block;
     // Drops below the bar as a full-width panel rather than trying to fit a
     // five-item list into the row.
+    //
+    // `top: 100%` is load-bearing. This element is a flex child of
+    // .masthead-bar, so without it the panel keeps its static position —
+    // vertically centred in the bar — and a tall panel hangs off the top of
+    // the screen. The containing block is .masthead (sticky counts as
+    // positioned), so 100% lands exactly under the bar and its hairline, and
+    // stays correct if either changes height.
     position: absolute;
+    top: 100%;
     left: 0;
     right: 0;
     z-index: 20;

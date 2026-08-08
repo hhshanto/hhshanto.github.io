@@ -142,3 +142,16 @@ a ~130MB download and gains nothing.
 
 `.env` is gitignored. The compose page (`create-post.md`) needs a GitHub token
 held client-side; it lives in `localStorage`, never in the repo.
+
+## Testing UI state
+
+`shoot.mjs` captures pages at rest. State that only exists after interaction
+needs its own capture — `.tools/shoot-menu.mjs` opens the mobile nav and
+screenshots it, `.tools/widths.mjs` prints layout box geometry at several
+viewport widths.
+
+**Assert geometry, not just visibility.** Playwright's `isVisible()` returns
+true for an element that is painted but scrolled off screen. The mobile nav
+panel shipped rendering at `top: -125px`, entirely above the viewport, and
+passed a visibility check. Check positions, and check them against a
+neighbour (`panel.top >= bar.bottom`) rather than a hardcoded number.
