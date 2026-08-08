@@ -19,7 +19,7 @@
     <div class="post-tags">
         <i class="fas fa-tags"></i>
         {% for tag in page.tags %}
-        <a href="/tags/{{ tag | downcase }}" class="tag">{{ tag }}</a>
+        <a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}" class="tag">{{ tag }}</a>
         {% endfor %}
     </div>
     {% endif %}
