@@ -20,9 +20,7 @@ description: Exploring human society and social relationships
                             <time datetime="{{ post.date | date_to_xmlschema }}">
                                 {{ post.date | date: "%B %-d, %Y" }}
                             </time>
-                            {% if post.category %}
-                                <span class="category-badge">{{ post.category | first }}</span>
-                            {% endif %}
+                            {% include category-badge.html post=post %}
                         </div>
                         <h2 class="post-title">
                             <a href="{{ post.url }}">{{ post.title }}</a>

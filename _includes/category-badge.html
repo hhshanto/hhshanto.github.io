@@ -1,0 +1,45 @@
+{%- comment -%}
+Renders the subcategory badge for a collection document.
+
+Prefers an explicit `category` front matter value (string or list); when
+that is absent it falls back to the folder the file lives in, so
+_social-sciences/political-science/2025-03-15-cognitive-dissonance.md
+renders as "Political Science" with no front matter changes required.
+
+Pass the document in as `post`:
+    {% include category-badge.html post=post %}
+{%- endcomment -%}
+
+{%- assign doc = include.post -%}
+{%- assign label = '' -%}
+
+{%- if doc.category -%}
+    {%- if doc.category.first -%}
+        {%- assign label = doc.category | first -%}
+    {%- else -%}
+        {%- assign label = doc.category -%}
+    {%- endif -%}
+{%- else -%}
+    {%- assign segments = doc.path | split: '/' -%}
+    {%- if segments.size > 2 -%}
+        {%- assign label = segments[1] -%}
+    {%- endif -%}
+{%- endif -%}
+
+{%- if label and label != '' -%}
+    {%- assign words = label | replace: '-', ' ' | replace: '_', ' ' | split: ' ' -%}
+    {%- comment -%}
+    Joined with `append` rather than emitting a literal space between
+    tags, which Liquid's whitespace handling drops inside a capture.
+    {%- endcomment -%}
+    {%- assign pretty = '' -%}
+    {%- for word in words -%}
+        {%- assign cap = word | capitalize -%}
+        {%- if pretty == '' -%}
+            {%- assign pretty = cap -%}
+        {%- else -%}
+            {%- assign pretty = pretty | append: ' ' | append: cap -%}
+        {%- endif -%}
+    {%- endfor -%}
+    <span class="category-badge">{{ pretty }}</span>
+{%- endif -%}

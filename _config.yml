@@ -29,10 +29,32 @@ collections:
     permalink: /contemporary/:path/
 
 # Defaults for collections
+# Every collection gets layout: post so a document that omits the front
+# matter key still renders inside the site chrome instead of as raw text.
 defaults:
   - scope:
       path: ""
       type: "reflections"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+      type: "natural-sciences"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+      type: "social-sciences"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+      type: "arts-literature"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+      type: "contemporary"
     values:
       layout: "post"
 
