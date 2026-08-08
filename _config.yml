@@ -83,6 +83,11 @@ plugins:
 exclude:
   - Gemfile
   - Gemfile.lock
+  # The files on disk are lowercase. GitHub Pages builds on a
+  # case-sensitive filesystem, so the capitalised entries above never
+  # matched there and both were being published with the site.
+  - gemfile
+  - gemfile.lock
   - node_modules
   - vendor
   - .git
@@ -90,6 +95,11 @@ exclude:
   - README.md
   - dir.py
   - 3d-portfolio
+  # Source masters for the generated portrait variants. Kept in the repo
+  # so the images can be regenerated, but nothing links to them, so there
+  # is no reason to publish 575 KB of unreachable photos.
+  - assets/images/profile.jpg
+  - assets/images/profile2.jpg
 
 # Social Media (you can add or remove as needed)
 social:
