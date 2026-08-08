@@ -8,9 +8,7 @@
             Last updated: {{ page.last_updated | date: "%B %-d, %Y" }}
         </span>
         {% endif %}
-        <span class="reading-time">
-            {{ page.reading_time }}
-        </span>
+        {% include reading-time.html %}
     </div>
 
     <h1 class="post-title">{{ page.title }}</h1>

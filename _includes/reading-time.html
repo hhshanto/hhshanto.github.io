@@ -1,0 +1,19 @@
+{%- comment -%}
+Estimated reading time.
+
+Templates referenced `page.reading_time`, which nothing ever set — there
+is no plugin providing it, and GitHub Pages would not load a custom one
+anyway — so the markup rendered an empty span. Computed here from the
+word count at 200 words per minute.
+
+Defaults to the current page; pass another document explicitly:
+    {% include reading-time.html document=doc %}
+{%- endcomment -%}
+
+{%- assign doc = include.document | default: page -%}
+{%- assign words = doc.content | strip_html | number_of_words -%}
+{%- assign minutes = words | divided_by: 200 -%}
+{%- if minutes < 1 -%}
+    {%- assign minutes = 1 -%}
+{%- endif -%}
+<span class="reading-time">{{ minutes }} min read</span>
