@@ -28,7 +28,7 @@
   font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.08em;
-  color: var(--color-neutral-500);
+  color: var(--color-text-faint);
   text-transform: none;
 }
 
@@ -66,7 +66,7 @@
   font-size: 9.5px;
   line-height: 1.4;
   letter-spacing: 0.04em;
-  color: var(--color-neutral-600);
+  color: var(--color-text-muted);
   border-top: 1px solid var(--color-divider);
   word-break: break-all;
 }

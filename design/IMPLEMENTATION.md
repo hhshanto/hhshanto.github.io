@@ -380,6 +380,20 @@ Format: `date — decision — why`.
   `_layouts/`, `_includes/`, `_sass/` and `_data/` were deliberately **left at
   root** — Jekyll can relocate them, but every doc and every future session
   assumes the conventional location.
+- **2026-08-09 — Secondary text gets its own tokens; never use a neutral ramp
+  step for text.** Reported as "the header is too dim in light mode", and
+  measurement confirmed it: `--color-neutral-600` is 8.2:1 on the dark ground
+  but only 3.85:1 on the light one, and neutral-500 falls to 2.59:1 — both
+  below AA, and only visibly wrong in light. The ramp inverts with the theme,
+  so one step cannot serve both grounds. `--color-text-muted` and
+  `--color-text-faint` are now tuned per theme (6.9:1 and 4.9:1 in light,
+  7.6:1 and 4.9:1 in dark). `.tools/contrast.mjs` measures them; extend its
+  TARGETS list as components land rather than judging by eye.
+- **2026-08-09 — Run exactly one `jekyll serve`.** Two were running against
+  this repo, both watching, both writing `_site`. They clobbered each other
+  badly enough that `_site/reflections/` held only `index.html` — every post
+  gone from the served site while a clean build was perfect. Diagnosed twice as
+  a phantom bug before being fixed at the source.
 - **2026-08-09 — 1a wins: the six-domain nav is kept.** The masthead carries
   all five domains; the home page will lead with a split hero, a five-tile
   domain grid, then recent posts beside a CV column. 1b's three-door collapse

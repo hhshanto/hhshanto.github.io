@@ -58,6 +58,18 @@ $content-max: 1160px;
   // readable on the current theme's ground.
   --color-accent-ink: var(--color-accent-700);
 
+  // ── Secondary text ───────────────────────────────────────────────────────
+  // Do NOT use a neutral ramp step directly for text. The ramp inverts with
+  // the theme, so one step is comfortable on a dark ground and too pale on a
+  // light one: neutral-600 measures 8.2:1 in dark but only 3.85:1 in light,
+  // and neutral-500 falls to 2.59:1. Both fail AA on the light ground.
+  //
+  // These two are tuned per theme to clear 4.5:1 on their own ground, with
+  // -muted around 7:1 and -faint just over the minimum. Verify any change
+  // with `node .tools/contrast.mjs`.
+  --color-text-muted: #56524f; // secondary prose, datelines, descriptions
+  --color-text-faint: #6d6867; // tertiary: counts, labels, footer links
+
   // Hover and selection washes. Pre-mixed here rather than written inline so
   // the dark theme can retune them in one place - a 12% ink wash that reads
   // as a gentle tint on paper reads as invisible on a dark ground.
@@ -150,6 +162,9 @@ $content-max: 1160px;
   --color-neutral-900: #f8f4f4;
 
   --color-accent-ink: var(--color-accent-400);
+
+  --color-text-muted: #b3afae;
+  --color-text-faint: #8f8b8a;
 
   --wash-accent: #{rgba(#e1ad66, 0.14)};
   --wash-accent-strong: #{rgba(#e1ad66, 0.26)};

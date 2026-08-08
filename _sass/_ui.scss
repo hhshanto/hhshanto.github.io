@@ -128,7 +128,7 @@
   font-family: var(--font-body);
   font-size: 13.5px;
   line-height: 1.65;
-  color: var(--color-neutral-700);
+  color: var(--color-text-muted);
 }
 
 .n-card-meta {
@@ -150,7 +150,7 @@
   font-size: 10.5px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-neutral-600);
+  color: var(--color-text-muted);
 }
 
 .n-input {
@@ -167,7 +167,7 @@
   // which on a filter field means the page jumps every time you tap it.
   font-size: 16px;
 
-  &::placeholder { color: var(--color-neutral-500); }
+  &::placeholder { color: var(--color-text-faint); }
   &:hover { border-color: var(--color-neutral-400); }
 
   &:focus-visible {
@@ -243,7 +243,7 @@ textarea.n-input {
     letter-spacing: 0.12em;
     text-transform: uppercase;
     text-align: left;
-    color: var(--color-neutral-600);
+    color: var(--color-text-muted);
   }
 
   td {

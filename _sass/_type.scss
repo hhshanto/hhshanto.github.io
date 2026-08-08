@@ -106,7 +106,7 @@
   font-weight: 400;
   font-size: 19px;
   line-height: 1.45;
-  color: var(--color-neutral-700);
+  color: var(--color-text-muted);
 }
 
 // ── Metadata ───────────────────────────────────────────────────────────────
@@ -135,7 +135,7 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   font-feature-settings: "tnum";
-  color: var(--color-neutral-500);
+  color: var(--color-text-faint);
 }
 
 // Any figure standing as a number - table cells, counts, word totals. Running
@@ -159,6 +159,6 @@
 }
 
 // ── Colour helpers ─────────────────────────────────────────────────────────
-.t-muted { color: var(--color-neutral-700); }
-.t-faint { color: var(--color-neutral-500); }
+.t-muted { color: var(--color-text-muted); }
+.t-faint { color: var(--color-text-faint); }
 .t-accent { color: var(--color-accent-ink); }

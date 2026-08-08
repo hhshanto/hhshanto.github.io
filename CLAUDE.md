@@ -100,7 +100,15 @@ bundle exec jekyll build          # ~2s
 bundle exec jekyll serve          # localhost:4000
 node .tools/shoot.mjs / /about/   # screenshot paths at 4 widths x 2 themes
 node .tools/check-chrome.mjs      # behavioural checks: theme, nav, a11y
+node .tools/contrast.mjs          # measured WCAG contrast, both themes
 ```
+
+**Never pick a text colour by eye — measure it with `contrast.mjs`.** The
+neutral ramp inverts with the theme, so the same step is comfortable on one
+ground and illegible on the other: neutral-600 measures 8.2:1 in dark and
+3.85:1 in light. Secondary text uses `--color-text-muted` /
+`--color-text-faint`, which are tuned per theme. Add new targets to the
+`TARGETS` list in that file as components land.
 
 `check-chrome.mjs` asserts the things a screenshot cannot show — that the theme
 is applied before first paint, that the mobile menu opens and Escape closes it
