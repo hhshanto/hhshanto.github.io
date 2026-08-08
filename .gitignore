@@ -46,3 +46,8 @@ yarn-error.log*
 *.tmp
 
 dir.py
+
+# Dev-only screenshot harness (see .tools/shoot.mjs)
+.tools/node_modules/
+.tools/shots/
+.tools/package-lock.json

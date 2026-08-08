@@ -95,6 +95,11 @@ exclude:
   - README.md
   - dir.py
   - 3d-portfolio
+  # Redesign working files. Both are repo documentation, not site content —
+  # without these, Jekyll copies the mockups, the source zip and the agent
+  # instructions straight to the public site.
+  - design
+  - CLAUDE.md
   # Source masters for the generated portrait variants. Kept in the repo
   # so the images can be regenerated, but nothing links to them, so there
   # is no reason to publish 575 KB of unreachable photos.

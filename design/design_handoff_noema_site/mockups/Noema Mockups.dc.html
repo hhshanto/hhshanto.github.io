@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/classical-fc70aae8-b8a0-4853-a326-8a7b52bbb637/styles.css">
+<script src="_ds/classical-fc70aae8-b8a0-4853-a326-8a7b52bbb637/_ds_bundle.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#e6e4e0;font-family:var(--font-body)}
+.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08)}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}
+.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#201f1d;color:#f3f2f2;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 13px/1.2 var(--font-heading);color:#201f1d;letter-spacing:.02em}
+.dv-opts{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px}
+.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#201f1d;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11.5px/1.3 var(--font-body);color:rgba(32,31,29,.6)}
+.dv-card{background:var(--color-bg);border:1px solid rgba(0,0,0,.12);border-radius:6px;box-shadow:0 2px 14px rgba(0,0,0,.09);overflow:hidden}
+.dv-opt:target .dv-oid{background:var(--color-accent);color:#fff}
+.dv-next{margin:26px 0 0;font:12px/1.6 var(--font-body);color:rgba(32,31,29,.55)}
+.nvl{color:inherit;text-decoration:none;transition:color .18s,border-color .18s}
+.nvl:hover{color:var(--color-accent)}
+.pcard{transition:box-shadow .22s ease,transform .22s ease,border-color .22s ease}
+.pcard:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);border-color:color-mix(in srgb,var(--color-accent) 45%,transparent)}
+.ttl:hover{text-decoration:underline;text-decoration-color:var(--color-accent);text-decoration-thickness:1px}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,monospace}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Noema — six screens, two information architectures</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a">
+<div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Home — six domains kept. Masthead + domain index, CV and writing side by side.</div>
+<div class="dv-card" style="width:1160px">
+
+<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--color-surface);border-bottom:1px solid var(--color-divider)">
+<div style="display:flex;gap:6px"><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span></div>
+<div class="mono" style="flex:1;text-align:center;font-size:10.5px;color:var(--color-neutral-600);background:var(--color-bg);border:1px solid var(--color-divider);border-radius:3px;padding:3px 10px">hhshanto.github.io</div>
+</div>
+
+<header style="display:flex;align-items:baseline;justify-content:space-between;padding:24px 56px 16px">
+<a class="nvl" href="#1a" style="font-family:var(--font-heading);font-size:27px;letter-spacing:.14em;text-transform:uppercase;font-weight:400">Noema</a>
+<nav style="display:flex;gap:26px;font-size:12.5px;letter-spacing:.05em">
+<a class="nvl" href="#1d" style="border-bottom:1px solid var(--color-accent);padding-bottom:2px">Natural Sciences</a>
+<a class="nvl" href="#1d">Social Sciences</a>
+<a class="nvl" href="#1d">Arts &amp; Literature</a>
+<a class="nvl" href="#1d">Reflections</a>
+<a class="nvl" href="#1d">Contemporary</a>
+<a class="nvl mono" href="#1f" style="font-size:11px;color:var(--color-neutral-600)">⌘K</a>
+</nav>
+</header>
+<div style="height:1px;background:var(--color-divider);margin:0 56px"></div>
+
+<div style="display:grid;grid-template-columns:1fr 300px;gap:56px;padding:46px 56px 40px;align-items:start">
+<div>
+<div class="mono" style="font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:18px">Data Scientist · Potsdam, DE</div>
+<h1 style="font-size:70px;font-weight:300;line-height:1.02;margin:0 0 20px;letter-spacing:-.02em">Hasan<br><span style="font-style:italic;color:var(--color-neutral-700)">Ibne Saleh</span></h1>
+<p style="font-size:16.5px;line-height:1.7;max-width:52ch;text-align:justify;color:var(--color-neutral-800);margin:0 0 26px">A digital garden kept between two disciplines: retrieval-augmented systems by day, and by night whatever holds still long enough to be read closely — psychology, political philosophy, the sciences.</p>
+<div style="display:flex;gap:12px">
+<a class="btn btn-primary" href="#1e">Read the writing</a>
+<a class="btn btn-secondary" href="#1a">Download CV</a>
+</div>
+</div>
+<div>
+<div class="plate" style="width:100%;aspect-ratio:4/5;background:var(--color-neutral-300);display:flex;align-items:center;justify-content:center"><span class="mono" style="font-size:10px;letter-spacing:.12em;color:var(--color-neutral-600)">PORTRAIT</span></div>
+<div style="display:flex;gap:16px;margin-top:14px;font-size:11.5px;letter-spacing:.04em">
+<a class="nvl" href="#1a" style="border-bottom:1px solid var(--color-divider)">GitHub</a>
+<a class="nvl" href="#1a" style="border-bottom:1px solid var(--color-divider)">LinkedIn</a>
+<a class="nvl" href="#1a" style="border-bottom:1px solid var(--color-divider)">Email</a>
+</div>
+</div>
+</div>
+
+<div style="padding:0 56px 46px">
+<div style="display:flex;align-items:baseline;gap:14px;margin-bottom:20px"><h6 style="margin:0;color:var(--color-neutral-700)">The Domains</h6><div style="flex:1;height:1px;background:var(--color-divider)"></div></div>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--color-divider);border:1px solid var(--color-divider)">
+<a class="nvl pcard" href="#1d" style="background:var(--color-bg);padding:22px 18px;display:block">
+<div class="mono" style="font-size:22px;font-weight:300;color:var(--color-accent);font-feature-settings:'tnum'">01</div>
+<div style="font-family:var(--font-heading);font-size:19px;margin:8px 0 6px">Natural Sciences</div>
+<div style="font-size:11.5px;color:var(--color-neutral-600);line-height:1.5">Physics, biology, the methods behind them</div>
+<div class="mono" style="font-size:10px;letter-spacing:.1em;color:var(--color-neutral-500);margin-top:12px">14 NOTES</div>
+</a>
+<a class="nvl pcard" href="#1d" style="background:var(--color-bg);padding:22px 18px;display:block">
+<div class="mono" style="font-size:22px;font-weight:300;color:var(--color-accent);font-feature-settings:'tnum'">02</div>
+<div style="font-family:var(--font-heading);font-size:19px;margin:8px 0 6px">Social Sciences</div>
+<div style="font-size:11.5px;color:var(--color-neutral-600);line-height:1.5">Psychology, political science, Bangladesh</div>
+<div class="mono" style="font-size:10px;letter-spacing:.1em;color:var(--color-neutral-500);margin-top:12px">9 NOTES</div>
+</a>
+<a class="nvl pcard" href="#1d" style="background:var(--color-bg);padding:22px 18px;display:block">
+<div class="mono" style="font-size:22px;font-weight:300;color:var(--color-accent);font-feature-settings:'tnum'">03</div>
+<div style="font-family:var(--font-heading);font-size:19px;margin:8px 0 6px">Arts &amp; Literature</div>
+<div style="font-size:11.5px;color:var(--color-neutral-600);line-height:1.5">Reading notes and marginalia</div>
+<div class="mono" style="font-size:10px;letter-spacing:.1em;color:var(--color-neutral-500);margin-top:12px">6 NOTES</div>
+</a>
+<a class="nvl pcard" href="#1d" style="background:var(--color-bg);padding:22px 18px;display:block">
+<div class="mono" style="font-size:22px;font-weight:300;color:var(--color-accent);font-feature-settings:'tnum'">04</div>
+<div style="font-family:var(--font-heading);font-size:19px;margin:8px 0 6px">Reflections</div>
+<div style="font-size:11.5px;color:var(--color-neutral-600);line-height:1.5">Essays written to work something out</div>
+<div class="mono" style="font-size:10px;letter-spacing:.1em;color:var(--color-neutral-500);margin-top:12px">11 NOTES</div>
+</a>
+<a class="nvl pcard" href="#1d" style="background:var(--color-bg);padding:22px 18px;display:block">
+<div class="mono" style="font-size:22px;font-weight:300;color:var(--color-accent);font-feature-settings:'tnum'">05</div>
+<div style="font-family:var(--font-heading);font-size:19px;margin:8px 0 6px">Contemporary</div>
+<div style="font-size:11.5px;color:var(--color-neutral-600);line-height:1.5">AI, RAG, and what is happening now</div>
+<div class="mono" style="font-size:10px;letter-spacing:.1em;color:var(--color-neutral-500);margin-top:12px">17 NOTES</div>
+</a>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1.55fr 1px 1fr;gap:44px;padding:0 56px 52px">
+<div>
+<div style="display:flex;align-items:baseline;gap:14px;margin-bottom:22px"><h6 style="margin:0;color:var(--color-neutral-700)">Recent</h6><div style="flex:1;height:1px;background:var(--color-divider)"></div><a class="nvl mono" href="#1e" style="font-size:10.5px;letter-spacing:.1em;color:var(--color-accent-700)">ALL POSTS →</a></div>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:88px 1fr;gap:22px;padding-bottom:22px;border-bottom:1px solid var(--color-divider);margin-bottom:22px">
+<div class="mono" style="font-size:10.5px;letter-spacing:.06em;color:var(--color-neutral-500);line-height:1.6;font-feature-settings:'tnum'">19 MAR<br>2025<br><span style="color:var(--color-accent-700)">7 MIN</span></div>
+<div>
+<h3 class="ttl" style="font-size:25px;margin:0 0 8px;font-weight:500;line-height:1.15">Obedience to Authority: Milgram’s Experiments Through a Bangladeshi Lens</h3>
+<p style="margin:0 0 10px;font-size:14px;line-height:1.65;color:var(--color-neutral-700);text-align:justify">Milgram found that 65% of ordinary people would deliver what they believed was a lethal shock because a man in a lab coat told them to. I keep thinking about what that means in a society organised around deference.</p>
+<div style="display:flex;gap:7px"><span class="tag tag-outline">Psychology</span><span class="tag tag-outline">Bangladesh</span></div>
+</div>
+</a>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:88px 1fr;gap:22px;padding-bottom:22px;border-bottom:1px solid var(--color-divider);margin-bottom:22px">
+<div class="mono" style="font-size:10.5px;letter-spacing:.06em;color:var(--color-neutral-500);line-height:1.6;font-feature-settings:'tnum'">19 MAR<br>2025<br><span style="color:var(--color-accent-700)">5 MIN</span></div>
+<div>
+<h3 class="ttl" style="font-size:25px;margin:0 0 8px;font-weight:500;line-height:1.15">Hopeful Pessimism and Tempered Optimism</h3>
+<p style="margin:0 0 10px;font-size:14px;line-height:1.65;color:var(--color-neutral-700);text-align:justify">Two borrowed terms that describe how I actually think about Bangladesh: expecting things to stay bad while still working as if they might not.</p>
+<div style="display:flex;gap:7px"><span class="tag tag-outline">Political Science</span></div>
+</div>
+</a>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:88px 1fr;gap:22px">
+<div class="mono" style="font-size:10.5px;letter-spacing:.06em;color:var(--color-neutral-500);line-height:1.6;font-feature-settings:'tnum'">02 FEB<br>2025<br><span style="color:var(--color-accent-700)">12 MIN</span></div>
+<div>
+<h3 class="ttl" style="font-size:25px;margin:0 0 8px;font-weight:500;line-height:1.15">Chunking Strategies That Actually Survive Production</h3>
+<p style="margin:0 0 10px;font-size:14px;line-height:1.65;color:var(--color-neutral-700);text-align:justify">Six months of retrieval evaluation at KPMG, condensed: why fixed-window chunking keeps winning, and the three cases where it does not.</p>
+<div style="display:flex;gap:7px"><span class="tag tag-outline">RAG</span><span class="tag tag-outline">Azure OpenAI</span></div>
+</div>
+</a>
+</div>
+<div style="background:var(--color-divider)"></div>
+<div>
+<div style="display:flex;align-items:baseline;gap:14px;margin-bottom:20px"><h6 style="margin:0;color:var(--color-neutral-700)">Curriculum Vitae</h6><div style="flex:1;height:1px;background:var(--color-divider)"></div></div>
+<div style="display:grid;grid-template-columns:62px 1fr;gap:10px 14px;font-size:13px;line-height:1.5">
+<div class="mono" style="font-size:10.5px;color:var(--color-accent-700);letter-spacing:.04em;padding-top:3px;font-feature-settings:'tnum'">NOW</div>
+<div><strong style="font-weight:600">Research Data Scientist</strong><br><span style="color:var(--color-neutral-600);font-size:12px">KPMG Global Solution Group</span></div>
+<div class="mono" style="font-size:10.5px;color:var(--color-neutral-500);letter-spacing:.04em;padding-top:3px;font-feature-settings:'tnum'">23–24</div>
+<div><strong style="font-weight:600">Research Assistant</strong><br><span style="color:var(--color-neutral-600);font-size:12px">University of Potsdam</span></div>
+<div class="mono" style="font-size:10.5px;color:var(--color-neutral-500);letter-spacing:.04em;padding-top:3px;font-feature-settings:'tnum'">21–</div>
+<div><strong style="font-weight:600">MSc Data Science</strong><br><span style="color:var(--color-neutral-600);font-size:12px">University of Potsdam</span></div>
+<div class="mono" style="font-size:10.5px;color:var(--color-neutral-500);letter-spacing:.04em;padding-top:3px;font-feature-settings:'tnum'">16–20</div>
+<div><strong style="font-weight:600">BSc Computer Science</strong><br><span style="color:var(--color-neutral-600);font-size:12px">AIUB · CGPA 3.92</span></div>
+</div>
+<div class="hr"></div>
+<h6 style="margin:0 0 12px;color:var(--color-neutral-700)">Working with</h6>
+<div style="display:flex;flex-wrap:wrap;gap:6px">
+<span class="tag tag-accent">RAG</span><span class="tag tag-accent">LLMs</span><span class="tag tag-neutral">Python</span><span class="tag tag-neutral">Azure OpenAI</span><span class="tag tag-neutral">Vector stores</span><span class="tag tag-neutral">Prompt eval</span>
+</div>
+<div class="hr"></div>
+<div style="font-size:12.5px;line-height:1.6;color:var(--color-neutral-700)"><em>Currently:</em> retrieval evaluation harnesses, embedding drift, and German at A1.</div>
+</div>
+</div>
+
+<footer style="display:flex;justify-content:space-between;padding:20px 56px;border-top:1px solid var(--color-divider);background:var(--color-surface);font-size:11px;color:var(--color-neutral-600)">
+<span>© 2026 Noema</span><span class="mono" style="letter-spacing:.08em">JEKYLL 3.10 · GITHUB PAGES</span>
+</footer>
+</div>
+</div>
+
+<div class="dv-opt" id="1b">
+<div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Home — collapsed IA. Three doors (Writing / Work / About), domains demoted to tags.</div>
+<div class="dv-card" style="width:1160px">
+
+<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--color-surface);border-bottom:1px solid var(--color-divider)">
+<div style="display:flex;gap:6px"><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span></div>
+<div class="mono" style="flex:1;text-align:center;font-size:10.5px;color:var(--color-neutral-600);background:var(--color-bg);border:1px solid var(--color-divider);border-radius:3px;padding:3px 10px">hhshanto.github.io</div>
+</div>
+
+<header style="display:flex;align-items:center;justify-content:space-between;padding:20px 56px;border-bottom:1px solid var(--color-divider)">
+<a class="nvl" href="#1b" style="font-family:var(--font-heading);font-size:22px;letter-spacing:.14em;text-transform:uppercase;font-weight:400">Noema</a>
+<nav style="display:flex;align-items:center;gap:30px;font-size:13px;letter-spacing:.04em">
+<a class="nvl" href="#1e">Writing</a><a class="nvl" href="#1b">Work</a><a class="nvl" href="#1b">About</a>
+<a class="nvl mono" href="#1f" style="font-size:11px;border:1px solid var(--color-divider);border-radius:3px;padding:4px 9px;color:var(--color-neutral-600)">⌘K  Search</a>
+</nav>
+</header>
+
+<div style="text-align:center;padding:66px 56px 54px;border-bottom:1px solid var(--color-divider)">
+<div class="mono" style="font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:22px">Notebook of Hasan Ibne Saleh</div>
+<h1 style="font-size:82px;font-weight:300;line-height:1;margin:0 0 22px;letter-spacing:-.025em">Retrieval,<br><span style="font-style:italic">and everything<br>it retrieves</span></h1>
+<p style="font-size:16px;line-height:1.75;max-width:56ch;margin:0 auto;color:var(--color-neutral-700)">Data scientist in Potsdam building RAG systems at KPMG. This is where the reading that surrounds that work gets written down.</p>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--color-divider);border-bottom:1px solid var(--color-divider)">
+<a class="nvl pcard" href="#1e" style="background:var(--color-bg);padding:34px 32px;display:block">
+<div class="mono" style="font-size:10px;letter-spacing:.16em;color:var(--color-accent-700)">01 / WRITING</div>
+<h3 style="font-size:30px;font-weight:400;margin:12px 0 10px">Essays &amp; notes</h3>
+<p style="margin:0;font-size:13.5px;line-height:1.65;color:var(--color-neutral-700)">57 pieces across science, politics, and machine learning — newest first, or filtered by tag.</p>
+</a>
+<a class="nvl pcard" href="#1b" style="background:var(--color-bg);padding:34px 32px;display:block">
+<div class="mono" style="font-size:10px;letter-spacing:.16em;color:var(--color-accent-700)">02 / WORK</div>
+<h3 style="font-size:30px;font-weight:400;margin:12px 0 10px">What I build</h3>
+<p style="margin:0;font-size:13.5px;line-height:1.65;color:var(--color-neutral-700)">Retrieval pipelines, evaluation harnesses, and the CV that goes with them.</p>
+</a>
+<a class="nvl pcard" href="#1b" style="background:var(--color-bg);padding:34px 32px;display:block">
+<div class="mono" style="font-size:10px;letter-spacing:.16em;color:var(--color-accent-700)">03 / ABOUT</div>
+<h3 style="font-size:30px;font-weight:400;margin:12px 0 10px">Who is writing</h3>
+<p style="margin:0;font-size:13.5px;line-height:1.65;color:var(--color-neutral-700)">Dhaka to Potsdam, computer science to data science, and why this site exists.</p>
+</a>
+</div>
+
+<div style="padding:44px 56px 50px">
+<div style="display:flex;align-items:baseline;gap:14px;margin-bottom:26px"><h6 style="margin:0;color:var(--color-neutral-700)">Lately</h6><div style="flex:1;height:1px;background:var(--color-divider)"></div></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px">
+<a class="nvl card pcard" href="#1c" style="display:block;padding:24px">
+<div class="card-kicker mono" style="font-feature-settings:'tnum'">19 MAR 2025 · SOCIAL SCIENCES</div>
+<div class="card-title" style="font-size:24px;line-height:1.15;margin:10px 0 10px">Obedience to Authority, Through a Bangladeshi Lens</div>
+<div class="card-body" style="font-size:13.5px;line-height:1.65;color:var(--color-neutral-700)">65% of ordinary people delivered what they believed was a lethal shock. What does that mean in a society organised around deference?</div>
+<div class="card-meta mono" style="margin-top:16px;font-size:10.5px;letter-spacing:.1em;color:var(--color-accent-700)">7 MIN READ →</div>
+</a>
+<a class="nvl card pcard" href="#1c" style="display:block;padding:24px">
+<div class="card-kicker mono" style="font-feature-settings:'tnum'">02 FEB 2025 · CONTEMPORARY</div>
+<div class="card-title" style="font-size:24px;line-height:1.15;margin:10px 0 10px">Chunking Strategies That Survive Production</div>
+<div class="card-body" style="font-size:13.5px;line-height:1.65;color:var(--color-neutral-700)">Why fixed-window chunking keeps winning, and the three cases where it very much does not.</div>
+<div class="card-meta mono" style="margin-top:16px;font-size:10.5px;letter-spacing:.1em;color:var(--color-accent-700)">12 MIN READ →</div>
+</a>
+<a class="nvl card pcard" href="#1c" style="display:block;padding:24px">
+<div class="card-kicker mono" style="font-feature-settings:'tnum'">14 JAN 2025 · REFLECTIONS</div>
+<div class="card-title" style="font-size:24px;line-height:1.15;margin:10px 0 10px">Learning a Language at Thirty</div>
+<div class="card-body" style="font-size:13.5px;line-height:1.65;color:var(--color-neutral-700)">German at A1, and what being bad at something again does to a person who is paid to be good at things.</div>
+<div class="card-meta mono" style="margin-top:16px;font-size:10.5px;letter-spacing:.1em;color:var(--color-accent-700)">4 MIN READ →</div>
+</a>
+</div>
+<div class="hr" style="margin:34px 0 20px"></div>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<span class="mono" style="font-size:10px;letter-spacing:.14em;color:var(--color-neutral-500);margin-right:6px">BY TAG</span>
+<a class="nvl tag tag-outline" href="#1d">RAG</a><a class="nvl tag tag-outline" href="#1d">LLMs</a><a class="nvl tag tag-outline" href="#1d">Psychology</a><a class="nvl tag tag-outline" href="#1d">Bangladesh</a><a class="nvl tag tag-outline" href="#1d">Physics</a><a class="nvl tag tag-outline" href="#1d">Reading notes</a><a class="nvl tag tag-outline" href="#1d">Python</a><a class="nvl tag tag-outline" href="#1d">Philosophy</a>
+</div>
+</div>
+
+<footer style="display:flex;justify-content:space-between;padding:20px 56px;border-top:1px solid var(--color-divider);background:var(--color-surface);font-size:11px;color:var(--color-neutral-600)">
+<span>© 2026 Noema</span><span class="mono" style="letter-spacing:.08em">RSS · SITEMAP · GITHUB</span>
+</footer>
+</div>
+</div>
+
+<div class="dv-opt" id="1c">
+<div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Post — long read, with sticky contents rail, pull quote and a Rouge code block.</div>
+<div class="dv-card" style="width:1160px">
+<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--color-surface);border-bottom:1px solid var(--color-divider)">
+<div style="display:flex;gap:6px"><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span></div>
+<div class="mono" style="flex:1;text-align:center;font-size:10.5px;color:var(--color-neutral-600);background:var(--color-bg);border:1px solid var(--color-divider);border-radius:3px;padding:3px 10px">hhshanto.github.io/contemporary/2025-02-02-chunking-strategies/</div>
+</div>
+<div style="height:2px;background:var(--color-divider)"><div style="width:38%;height:2px;background:var(--color-accent)"></div></div>
+
+<header style="display:flex;align-items:center;justify-content:space-between;padding:16px 56px;border-bottom:1px solid var(--color-divider)">
+<a class="nvl" href="#1b" style="font-family:var(--font-heading);font-size:19px;letter-spacing:.14em;text-transform:uppercase">Noema</a>
+<nav style="display:flex;align-items:center;gap:26px;font-size:12.5px"><a class="nvl" href="#1e">Writing</a><a class="nvl" href="#1b">Work</a><a class="nvl" href="#1b">About</a><a class="nvl mono" href="#1f" style="font-size:11px;color:var(--color-neutral-600)">⌘K</a></nav>
+</header>
+
+<div style="display:grid;grid-template-columns:200px 1fr;gap:52px;padding:48px 56px 56px;align-items:start">
+<aside style="position:sticky;top:16px">
+<h6 style="margin:0 0 12px;color:var(--color-neutral-600)">Contents</h6>
+<div style="display:flex;flex-direction:column;gap:9px;font-size:12px;line-height:1.4;border-left:1px solid var(--color-divider);padding-left:14px">
+<a class="nvl" href="#1c" style="color:var(--color-accent-700);margin-left:-15px;padding-left:14px;border-left:1px solid var(--color-accent)">The problem with clever</a>
+<a class="nvl" href="#1c" style="color:var(--color-neutral-600)">What we measured</a>
+<a class="nvl" href="#1c" style="color:var(--color-neutral-600)">Fixed windows win</a>
+<a class="nvl" href="#1c" style="color:var(--color-neutral-600)">Three exceptions</a>
+<a class="nvl" href="#1c" style="color:var(--color-neutral-600)">What I would do next</a>
+</div>
+<div class="hr" style="margin:20px 0"></div>
+<div class="mono" style="font-size:10px;letter-spacing:.1em;color:var(--color-neutral-500);line-height:1.9">12 MIN READ<br>2 411 WORDS<br>UPD. 09 FEB 2025</div>
+<div style="display:flex;flex-direction:column;gap:7px;margin-top:16px">
+<a class="btn btn-secondary" href="#1c" style="justify-content:flex-start;font-size:12px;padding:6px 10px">Cite this</a>
+<a class="btn btn-ghost" href="#1c" style="justify-content:flex-start;font-size:12px;padding:6px 10px;color:var(--color-neutral-600)">Edit on GitHub</a>
+</div>
+</aside>
+
+<article style="max-width:70ch">
+<div class="mono" style="font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:16px">Contemporary → Machine Learning</div>
+<h1 style="font-size:54px;font-weight:300;line-height:1.05;letter-spacing:-.02em;margin:0 0 18px">Chunking strategies that actually survive production</h1>
+<p style="font-size:19px;line-height:1.6;font-style:italic;color:var(--color-neutral-700);margin:0 0 22px">Six months of retrieval evaluation, condensed into the one finding I did not want.</p>
+<div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider);margin-bottom:32px">
+<div style="width:30px;height:30px;border-radius:50%;background:var(--color-neutral-300);flex:none"></div>
+<span style="font-size:12.5px">Hasan Ibne Saleh</span>
+<span class="mono" style="font-size:10.5px;letter-spacing:.08em;color:var(--color-neutral-500);margin-left:auto;font-feature-settings:'tnum'">02 FEB 2025</span>
+</div>
+<p style="font-size:16.5px;line-height:1.85;text-align:justify;hyphens:auto;margin:0 0 18px"><span style="float:left;font-family:var(--font-heading);font-size:66px;line-height:.82;padding:4px 10px 0 0;font-weight:400;color:var(--color-accent-800)">E</span>very team that builds a retrieval system arrives at the same place eventually: the embeddings are fine, the reranker is fine, the model is fine, and the answers are still wrong. The failure is almost never in the parts people enjoy tuning. It is in how the documents were cut up before anyone looked at them.</p>
+<p style="font-size:16.5px;line-height:1.85;text-align:justify;hyphens:auto;margin:0 0 18px">We spent the better part of last year trying to be clever about that cut. Semantic chunking, proposition extraction, recursive summarisation into parent-child hierarchies — each of them defensible, each of them expensive, and each of them beaten in our evaluation by a fixed window of roughly four hundred tokens with a fifty-token overlap.</p>
+<blockquote style="margin:28px 0;padding:4px 0 4px 24px;border-left:2px solid var(--color-accent);font-family:var(--font-heading);font-size:26px;line-height:1.3;font-style:italic;color:var(--color-neutral-800)">The clever method wins the demo. The dumb method wins the quarter.</blockquote>
+<h2 style="font-size:32px;font-weight:400;margin:34px 0 14px">What we measured</h2>
+<p style="font-size:16.5px;line-height:1.85;text-align:justify;hyphens:auto;margin:0 0 20px">Recall@10 against a hand-labelled set of 640 question–passage pairs drawn from real internal queries, not synthesised ones. Synthetic evaluation sets flatter semantic chunkers badly, because the generator and the chunker share a notion of what a coherent idea is.</p>
+<div style="background:var(--color-neutral-900);border-radius:var(--radius-md);padding:18px 20px;margin:0 0 12px;overflow:hidden">
+<div class="mono" style="font-size:10px;letter-spacing:.12em;color:var(--color-neutral-500);margin-bottom:12px">PYTHON</div>
+<pre class="mono" style="margin:0;font-size:12.5px;line-height:1.75;color:#e6e2dc;white-space:pre-wrap"><span style="color:#c98a5a">def</span> <span style="color:#e1ad66">fixed_window</span>(tokens, size=<span style="color:#9ab87c">400</span>, overlap=<span style="color:#9ab87c">50</span>):
+    step = size - overlap
+    <span style="color:#c98a5a">return</span> [tokens[i:i + size]
+            <span style="color:#c98a5a">for</span> i <span style="color:#c98a5a">in</span> <span style="color:#7fa8c9">range</span>(<span style="color:#9ab87c">0</span>, <span style="color:#7fa8c9">len</span>(tokens), step)]</pre>
+</div>
+<p class="mono" style="font-size:11px;color:var(--color-neutral-600);margin:0 0 26px">Four lines. It beat the pipeline that took a fortnight.</p>
+<table class="table" style="width:100%;margin-bottom:26px">
+<thead><tr><th style="text-align:left">Strategy</th><th style="text-align:right">Recall@10</th><th style="text-align:right">Index cost</th></tr></thead>
+<tbody>
+<tr><td>Fixed window, 400/50</td><td style="text-align:right;font-feature-settings:'tnum'">0.81</td><td style="text-align:right;font-feature-settings:'tnum'">1.0×</td></tr>
+<tr><td>Semantic (embedding split)</td><td style="text-align:right;font-feature-settings:'tnum'">0.79</td><td style="text-align:right;font-feature-settings:'tnum'">6.4×</td></tr>
+<tr><td>Proposition extraction</td><td style="text-align:right;font-feature-settings:'tnum'">0.77</td><td style="text-align:right;font-feature-settings:'tnum'">21.0×</td></tr>
+<tr><td>Parent–child hierarchy</td><td style="text-align:right;font-feature-settings:'tnum'">0.83</td><td style="text-align:right;font-feature-settings:'tnum'">3.2×</td></tr>
+</tbody>
+</table>
+<div class="hr"></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px"><span class="tag tag-accent">RAG</span><span class="tag tag-outline">Evaluation</span><span class="tag tag-outline">Azure OpenAI</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--color-divider);border:1px solid var(--color-divider)">
+<a class="nvl pcard" href="#1c" style="background:var(--color-bg);padding:18px 20px;display:block">
+<div class="mono" style="font-size:10px;letter-spacing:.12em;color:var(--color-neutral-500);margin-bottom:7px">← PREVIOUS</div>
+<div style="font-family:var(--font-heading);font-size:19px;line-height:1.2">Embedding drift is a data problem</div>
+</a>
+<a class="nvl pcard" href="#1c" style="background:var(--color-bg);padding:18px 20px;display:block;text-align:right">
+<div class="mono" style="font-size:10px;letter-spacing:.12em;color:var(--color-neutral-500);margin-bottom:7px">NEXT →</div>
+<div style="font-family:var(--font-heading);font-size:19px;line-height:1.2">Obedience to authority, revisited</div>
+</a>
+</div>
+</article>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1d">
+<div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>Category index — a domain's front page, with sub-topics and a lead piece.</div>
+<div class="dv-card" style="width:1160px">
+<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--color-surface);border-bottom:1px solid var(--color-divider)">
+<div style="display:flex;gap:6px"><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span></div>
+<div class="mono" style="flex:1;text-align:center;font-size:10.5px;color:var(--color-neutral-600);background:var(--color-bg);border:1px solid var(--color-divider);border-radius:3px;padding:3px 10px">hhshanto.github.io/natural-sciences</div>
+</div>
+<header style="display:flex;align-items:center;justify-content:space-between;padding:16px 56px;border-bottom:1px solid var(--color-divider)">
+<a class="nvl" href="#1a" style="font-family:var(--font-heading);font-size:19px;letter-spacing:.14em;text-transform:uppercase">Noema</a>
+<nav style="display:flex;align-items:center;gap:26px;font-size:12.5px"><a class="nvl" href="#1d" style="border-bottom:1px solid var(--color-accent);padding-bottom:2px">Natural Sciences</a><a class="nvl" href="#1d">Social Sciences</a><a class="nvl" href="#1d">Arts &amp; Literature</a><a class="nvl" href="#1d">Reflections</a><a class="nvl" href="#1d">Contemporary</a></nav>
+</header>
+
+<div style="display:grid;grid-template-columns:1fr 340px;gap:0;border-bottom:1px solid var(--color-divider)">
+<div style="padding:48px 44px 44px 56px">
+<div class="mono" style="font-size:10.5px;letter-spacing:.16em;color:var(--color-accent-700);margin-bottom:14px">DOMAIN 01 · 14 NOTES</div>
+<h1 style="font-size:60px;font-weight:300;line-height:1;margin:0 0 18px;letter-spacing:-.02em">Natural<br><span style="font-style:italic">Sciences</span></h1>
+<p style="font-size:15.5px;line-height:1.75;max-width:48ch;color:var(--color-neutral-700);text-align:justify;margin:0">Notes taken while reading outside my field — physics I half-remember from undergraduate, biology I never studied, and the methodological arguments that turn out to be the same everywhere.</p>
+</div>
+<div style="border-left:1px solid var(--color-divider);padding:48px 56px 44px 40px">
+<h6 style="margin:0 0 14px;color:var(--color-neutral-700)">Sub-topics</h6>
+<div style="display:flex;flex-direction:column">
+<a class="nvl" href="#1d" style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--color-divider);font-size:13.5px">Physics <span class="mono" style="color:var(--color-neutral-500);font-size:11px;font-feature-settings:'tnum'">5</span></a>
+<a class="nvl" href="#1d" style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--color-divider);font-size:13.5px">Biology <span class="mono" style="color:var(--color-neutral-500);font-size:11px;font-feature-settings:'tnum'">4</span></a>
+<a class="nvl" href="#1d" style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--color-divider);font-size:13.5px">Mathematics <span class="mono" style="color:var(--color-neutral-500);font-size:11px;font-feature-settings:'tnum'">3</span></a>
+<a class="nvl" href="#1d" style="display:flex;justify-content:space-between;padding:9px 0;font-size:13.5px">Philosophy of science <span class="mono" style="color:var(--color-neutral-500);font-size:11px;font-feature-settings:'tnum'">2</span></a>
+</div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1.1fr 1fr;gap:44px;padding:44px 56px 50px">
+<a class="nvl" href="#1c" style="display:block">
+<div class="mono" style="font-size:10px;letter-spacing:.14em;color:var(--color-accent-700);margin-bottom:12px">LEAD PIECE</div>
+<div class="plate" style="width:100%;aspect-ratio:16/10;background:var(--color-neutral-300);display:flex;align-items:center;justify-content:center;margin-bottom:16px"><span class="mono" style="font-size:10px;letter-spacing:.12em;color:var(--color-neutral-600)">FIGURE PLATE</span></div>
+<h2 class="ttl" style="font-size:36px;font-weight:400;line-height:1.1;margin:0 0 10px">The Second Law, and Why Nobody Agrees What It Says</h2>
+<p style="font-size:14.5px;line-height:1.7;color:var(--color-neutral-700);text-align:justify;margin:0 0 10px">Entropy is taught as disorder, defined as a count of microstates, and used as an arrow of time. Three claims that only partly overlap — a reading of Boltzmann against the textbooks.</p>
+<div class="mono" style="font-size:10.5px;letter-spacing:.1em;color:var(--color-neutral-500);font-feature-settings:'tnum'">11 JAN 2025 · PHYSICS · 15 MIN</div>
+</a>
+<div>
+<div style="display:flex;align-items:baseline;gap:14px;margin-bottom:8px"><h6 style="margin:0;color:var(--color-neutral-700)">All notes in this domain</h6><div style="flex:1;height:1px;background:var(--color-divider)"></div></div>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:1fr auto;gap:16px;padding:14px 0;border-bottom:1px solid var(--color-divider);align-items:baseline"><span style="font-family:var(--font-heading);font-size:20px">On reading papers you cannot verify</span><span class="mono" style="font-size:10px;color:var(--color-neutral-500);font-feature-settings:'tnum'">04 JAN</span></a>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:1fr auto;gap:16px;padding:14px 0;border-bottom:1px solid var(--color-divider);align-items:baseline"><span style="font-family:var(--font-heading);font-size:20px">CRISPR, ten years on: notes from a layman</span><span class="mono" style="font-size:10px;color:var(--color-neutral-500);font-feature-settings:'tnum'">18 DEC</span></a>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:1fr auto;gap:16px;padding:14px 0;border-bottom:1px solid var(--color-divider);align-items:baseline"><span style="font-family:var(--font-heading);font-size:20px">What a proof is for</span><span class="mono" style="font-size:10px;color:var(--color-neutral-500);font-feature-settings:'tnum'">02 DEC</span></a>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:1fr auto;gap:16px;padding:14px 0;border-bottom:1px solid var(--color-divider);align-items:baseline"><span style="font-family:var(--font-heading);font-size:20px">Falsification is not a method</span><span class="mono" style="font-size:10px;color:var(--color-neutral-500);font-feature-settings:'tnum'">21 NOV</span></a>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:1fr auto;gap:16px;padding:14px 0;border-bottom:1px solid var(--color-divider);align-items:baseline"><span style="font-family:var(--font-heading);font-size:20px">Statistical mechanics for the impatient</span><span class="mono" style="font-size:10px;color:var(--color-neutral-500);font-feature-settings:'tnum'">09 NOV</span></a>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:1fr auto;gap:16px;padding:14px 0;align-items:baseline"><span style="font-family:var(--font-heading);font-size:20px">Why biology resists laws</span><span class="mono" style="font-size:10px;color:var(--color-neutral-500);font-feature-settings:'tnum'">27 OCT</span></a>
+<div style="margin-top:20px"><a class="btn btn-secondary btn-block" href="#1e">Older notes</a></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1e">
+<div class="dv-olabel"><a class="dv-oid" href="#1e">1e</a>All Posts — a dense archive table, filterable, built for scanning 57 pieces.</div>
+<div class="dv-card" style="width:1160px">
+<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--color-surface);border-bottom:1px solid var(--color-divider)">
+<div style="display:flex;gap:6px"><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span></div>
+<div class="mono" style="flex:1;text-align:center;font-size:10.5px;color:var(--color-neutral-600);background:var(--color-bg);border:1px solid var(--color-divider);border-radius:3px;padding:3px 10px">hhshanto.github.io/all-posts</div>
+</div>
+<header style="display:flex;align-items:center;justify-content:space-between;padding:16px 56px;border-bottom:1px solid var(--color-divider)">
+<a class="nvl" href="#1b" style="font-family:var(--font-heading);font-size:19px;letter-spacing:.14em;text-transform:uppercase">Noema</a>
+<nav style="display:flex;align-items:center;gap:26px;font-size:12.5px"><a class="nvl" href="#1e" style="border-bottom:1px solid var(--color-accent);padding-bottom:2px">Writing</a><a class="nvl" href="#1b">Work</a><a class="nvl" href="#1b">About</a><a class="nvl mono" href="#1f" style="font-size:11px;color:var(--color-neutral-600)">⌘K</a></nav>
+</header>
+
+<div style="padding:40px 56px 20px">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px;margin-bottom:24px">
+<div>
+<h1 style="font-size:48px;font-weight:300;margin:0 0 6px;letter-spacing:-.02em">The Archive</h1>
+<p class="mono" style="margin:0;font-size:11px;letter-spacing:.1em;color:var(--color-neutral-600);font-feature-settings:'tnum'">57 PIECES · 2021 – 2025 · 96 400 WORDS</p>
+</div>
+<input class="input" type="text" placeholder="Filter by title, tag or year…" style="width:300px">
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--color-divider)">
+<a class="nvl tag tag-accent" href="#1e">All</a><a class="nvl tag tag-outline" href="#1e">Natural Sciences</a><a class="nvl tag tag-outline" href="#1e">Social Sciences</a><a class="nvl tag tag-outline" href="#1e">Arts &amp; Literature</a><a class="nvl tag tag-outline" href="#1e">Reflections</a><a class="nvl tag tag-outline" href="#1e">Contemporary</a>
+</div>
+</div>
+
+<div style="padding:0 56px 46px">
+<div class="mono" style="font-size:10.5px;letter-spacing:.16em;color:var(--color-accent-700);padding:16px 0 10px;border-bottom:1px solid var(--color-text);font-feature-settings:'tnum'">2025 <span style="color:var(--color-neutral-500);margin-left:8px">12 PIECES</span></div>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:82px 1fr 150px 62px;gap:20px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--color-divider)"><span class="mono" style="font-size:11px;color:var(--color-neutral-500);font-feature-settings:'tnum'">19 MAR</span><span style="font-family:var(--font-heading);font-size:21px">Obedience to Authority: Milgram Through a Bangladeshi Lens</span><span style="font-size:11.5px;color:var(--color-neutral-600)">Social Sciences</span><span class="mono" style="font-size:10.5px;color:var(--color-neutral-500);text-align:right;font-feature-settings:'tnum'">7 min</span></a>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:82px 1fr 150px 62px;gap:20px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--color-divider)"><span class="mono" style="font-size:11px;color:var(--color-neutral-500);font-feature-settings:'tnum'">19 MAR</span><span style="font-family:var(--font-heading);font-size:21px">Hopeful Pessimism and Tempered Optimism</span><span style="font-size:11.5px;color:var(--color-neutral-600)">Social Sciences</span><span class="mono" style="font-size:10.5px;color:var(--color-neutral-500);text-align:right;font-feature-settings:'tnum'">5 min</span></a>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:82px 1fr 150px 62px;gap:20px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--color-divider)"><span class="mono" style="font-size:11px;color:var(--color-neutral-500);font-feature-settings:'tnum'">02 FEB</span><span style="font-family:var(--font-heading);font-size:21px">Chunking Strategies That Actually Survive Production</span><span style="font-size:11.5px;color:var(--color-neutral-600)">Contemporary</span><span class="mono" style="font-size:10.5px;color:var(--color-neutral-500);text-align:right;font-feature-settings:'tnum'">12 min</span></a>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:82px 1fr 150px 62px;gap:20px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--color-divider)"><span class="mono" style="font-size:11px;color:var(--color-neutral-500);font-feature-settings:'tnum'">14 JAN</span><span style="font-family:var(--font-heading);font-size:21px">Learning a Language at Thirty</span><span style="font-size:11.5px;color:var(--color-neutral-600)">Reflections</span><span class="mono" style="font-size:10.5px;color:var(--color-neutral-500);text-align:right;font-feature-settings:'tnum'">4 min</span></a>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:82px 1fr 150px 62px;gap:20px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--color-divider)"><span class="mono" style="font-size:11px;color:var(--color-neutral-500);font-feature-settings:'tnum'">11 JAN</span><span style="font-family:var(--font-heading);font-size:21px">The Second Law, and Why Nobody Agrees What It Says</span><span style="font-size:11.5px;color:var(--color-neutral-600)">Natural Sciences</span><span class="mono" style="font-size:10.5px;color:var(--color-neutral-500);text-align:right;font-feature-settings:'tnum'">15 min</span></a>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:82px 1fr 150px 62px;gap:20px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--color-divider)"><span class="mono" style="font-size:11px;color:var(--color-neutral-500);font-feature-settings:'tnum'">04 JAN</span><span style="font-family:var(--font-heading);font-size:21px">On Reading Papers You Cannot Verify</span><span style="font-size:11.5px;color:var(--color-neutral-600)">Natural Sciences</span><span class="mono" style="font-size:10.5px;color:var(--color-neutral-500);text-align:right;font-feature-settings:'tnum'">6 min</span></a>
+
+<div class="mono" style="font-size:10.5px;letter-spacing:.16em;color:var(--color-accent-700);padding:26px 0 10px;border-bottom:1px solid var(--color-text);font-feature-settings:'tnum'">2024 <span style="color:var(--color-neutral-500);margin-left:8px">19 PIECES</span></div>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:82px 1fr 150px 62px;gap:20px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--color-divider)"><span class="mono" style="font-size:11px;color:var(--color-neutral-500);font-feature-settings:'tnum'">18 DEC</span><span style="font-family:var(--font-heading);font-size:21px">CRISPR, Ten Years On: Notes From a Layman</span><span style="font-size:11.5px;color:var(--color-neutral-600)">Natural Sciences</span><span class="mono" style="font-size:10.5px;color:var(--color-neutral-500);text-align:right;font-feature-settings:'tnum'">9 min</span></a>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:82px 1fr 150px 62px;gap:20px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--color-divider)"><span class="mono" style="font-size:11px;color:var(--color-neutral-500);font-feature-settings:'tnum'">02 DEC</span><span style="font-family:var(--font-heading);font-size:21px">What a Proof Is For</span><span style="font-size:11.5px;color:var(--color-neutral-600)">Natural Sciences</span><span class="mono" style="font-size:10.5px;color:var(--color-neutral-500);text-align:right;font-feature-settings:'tnum'">8 min</span></a>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:82px 1fr 150px 62px;gap:20px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--color-divider)"><span class="mono" style="font-size:11px;color:var(--color-neutral-500);font-feature-settings:'tnum'">21 NOV</span><span style="font-family:var(--font-heading);font-size:21px">Falsification Is Not a Method</span><span style="font-size:11.5px;color:var(--color-neutral-600)">Natural Sciences</span><span class="mono" style="font-size:10.5px;color:var(--color-neutral-500);text-align:right;font-feature-settings:'tnum'">7 min</span></a>
+<a class="nvl" href="#1c" style="display:grid;grid-template-columns:82px 1fr 150px 62px;gap:20px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--color-divider)"><span class="mono" style="font-size:11px;color:var(--color-neutral-500);font-feature-settings:'tnum'">30 OCT</span><span style="font-family:var(--font-heading);font-size:21px">A Year of Reading Badly</span><span style="font-size:11.5px;color:var(--color-neutral-600)">Arts &amp; Literature</span><span class="mono" style="font-size:10.5px;color:var(--color-neutral-500);text-align:right;font-feature-settings:'tnum'">6 min</span></a>
+<div style="text-align:center;margin-top:28px"><a class="btn btn-secondary" href="#1e">Load 2023 and earlier</a></div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1f">
+<div class="dv-olabel"><a class="dv-oid" href="#1f">1f</a>Search — a ⌘K palette over the archive page, grouped results, keyboard-first.</div>
+<div class="dv-card" style="width:1160px;position:relative">
+<div style="filter:blur(1.6px);opacity:.5;pointer-events:none">
+<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--color-surface);border-bottom:1px solid var(--color-divider)">
+<div style="display:flex;gap:6px"><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span></div>
+<div class="mono" style="flex:1;text-align:center;font-size:10.5px;color:var(--color-neutral-600);background:var(--color-bg);border:1px solid var(--color-divider);border-radius:3px;padding:3px 10px">hhshanto.github.io/all-posts</div>
+</div>
+<div style="padding:40px 56px 60px">
+<h1 style="font-size:48px;font-weight:300;margin:0 0 6px">The Archive</h1>
+<p class="mono" style="font-size:11px;letter-spacing:.1em;color:var(--color-neutral-600)">57 PIECES · 2021 – 2025</p>
+<div style="height:1px;background:var(--color-divider);margin:20px 0"></div>
+<div style="height:14px;background:var(--color-neutral-200);border-radius:2px;margin-bottom:12px;width:78%"></div>
+<div style="height:14px;background:var(--color-neutral-200);border-radius:2px;margin-bottom:12px;width:64%"></div>
+<div style="height:14px;background:var(--color-neutral-200);border-radius:2px;margin-bottom:12px;width:82%"></div>
+<div style="height:14px;background:var(--color-neutral-200);border-radius:2px;width:56%"></div>
+</div>
+</div>
+<div style="position:absolute;inset:0;background:color-mix(in srgb,var(--color-neutral-900) 26%,transparent)"></div>
+<div style="position:absolute;top:74px;left:50%;transform:translateX(-50%);width:620px;background:var(--color-bg);border:1px solid var(--color-divider);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden">
+<div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--color-divider)">
+<span class="mono" style="font-size:14px;color:var(--color-accent)">›</span>
+<span style="font-family:var(--font-heading);font-size:22px;flex:1">retrieval<span style="border-left:1.5px solid var(--color-accent);margin-left:2px">&nbsp;</span></span>
+<span class="mono" style="font-size:10px;letter-spacing:.08em;color:var(--color-neutral-500);border:1px solid var(--color-divider);border-radius:3px;padding:2px 6px">ESC</span>
+</div>
+<div style="padding:10px 0">
+<div class="mono" style="font-size:10px;letter-spacing:.16em;color:var(--color-neutral-500);padding:8px 20px 6px">POSTS · 4</div>
+<div style="display:flex;gap:14px;align-items:baseline;padding:9px 20px;background:color-mix(in srgb,var(--color-accent) 10%,transparent);border-left:2px solid var(--color-accent)">
+<span style="font-family:var(--font-heading);font-size:17px;flex:1">Chunking Strategies That Actually Survive Production</span>
+<span class="mono" style="font-size:10px;color:var(--color-neutral-600);font-feature-settings:'tnum'">02.2025</span>
+</div>
+<div style="display:flex;gap:14px;align-items:baseline;padding:9px 22px"><span style="font-family:var(--font-heading);font-size:17px;flex:1">Embedding Drift Is a Data Problem</span><span class="mono" style="font-size:10px;color:var(--color-neutral-600);font-feature-settings:'tnum'">11.2024</span></div>
+<div style="display:flex;gap:14px;align-items:baseline;padding:9px 22px"><span style="font-family:var(--font-heading);font-size:17px;flex:1">Hybrid Search, and When BM25 Still Wins</span><span class="mono" style="font-size:10px;color:var(--color-neutral-600);font-feature-settings:'tnum'">08.2024</span></div>
+<div style="display:flex;gap:14px;align-items:baseline;padding:9px 22px"><span style="font-family:var(--font-heading);font-size:17px;flex:1">Notes on Reranking Cheaply</span><span class="mono" style="font-size:10px;color:var(--color-neutral-600);font-feature-settings:'tnum'">05.2024</span></div>
+<div style="height:1px;background:var(--color-divider);margin:8px 0"></div>
+<div class="mono" style="font-size:10px;letter-spacing:.16em;color:var(--color-neutral-500);padding:8px 20px 6px">TAGS &amp; PAGES</div>
+<div style="display:flex;gap:10px;align-items:baseline;padding:9px 22px"><span class="tag tag-outline">RAG</span><span style="font-size:12.5px;color:var(--color-neutral-600)">17 pieces tagged</span></div>
+<div style="display:flex;gap:14px;align-items:baseline;padding:9px 22px"><span style="font-family:var(--font-heading);font-size:17px;flex:1">Contemporary</span><span class="mono" style="font-size:10px;color:var(--color-neutral-600)">DOMAIN</span></div>
+</div>
+<div style="display:flex;gap:18px;padding:10px 20px;border-top:1px solid var(--color-divider);background:var(--color-surface)">
+<span class="mono" style="font-size:10px;letter-spacing:.06em;color:var(--color-neutral-600)">↑↓ navigate</span>
+<span class="mono" style="font-size:10px;letter-spacing:.06em;color:var(--color-neutral-600)">↵ open</span>
+<span class="mono" style="font-size:10px;letter-spacing:.06em;color:var(--color-neutral-600)">⇥ filter by domain</span>
+<span class="mono" style="font-size:10px;letter-spacing:.06em;color:var(--color-neutral-600);margin-left:auto">Lunr.js · client-side index</span>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1g">
+<div class="dv-olabel"><a class="dv-oid" href="#1g">1g</a>Create Post — front-matter form plus a markdown pane; commits straight to the repo.</div>
+<div class="dv-card" style="width:1160px">
+<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--color-surface);border-bottom:1px solid var(--color-divider)">
+<div style="display:flex;gap:6px"><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--color-neutral-400)"></span></div>
+<div class="mono" style="flex:1;text-align:center;font-size:10.5px;color:var(--color-neutral-600);background:var(--color-bg);border:1px solid var(--color-divider);border-radius:3px;padding:3px 10px">hhshanto.github.io/create-post</div>
+</div>
+<header style="display:flex;align-items:center;justify-content:space-between;padding:14px 40px;border-bottom:1px solid var(--color-divider)">
+<div style="display:flex;align-items:baseline;gap:16px">
+<a class="nvl" href="#1b" style="font-family:var(--font-heading);font-size:19px;letter-spacing:.14em;text-transform:uppercase">Noema</a>
+<span class="mono" style="font-size:10px;letter-spacing:.14em;color:var(--color-neutral-500)">/ COMPOSE</span>
+</div>
+<div style="display:flex;align-items:center;gap:12px">
+<span class="mono" style="font-size:10.5px;color:var(--color-neutral-600)">_posts/contemporary/2026-08-08-untitled.md</span>
+<a class="btn btn-secondary" href="#1g" style="font-size:12.5px;padding:6px 12px">Preview</a>
+<a class="btn btn-primary" href="#1g" style="font-size:12.5px;padding:6px 12px">Commit to main</a>
+</div>
+</header>
+
+<div style="display:grid;grid-template-columns:290px 1fr 1fr;gap:0;min-height:560px">
+<aside style="border-right:1px solid var(--color-divider);padding:26px 24px;display:flex;flex-direction:column;gap:18px">
+<h6 style="margin:0;color:var(--color-neutral-700)">Front matter</h6>
+<div class="field"><label for="fm-title">Title</label><input class="input" id="fm-title" type="text" value="Chunking strategies that survive"></div>
+<div class="field"><label for="fm-cat">Domain</label><input class="input" id="fm-cat" type="text" value="contemporary / machine-learning"></div>
+<div class="field"><label for="fm-date">Date</label><input class="input mono" id="fm-date" type="text" value="2026-08-08 09:14 +0200"></div>
+<div class="field"><label for="fm-tags">Tags</label>
+<div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px;border:1px solid var(--color-divider);border-radius:var(--radius-md)"><span class="tag tag-accent">RAG</span><span class="tag tag-accent">evaluation</span><span class="mono" style="font-size:11px;color:var(--color-neutral-500);padding:2px">add…</span></div>
+</div>
+<div class="field"><label for="fm-ex">Excerpt</label><textarea class="input" id="fm-ex" rows="3" style="resize:none">Six months of retrieval evaluation, condensed into the one finding I did not want.</textarea></div>
+<div class="hr" style="margin:2px 0"></div>
+<label class="radio" style="font-size:12.5px"><span class="dot"></span>Publish immediately</label>
+<label class="radio" style="font-size:12.5px"><span class="dot"></span>Keep as draft (_drafts/)</label>
+<div style="margin-top:auto" class="mono">
+<div style="font-size:10px;letter-spacing:.1em;color:var(--color-neutral-500);line-height:1.9">BUILD: JEKYLL 3.10.0<br>MARKDOWN: KRAMDOWN 2.4<br>HIGHLIGHTER: ROUGE 3.30</div>
+</div>
+</aside>
+
+<div style="border-right:1px solid var(--color-divider);display:flex;flex-direction:column">
+<div style="display:flex;gap:2px;padding:8px 20px;border-bottom:1px solid var(--color-divider);background:var(--color-surface)">
+<span class="mono" style="font-size:10px;letter-spacing:.12em;color:var(--color-accent-700);border-bottom:1px solid var(--color-accent);padding:4px 6px">MARKDOWN</span>
+<span class="mono" style="font-size:10px;letter-spacing:.12em;color:var(--color-neutral-500);padding:4px 8px">DIFF</span>
+</div>
+<pre class="mono" style="margin:0;padding:20px;font-size:12.5px;line-height:1.85;white-space:pre-wrap;color:var(--color-neutral-800)"><span style="color:var(--color-neutral-500)">---
+layout: post
+title: "Chunking strategies that survive"
+categories: [contemporary, machine-learning]
+tags: [RAG, evaluation]
+---</span>
+
+Every team that builds a retrieval system arrives
+at the same place eventually: the embeddings are
+fine, the reranker is fine, and the answers are
+still wrong.
+
+<span style="color:var(--color-accent-700)">> The clever method wins the demo.
+> The dumb method wins the quarter.</span>
+
+<span style="color:var(--color-accent-700)">## What we measured</span>
+
+Recall@10 against a hand-labelled set of <span style="color:var(--color-accent-700)">**640**</span>
+question–passage pairs drawn from real queries.
+
+<span style="color:var(--color-accent-700)">```python
+def fixed_window(tokens, size=400, overlap=50):
+    step = size - overlap
+```</span></pre>
+</div>
+
+<div style="display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;gap:10px;padding:8px 20px;border-bottom:1px solid var(--color-divider);background:var(--color-surface)">
+<span class="mono" style="font-size:10px;letter-spacing:.12em;color:var(--color-neutral-600)">LIVE PREVIEW</span>
+<span class="mono" style="font-size:10px;color:var(--color-neutral-500);margin-left:auto;font-feature-settings:'tnum'">312 words · 2 min</span>
+</div>
+<div style="padding:26px 30px">
+<div class="mono" style="font-size:10px;letter-spacing:.16em;color:var(--color-accent-700);margin-bottom:10px">CONTEMPORARY → MACHINE LEARNING</div>
+<h2 style="font-size:34px;font-weight:400;line-height:1.08;margin:0 0 14px">Chunking strategies that survive</h2>
+<p style="font-size:14.5px;line-height:1.8;text-align:justify;margin:0 0 14px">Every team that builds a retrieval system arrives at the same place eventually: the embeddings are fine, the reranker is fine, and the answers are still wrong.</p>
+<blockquote style="margin:0 0 14px;padding:2px 0 2px 18px;border-left:2px solid var(--color-accent);font-family:var(--font-heading);font-size:20px;font-style:italic;line-height:1.35;color:var(--color-neutral-800)">The clever method wins the demo. The dumb method wins the quarter.</blockquote>
+<h3 style="font-size:23px;font-weight:500;margin:0 0 8px">What we measured</h3>
+<p style="font-size:14.5px;line-height:1.8;text-align:justify;margin:0 0 14px">Recall@10 against a hand-labelled set of <strong>640</strong> question–passage pairs drawn from real queries.</p>
+<div style="background:var(--color-neutral-900);border-radius:var(--radius-md);padding:14px 16px">
+<pre class="mono" style="margin:0;font-size:11.5px;line-height:1.7;color:#e6e2dc;white-space:pre-wrap"><span style="color:#c98a5a">def</span> <span style="color:#e1ad66">fixed_window</span>(tokens, size=<span style="color:#9ab87c">400</span>, overlap=<span style="color:#9ab87c">50</span>):
+    step = size - overlap</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: “build <a class="dv-oid" href="#1b">1b</a>’s hero into <a class="dv-oid" href="#1a">1a</a>” · “add a mobile version of <a class="dv-oid" href="#1c">1c</a>” · “show me the dark-mode toggle state” · “an About / CV page to match <a class="dv-oid" href="#1b">1b</a>”</p>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}"></script>
+</body>
+</html>

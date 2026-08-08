@@ -1,0 +1,9 @@
+{
+  "name": "noema-tools",
+  "private": true,
+  "type": "module",
+  "description": "Dev-only screenshot harness. Never ships with the site.",
+  "devDependencies": {
+    "playwright": "1.58.0"
+  }
+}
