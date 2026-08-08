@@ -46,7 +46,14 @@
 
     .hero-image {
         margin-top: 80px; // Reduced from 80px to move image down less
-    
+
+        // The <picture> that now wraps the portrait must not introduce a
+        // layout box of its own, so the img stays the participating
+        // element exactly as it was before.
+        picture {
+            display: contents;
+        }
+
         img {
             border-radius: 50%;
             width: 200px;

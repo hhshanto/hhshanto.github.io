@@ -37,7 +37,23 @@ title: Home
             </div>
         </div>
         <div class="hero-image">
-            <img src="{{ '/assets/images/profile.jpg' | relative_url }}" alt="Hasan's Profile" />
+            {%- comment -%}
+            Rendered as a 200px circle, so only 200/400px variants are
+            shipped rather than the 3468px original. The source is cropped
+            to a centred square, which is what object-fit: cover was doing
+            to it anyway. WebP first, JPEG for anything that cannot take it.
+            {%- endcomment -%}
+            <picture>
+                <source
+                    type="image/webp"
+                    srcset="{{ '/assets/images/profile-200.webp' | relative_url }} 1x,
+                            {{ '/assets/images/profile-400.webp' | relative_url }} 2x">
+                <img src="{{ '/assets/images/profile-200.jpg' | relative_url }}"
+                     srcset="{{ '/assets/images/profile-200.jpg' | relative_url }} 1x,
+                             {{ '/assets/images/profile-400.jpg' | relative_url }} 2x"
+                     width="200" height="200"
+                     alt="Hasan" />
+            </picture>
             <div class="social-links">
                 <a href="https://linkedin.com/in//mhasan-shanto/" target="_blank" class="social-btn">{% include icon.html name="linkedin" label="LinkedIn" %}</a>
                 <a href="https://github.com/hhshanto" target="_blank" class="social-btn">{% include icon.html name="github" label="GitHub" %}</a>
