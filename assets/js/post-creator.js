@@ -1,149 +1,210 @@
+/*
+ * Creates a new post by committing a Markdown file through the GitHub
+ * Contents API.
+ *
+ * This is the single creator script. There was previously a second one
+ * (create-post.js) bound to the same form, and both were loaded, so every
+ * submit fired twice. Their target paths were wrong in different ways:
+ * one wrote to `_<category>/<subcategory>/_posts/`, which has no
+ * counterpart in the repo, and the other dropped the subcategory folder
+ * entirely. Posts live at `_<category>/<subcategory>/<file>.md`.
+ *
+ * The front matter written here matches the keys the templates actually
+ * read: the section index pages render `abstract`, jekyll-seo-tag reads
+ * `description`, and the post layout checks `toc`.
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('blogPostForm');
-    const statusDiv = document.getElementById('status');
-    
+    if (!form) return;
+
+    const statusDiv = document.getElementById('submitStatus');
+    const preview = document.getElementById('preview');
+    const markdownPreview = document.getElementById('markdownPreview');
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    const REPO = 'hhshanto/hhshanto.github.io';
+    const BRANCH = 'main';
+
+    const value = (id) => {
+        const el = document.getElementById(id);
+        return el ? el.value.trim() : '';
+    };
+
+    // Lowercase, ASCII, hyphen-separated. Strips diacritics so a title
+    // like "Café Culture" becomes "cafe-culture" rather than losing the
+    // word entirely.
+    const slugify = (text) =>
+        text
+            .normalize('NFKD')
+            .replace(/[̀-ͯ]/g, '')
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+
+    // Double-quoted YAML scalar: only backslash and double quote need
+    // escaping, which keeps colons and apostrophes in titles safe.
+    const yamlString = (text) => `"${text.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+
+    // Folded block scalar, matching the style of the existing posts.
+    const yamlBlock = (text) =>
+        text
+            .split(/\r?\n/)
+            .map((line) => `  ${line.trim()}`)
+            .join('\n');
+
+    // btoa() throws on anything outside Latin-1, and these posts contain
+    // curly quotes and em dashes, so encode UTF-8 bytes first.
+    const toBase64 = (text) => {
+        const bytes = new TextEncoder().encode(text);
+        let binary = '';
+        bytes.forEach((b) => {
+            binary += String.fromCharCode(b);
+        });
+        return btoa(binary);
+    };
+
+    const buildDocument = (fields, dateString) => {
+        const lines = [
+            '---',
+            'layout: post',
+            `title: ${yamlString(fields.title)}`,
+            `date: ${dateString}`
+        ];
+
+        if (fields.summary) {
+            // description stays on one line; abstract keeps the line breaks
+            // via the folded block below.
+            const oneLine = fields.summary.replace(/\s+/g, ' ').trim();
+            lines.push(`description: ${yamlString(oneLine)}`);
+            lines.push('abstract: >');
+            lines.push(yamlBlock(fields.summary));
+        }
+
+        if (fields.tags.length > 0) {
+            lines.push(`tags: [${fields.tags.map(yamlString).join(', ')}]`);
+        }
+
+        lines.push(`confidence: ${fields.confidence}`);
+        lines.push(`importance: ${fields.importance}`);
+        lines.push(`status: ${fields.status}`);
+        lines.push(`toc: ${fields.toc}`);
+        lines.push('---');
+        lines.push('');
+        lines.push(fields.content);
+        lines.push('');
+
+        return lines.join('\n');
+    };
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        // Get form values
-        const githubToken = document.getElementById('githubToken').value;
-        const title = document.getElementById('title').value;
-        const category = document.getElementById('category').value;
-        const subcategory = document.getElementById('subcategory').value;
-        const tags = document.getElementById('tags').value.split(',').map(tag => tag.trim());
-        const confidence = document.getElementById('confidence').value;
-        const importance = document.getElementById('importance').value;
-        const status = document.getElementById('status').value;
-        const toc = document.getElementById('toc').value;
-        const excerpt = document.getElementById('excerpt').value;
-        const content = document.getElementById('content').value;
-        
-        // Generate date string
-        const date = new Date();
-        const dateString = date.toISOString().split('T')[0];
-        
-        // Generate filename
-        const filename = `${dateString}-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.md`;
-        
-        // Generate front matter with proper category structure
-        const frontMatter = `---
-layout: post
-title: "${title}"
-date: ${dateString}
-categories: [${category}, ${subcategory}]
-tags: [${tags.join(', ')}]
-confidence: ${confidence}
-importance: ${importance}
-status: ${status}
-toc: ${toc}
-excerpt: "${excerpt}"
----
 
-${content}`;
+        const token = value('githubToken');
+        const fields = {
+            title: value('title'),
+            category: value('category'),
+            subcategory: slugify(value('subcategory')),
+            tags: value('tags')
+                .split(',')
+                .map((tag) => tag.trim())
+                .filter((tag) => tag.length > 0),
+            confidence: value('confidence'),
+            importance: value('importance'),
+            status: value('status'),
+            toc: value('toc'),
+            summary: value('excerpt'),
+            content: value('content')
+        };
 
-        // Show preview
-        const preview = document.getElementById('preview');
-        const markdownPreview = document.getElementById('markdownPreview');
+        const slug = slugify(fields.title);
+        if (!slug) {
+            statusDiv.innerHTML =
+                '<div class="error-message"><p>The title needs at least one letter or number.</p></div>';
+            return;
+        }
+        if (!fields.subcategory) {
+            statusDiv.innerHTML =
+                '<div class="error-message"><p>The subcategory needs at least one letter or number.</p></div>';
+            return;
+        }
+
+        const dateString = new Date().toISOString().split('T')[0];
+        const filename = `${dateString}-${slug}.md`;
+        const path = `_${fields.category}/${fields.subcategory}/${filename}`;
+        const fileText = buildDocument(fields, dateString);
+
         preview.style.display = 'block';
-        markdownPreview.textContent = frontMatter;
+        markdownPreview.textContent = fileText;
+
+        // Guard against a second submit while the request is in flight,
+        // which would otherwise 409 against the file just created.
+        submitButton.disabled = true;
+        statusDiv.innerHTML = 'Creating post…';
 
         try {
-            statusDiv.innerHTML = 'Creating post...';
-            
-            // GitHub API request with correct path structure
-            const response = await fetch(`https://api.github.com/repos/hhshanto/hhshanto.github.io/contents/_${category}/${subcategory}/_posts/${filename}`, {
+            const response = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `token ${githubToken}`,
-                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                    Accept: 'application/vnd.github+json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    message: `Add new post: ${title}`,
-                    content: btoa(unescape(encodeURIComponent(frontMatter))), // Convert content to base64
-                    branch: 'main'
+                    message: `Add new post: ${fields.title}`,
+                    content: toBase64(fileText),
+                    branch: BRANCH
                 })
             });
 
             if (!response.ok) {
-                throw new Error(`GitHub API responded with ${response.status}: ${await response.text()}`);
+                let detail = `${response.status} ${response.statusText}`;
+                try {
+                    const body = await response.json();
+                    if (body && body.message) detail = body.message;
+                } catch (ignored) {
+                    // Response had no JSON body; the status line is enough.
+                }
+                throw new Error(detail);
             }
 
             const data = await response.json();
-            
+
             statusDiv.innerHTML = `
                 <div class="success-message">
-                    <h3>✅ Post Created Successfully!</h3>
-                    <p>Your post has been created and will be live in a few minutes.</p>
-                    <p>View your post at: <a href="${data.content.html_url}" target="_blank">GitHub</a></p>
+                    <h3>✅ Post created</h3>
+                    <p>GitHub Pages will rebuild the site in a few minutes.</p>
+                    <p><a href="${data.content.html_url}" target="_blank" rel="noopener">View the file on GitHub</a></p>
                     <div class="instructions">
-                        <h4>Post Details:</h4>
+                        <h4>Details</h4>
                         <ul>
-                            <li>Title: ${title}</li>
-                            <li>Category: ${category}</li>
-                            <li>Subcategory: ${subcategory}</li>
-                            <li>Status: ${status}</li>
-                            <li>File: ${filename}</li>
+                            <li>Title: ${fields.title}</li>
+                            <li>Path: ${path}</li>
+                            <li>Status: ${fields.status}</li>
                         </ul>
-                        <p>The post will be automatically deployed to your site in a few minutes.</p>
                     </div>
                 </div>
             `;
 
-            // Clear form after successful submission
             form.reset();
-
         } catch (error) {
-            console.error('Error:', error);
+            // Deliberately not logging the error object wholesale, since the
+            // request carried the token.
             statusDiv.innerHTML = `
                 <div class="error-message">
-                    <h3>❌ Error Creating Post</h3>
+                    <h3>❌ Could not create the post</h3>
                     <p>${error.message}</p>
-                    <p>Please check your GitHub token and try again.</p>
                     <div class="instructions">
-                        <h4>Troubleshooting:</h4>
+                        <h4>Things to check</h4>
                         <ul>
-                            <li>Make sure your GitHub token has the 'repo' scope</li>
-                            <li>Verify that the category folder exists in your repository</li>
-                            <li>Check if a file with the same name already exists</li>
+                            <li>The token needs write access to contents for this repository.</li>
+                            <li>A post with the same title and today's date may already exist.</li>
                         </ul>
                     </div>
                 </div>
             `;
+        } finally {
+            submitButton.disabled = false;
         }
-    });
-
-    // Optional: Add preview functionality while typing
-    document.getElementById('content').addEventListener('input', function() {
-        const preview = document.getElementById('preview');
-        const markdownPreview = document.getElementById('markdownPreview');
-        preview.style.display = 'block';
-        
-        // Create a preview of the current content
-        const title = document.getElementById('title').value || '[Title]';
-        const category = document.getElementById('category').value;
-        const subcategory = document.getElementById('subcategory').value || '[Subcategory]';
-        const tags = document.getElementById('tags').value || '[Tags]';
-        const confidence = document.getElementById('confidence').value;
-        const importance = document.getElementById('importance').value;
-        const status = document.getElementById('status').value;
-        const toc = document.getElementById('toc').value;
-        const excerpt = document.getElementById('excerpt').value || '[Excerpt]';
-        
-        const previewContent = `---
-layout: post
-title: "${title}"
-date: ${new Date().toISOString().split('T')[0]}
-categories: [${category}, ${subcategory}]
-tags: [${tags}]
-confidence: ${confidence}
-importance: ${importance}
-status: ${status}
-toc: ${toc}
-excerpt: "${excerpt}"
----
-
-${this.value}`;
-
-        markdownPreview.textContent = previewContent;
     });
 });
