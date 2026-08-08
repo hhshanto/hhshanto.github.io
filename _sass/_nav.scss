@@ -4,6 +4,13 @@
 // button, links hidden behind it), and the row opens out above $bp-md.
 
 .masthead {
+  position: sticky;
+  top: 0;
+  // Above the mobile nav panel (20) and any page content, below the search
+  // palette's scrim, which Phase 6 puts at 100.
+  z-index: 50;
+  // Must be opaque: content scrolls underneath. The background is full-bleed
+  // even though the hairline below it is inset.
   background: var(--color-bg);
 }
 

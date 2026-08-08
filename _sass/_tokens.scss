@@ -108,6 +108,13 @@ $content-max: 1160px;
   // viewport; see the two media queries below.
   --page-pad: 20px;
 
+  // Height of the sticky masthead. Anything that has to clear it reads this:
+  // scroll-padding-top for in-page anchors, and the post ToC rail's sticky
+  // offset in Phase 3. Verify with .tools/check-chrome.mjs after changing the
+  // masthead's padding or type sizes — the assertion there compares this token
+  // against the element's measured height.
+  --masthead-h: 73px;
+
   // ── Radius ───────────────────────────────────────────────────────────────
   --radius-sm: 2px;
   --radius-md: 4px;
@@ -127,7 +134,10 @@ $content-max: 1160px;
 }
 
 @media (min-width: $bp-md) {
-  :root { --page-pad: 40px; }
+  :root {
+    --page-pad: 40px;
+    --masthead-h: 84px;
+  }
 }
 
 @media (min-width: $bp-lg) {

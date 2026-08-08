@@ -116,6 +116,58 @@ const check = (name, pass, detail = '') =>
   await ctx.close();
 }
 
+// ── Sticky masthead ────────────────────────────────────────────────────────
+for (const [label, width] of [['mobile', 375], ['desktop', 1440]]) {
+  const ctx = await browser.newContext({ viewport: { width, height: 800 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/reflections/`);
+
+  await page.evaluate(() => window.scrollTo(0, 1200));
+  await page.waitForTimeout(120);
+
+  const top = await page.evaluate(
+    () => document.querySelector('.masthead').getBoundingClientRect().top);
+  check(`masthead stays pinned when scrolled (${label})`, Math.abs(top) < 1,
+    `top ${top.toFixed(1)}px`);
+
+  // The token drives scroll-padding-top and the Phase 3 ToC offset; if it
+  // drifts from the real height, anchors land under the header.
+  const real = await page.evaluate(
+    () => document.querySelector('.masthead').getBoundingClientRect().height);
+  const token = await page.evaluate(() =>
+    parseFloat(getComputedStyle(document.documentElement)
+      .getPropertyValue('--masthead-h')));
+  check(`--masthead-h matches measured height (${label})`, Math.abs(real - token) <= 2,
+    `token ${token}px vs real ${real.toFixed(1)}px`);
+
+  // Content must not show through the bar.
+  const opaque = await page.evaluate(() => {
+    const bg = getComputedStyle(document.querySelector('.masthead')).backgroundColor;
+    const m = bg.match(/[\d.]+/g);
+    return !(bg === 'transparent' || (m && m.length === 4 && Number(m[3]) < 1));
+  });
+  check(`masthead is opaque (${label})`, opaque);
+  await ctx.close();
+}
+
+// ── Home hero clears the masthead ──────────────────────────────────────────
+// _hero.scss pulls the hero up by -70px for the old fixed header. Left in, it
+// drags the dark hero card over the bar and the nav text vanishes into it.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/`);
+  const gap = await page.evaluate(() => {
+    const bar = document.querySelector('.masthead').getBoundingClientRect();
+    const hero = document.querySelector('.hero-section');
+    if (!hero) return null;
+    return hero.getBoundingClientRect().top - bar.bottom;
+  });
+  check('home hero starts below the masthead, not under it',
+    gap === null || gap >= 0, gap === null ? 'no hero' : `gap ${gap.toFixed(1)}px`);
+  await ctx.close();
+}
+
 await browser.close();
 server.close();
 

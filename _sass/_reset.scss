@@ -11,6 +11,14 @@
   box-sizing: border-box;
 }
 
+html {
+  // The masthead is sticky, so an in-page anchor would otherwise land its
+  // target heading underneath it. Covers :target, jumping to a #fragment on
+  // load, and browser find-in-page — none of which the layout's click handler
+  // sees.
+  scroll-padding-top: calc(var(--masthead-h) + var(--space-3));
+}
+
 img,
 picture,
 video,

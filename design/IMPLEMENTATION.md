@@ -389,6 +389,20 @@ Format: `date — decision — why`.
   `--color-text-faint` are now tuned per theme (6.9:1 and 4.9:1 in light,
   7.6:1 and 4.9:1 in dark). `.tools/contrast.mjs` measures them; extend its
   TARGETS list as components land rather than judging by eye.
+- **2026-08-09 — The masthead is sticky, and `--masthead-h` is asserted against
+  its measured height.** Requested, and not in the handoff, which does not mock
+  scroll behaviour. Anything that must clear the bar reads the token:
+  `scroll-padding-top` in `_reset.scss` now, the ToC rail's sticky offset in
+  Phase 3. A guessed token value drifts silently and lands anchors under the
+  header, so `check-chrome.mjs` compares it to the real height at both widths —
+  it caught the first values being 10px and 5px short.
+- **2026-08-09 — The home hero's `margin-top: -70px` is zeroed in
+  `_shell.scss`.** `_hero.scss` pulls the hero up by exactly `$header-height`
+  to tuck it under the old *fixed* header. With the masthead in normal flow
+  that dragged the dark hero card over the bar, so the nav rendered dark text
+  on a dark card — invisible, and only on the home page, which is the only page
+  with a hero. This was the real cause of the "not visible" report; the
+  measured contrast failures fixed earlier were a genuine but separate bug.
 - **2026-08-09 — Run exactly one `jekyll serve`.** Two were running against
   this repo, both watching, both writing `_site`. They clobbered each other
   badly enough that `_site/reflections/` held only `index.html` — every post

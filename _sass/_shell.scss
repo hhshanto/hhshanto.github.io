@@ -34,3 +34,12 @@ body {
   padding-inline: 0;
   max-width: none;
 }
+
+.hero-section {
+  // _hero.scss opens with `margin-top: -70px` — $header-height — to tuck the
+  // hero under the old *fixed* header. The masthead is in normal flow and now
+  // sticky, so that pull dragged the dark hero card up over it and the nav
+  // text landed dark-on-dark. Only visible on the home page, which is the only
+  // page with a hero.
+  margin-top: 0;
+}
