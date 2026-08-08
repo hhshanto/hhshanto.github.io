@@ -1,9 +1,18 @@
 # Site Settings
-title: Hasan's Knowledge Hub
+# `title` is what jekyll-seo-tag puts in every page title and share
+# preview, so it matches the name the site actually uses in its logo and
+# footer rather than the old "Hasan's Knowledge Hub".
+title: Noema
+tagline: A Digital Knowledge Garden
 description: A personal knowledge repository exploring various domains of knowledge
 baseurl: "" # Leave empty if your site is at root level
 url: "https://hhshanto.github.io"
 author: Hasan
+
+# Publisher logo for the structured-data block. The link-preview image is
+# set per page further down under `defaults`, because jekyll-seo-tag reads
+# og:image from `page.image` and ignores a site-level `image`.
+logo: /assets/images/logo.png
 
 # Build settings
 markdown: kramdown
@@ -32,6 +41,12 @@ collections:
 # Every collection gets layout: post so a document that omits the front
 # matter key still renders inside the site chrome instead of as raw text.
 defaults:
+  # Fallback link-preview image for every page. Any page or post can
+  # override it by setting its own `image` in front matter.
+  - scope:
+      path: ""
+    values:
+      image: /assets/images/logo.png
   - scope:
       path: ""
       type: "reflections"
