@@ -1,26 +1,48 @@
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
+
+    // The search box only exists on the home page, but this script is
+    // loaded by the sitewide layout. Without this guard the next line
+    // dereferenced null and threw on every other page.
+    if (!searchInput) return;
+
     const searchResults = document.createElement('div');
     searchResults.className = 'search-results';
     searchInput.parentNode.appendChild(searchResults);
 
     let searchData = [];
 
-    // Fetch search index
-    fetch('/search.json')
-        .then(response => response.json())
-        .then(data => {
-            searchData = data;
-        });
+    // Loaded on first use rather than on every page load: the index
+    // embeds the full text of every post and is already ~60 KB.
+    let indexRequest = null;
+    const loadIndex = () => {
+        if (!indexRequest) {
+            indexRequest = fetch('/search.json')
+                .then((response) => response.json())
+                .then((data) => {
+                    searchData = data;
+                })
+                .catch(() => {
+                    searchData = [];
+                });
+        }
+        return indexRequest;
+    };
 
     // Handle search input
-    searchInput.addEventListener('input', function() {
+    searchInput.addEventListener('input', async function() {
         const query = this.value.toLowerCase();
-        
+
         if (query.length < 2) {
             searchResults.style.display = 'none';
             return;
         }
+
+        await loadIndex();
+
+        // The field may have been cleared or changed while the index was
+        // still downloading; only render for what is currently typed.
+        if (this.value.toLowerCase() !== query) return;
 
         const results = searchData.filter(item => {
             const titleMatch = item.title.toLowerCase().includes(query);
