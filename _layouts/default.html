@@ -52,25 +52,6 @@
                     <li><a href="{{ '/create-post' | relative_url }}">{% include icon.html name="plus" %} Create Post</a></li>
                 </ul>
             </nav>
-
-            {%- comment -%}
-            Search lives in the header so it is reachable from every page.
-            It used to sit in the home page hero, which meant the only way
-            to search was to navigate home first. search.js attaches the
-            results panel to this .search-container, which is why the
-            wrapper is here rather than the input standing alone.
-            {%- endcomment -%}
-            <div class="header-search">
-                <div class="search-container">
-                    <input type="search"
-                           class="search-box"
-                           placeholder="Search…"
-                           id="searchInput"
-                           aria-label="Search the site"
-                           autocomplete="off"
-                           onkeypress="return event.keyCode != 13;">
-                </div>
-            </div>
         </div>
 
         <div class="theme-toggle">

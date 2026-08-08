@@ -71,9 +71,27 @@
         }
     }
 
-    // The search box moved to the site header so it is reachable from
-    // every page rather than only this one; its styles live in
-    // _search.scss. A near-identical copy of them used to sit here.
+    .search-container {
+        margin-top: 30px;
+        max-width: 500px;
+
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+
+            &:focus {
+                outline: none;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                background: white;
+            }
+        }
+    }
 
     .typing-effect h1 {
         border-right: 3px solid white;
@@ -117,7 +135,11 @@
         display: flex;
         gap: 20px;
         margin: 30px 0;
-        justify-content: center;
+        // Left-aligned so the "About Me" button starts on the same edge as
+        // the search field below it, and as the heading and description
+        // above it. Centring these was the odd one out in a hero whose
+        // content is otherwise left-aligned.
+        justify-content: flex-start;
 
         .hero-btn {
             padding: 12px 25px;
@@ -214,6 +236,13 @@
         
         .hero-container {
             flex-direction: column;
+        }
+
+        // The whole hero centres at this width, and .search-container
+        // gets auto side margins, so the buttons follow suit.
+        .hero-buttons {
+            justify-content: center;
+            flex-wrap: wrap;
         }
     }
 }

@@ -180,28 +180,5 @@
             margin-left: 15px;
             z-index: 2; // Keep above menu
         }
-
-        // The search takes a row of its own below the logo. .main-nav is
-        // absolutely positioned at this width, so it is out of flow and
-        // the only flex items left are the logo, the menu button and this.
-        .header-container {
-            flex-wrap: wrap;
-        }
-
-        .header-search {
-            order: 3;
-            flex-basis: 100%;
-            margin: 10px 0 4px;
-
-            .search-container {
-                width: 100%;
-                max-width: 100%;
-
-                &:focus-within {
-                    width: 100%;
-                    max-width: 100%;
-                }
-            }
-        }
     }
 }
