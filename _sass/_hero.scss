@@ -30,13 +30,17 @@
         text-align: left;
         width: 100%;
 
-        h1 {
+        > h1 {
             font-size: 2.5em;
             margin-bottom: 20px;
             color: white;
         }
-    
-        p {
+
+        // Direct children only. The search box lives inside .hero-content,
+        // and its results panel is appended next to it, so a descendant
+        // `p` rule here also claimed every paragraph inside that panel -
+        // painting the result abstracts white on a white dropdown.
+        > p {
             font-size: 1.2em;
             line-height: 1.6;
             margin-bottom: 30px;
@@ -98,6 +102,17 @@
         align-items: baseline;
         margin: 20px 0;
         font-size: 1.5em;
+
+        // Spelled out because this paragraph is a descendant, not a
+        // direct child, of .hero-content, so the `> p` rule above no
+        // longer reaches it. These are the values it was inheriting from
+        // that rule before it was narrowed.
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+        }
 
         .role-words {
             height: 1.5em;
