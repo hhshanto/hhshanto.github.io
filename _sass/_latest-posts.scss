@@ -116,25 +116,32 @@
     }
 }
 
-// Dark mode styles for post cards
+// Dark mode styles for the home page's latest-posts cards.
+//
+// These selectors are scoped to .latest-posts-section on purpose. They
+// used to sit bare at the top level, so `.post-content` and
+// `.post-abstract` - class names the section index listings also use -
+// were painted the page background on every page of the site, drawing a
+// dark rectangle inside each card.
+//
+// The card interior deliberately sets no background of its own: it
+// inherits the card surface. The old rule also contradicted itself,
+// setting .post-card to #2d2d2d and then immediately to #1a1a1a.
 [data-theme="dark"] {
     .latest-posts-section {
-        background: #1a1a1a;
-    }
+        background: var(--bg-color);
 
-    .post-card {
-        background: #2d2d2d;
-        color: #e0e0e0;
-    }
-    
-    .post-content, 
-    .post-abstract, 
-    .post-card {
-        color: #e0e0e0;
-        background: #1a1a1a;
-    }
-    
-    .post-title a {
-        color: #ffffff;
+        .post-card {
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .post-abstract {
+            color: var(--muted-color);
+        }
+
+        .post-title a {
+            color: var(--heading-color);
+        }
     }
 }

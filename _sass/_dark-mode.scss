@@ -60,18 +60,16 @@
         }
     }
     
-    .post-card {
-        background: #2d2d2d !important;
-        color: #e0e0e0 !important;
-    }
-    
-    /* For cards and content containers */
+    /* For cards and content containers.
+       Still !important because _about.scss hardcodes its own surface;
+       the values themselves are now the shared tokens, which resolve to
+       exactly the #2d2d2d / #e0e0e0 these rules used to spell out. */
     .about-card,
     .post-card,
     .content-container,
     .post-container {
-        background: #2d2d2d !important;
-        color: #e0e0e0 !important;
+        background: var(--card-bg) !important;
+        color: var(--text-color) !important;
     }
 }
 
