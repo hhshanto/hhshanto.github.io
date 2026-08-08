@@ -211,3 +211,31 @@ a {
         opacity: 0.8;
     }
 }
+
+
+// Inline SVG icons (see _includes/icon.html)
+// Sized in em so an icon tracks the font size of whatever contains it,
+// which is how the Font Awesome glyphs they replaced behaved.
+.icon {
+    display: inline-block;
+    vertical-align: -0.125em;
+    flex-shrink: 0;
+}
+
+// The theme button renders both glyphs; CSS picks the one matching the
+// active theme so no script has to swap them.
+.theme-toggle-btn {
+    .icon-moon {
+        display: none;
+    }
+}
+
+[data-theme="dark"] .theme-toggle-btn {
+    .icon-sun {
+        display: none;
+    }
+
+    .icon-moon {
+        display: inline-block;
+    }
+}

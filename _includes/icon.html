@@ -1,0 +1,26 @@
+{%- comment -%}
+Renders an inline SVG icon from _data/icons.yml.
+
+Replaces Font Awesome, which pulled roughly 100 KB of CSS plus a webfont
+from a CDN to draw 23 glyphs. The whole set inlines to about 6 KB with no
+external request.
+
+    {% include icon.html name="home" %}
+    {% include icon.html name="linkedin" label="LinkedIn" %}
+
+Icons are decorative by default and hidden from screen readers. Pass
+`label` when the icon is the only content of its control, which makes it
+an img role with an accessible name instead.
+
+Stroke icons (Lucide) and filled brand marks (Bootstrap Icons) need
+different paint attributes, which is what `mode` in the data selects.
+{%- endcomment -%}
+
+{%- assign ic = site.data.icons[include.name] -%}
+{%- if ic -%}
+<svg class="icon icon-{{ include.name }}" viewBox="{{ ic.viewbox }}" width="1em" height="1em" focusable="false"
+    {%- if include.label %} role="img" aria-label="{{ include.label }}"{% else %} aria-hidden="true"{% endif %}
+    {%- if ic.mode == 'fill' %} fill="currentColor"
+    {%- else %} fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    {%- endif %}>{{ ic.body }}</svg>
+{%- endif -%}

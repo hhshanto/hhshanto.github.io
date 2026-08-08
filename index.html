@@ -24,7 +24,7 @@ title: Home
                 <a href="#about" class="hero-btn primary">About Me</a>
                 <a href="#latest" class="hero-btn secondary">Latest Posts</a>
                 <a href="/assets/files/Resume.pdf" class="hero-btn secondary" download>
-                    <i class="fas fa-download"></i> Download CV
+                    {% include icon.html name="download" %} Download CV
                 </a>
             </div>
             
@@ -39,14 +39,14 @@ title: Home
         <div class="hero-image">
             <img src="{{ '/assets/images/profile.jpg' | relative_url }}" alt="Hasan's Profile" />
             <div class="social-links">
-                <a href="https://linkedin.com/in//mhasan-shanto/" target="_blank" class="social-btn"><i class="fab fa-linkedin"></i></a>
-                <a href="https://github.com/hhshanto" target="_blank" class="social-btn"><i class="fab fa-github"></i></a>
-                <a href="mailto:hasanibnesaleh@gmail.com" class="social-btn"><i class="fas fa-envelope"></i></a>
+                <a href="https://linkedin.com/in//mhasan-shanto/" target="_blank" class="social-btn">{% include icon.html name="linkedin" label="LinkedIn" %}</a>
+                <a href="https://github.com/hhshanto" target="_blank" class="social-btn">{% include icon.html name="github" label="GitHub" %}</a>
+                <a href="mailto:hasanibnesaleh@gmail.com" class="social-btn">{% include icon.html name="envelope" label="Email" %}</a>
             </div>
         </div>
     </div>
     <div class="scroll-indicator">
-        <i class="fas fa-chevron-down"></i>
+        {% include icon.html name="chevron-down" %}
     </div>
 </section>
 
@@ -57,7 +57,7 @@ title: Home
             <!-- Personal Introduction -->
             <div class="about-card">
                 <div class="card-icon">
-                    <i class="fas fa-user-circle"></i>
+                    {% include icon.html name="user-circle" %}
                 </div>
                 <h2>About Me</h2>
                 <p>Hi, I'm Hasan! Currently based in Potsdam, Germany, I'm a Data Scientist with a focus on AI systems and RAG (Retrieval-Augmented Generation). While my expertise lies in data science and machine learning, I maintain a curious mind that extends beyond technical domains.</p>
@@ -66,7 +66,7 @@ title: Home
             <!-- Professional Background -->
             <div class="about-card">
                 <div class="card-icon">
-                    <i class="fas fa-briefcase"></i>
+                    {% include icon.html name="briefcase" %}
                 </div>
                 <h2>Professional Background</h2>
                 <div class="timeline">
@@ -84,7 +84,7 @@ title: Home
             <!-- Education -->
             <div class="about-card">
                 <div class="card-icon">
-                    <i class="fas fa-graduation-cap"></i>
+                    {% include icon.html name="graduation-cap" %}
                 </div>
                 <h2>Education</h2>
                 <div class="education-list">
@@ -105,7 +105,7 @@ title: Home
             <!-- Technical Expertise -->
             <div class="about-card">
                 <div class="card-icon">
-                    <i class="fas fa-code"></i>
+                    {% include icon.html name="code" %}
                 </div>
                 <h2>Technical Focus</h2>
                 <div class="expertise-grid">
@@ -121,7 +121,7 @@ title: Home
             <!-- Knowledge Hub Purpose -->
             <div class="about-card">
                 <div class="card-icon">
-                    <i class="fas fa-book-reader"></i>
+                    {% include icon.html name="book-reader" %}
                 </div>
                 <h2>About This Space</h2>
                 <p>This is my personal knowledge repository where I document my learning journey across various domains. While my professional expertise is in data science and AI, I'm curious about many other fields. Here, you'll find:</p>
@@ -136,7 +136,7 @@ title: Home
             <!-- Current Focus -->
             <div class="about-card">
                 <div class="card-icon">
-                    <i class="fas fa-laptop-code"></i>
+                    {% include icon.html name="laptop-code" %}
                 </div>
                 <h2>Current Focus</h2>
                 <p>Currently working on:</p>

@@ -17,7 +17,7 @@
 
     {% if page.tags.size > 0 %}
     <div class="post-tags">
-        <i class="fas fa-tags"></i>
+        {% include icon.html name="tags" %}
         {% for tag in page.tags %}
         <a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}" class="tag">{{ tag }}</a>
         {% endfor %}
