@@ -30,7 +30,11 @@
         text-align: left;
         width: 100%;
 
-        > h1 {
+        // Descendant on purpose: the heading is wrapped in .typing-effect,
+        // and no h1 is ever rendered inside the search panel, so this rule
+        // has nothing to leak into. Only the `p` rule below needed
+        // narrowing.
+        h1 {
             font-size: 2.5em;
             margin-bottom: 20px;
             color: white;
