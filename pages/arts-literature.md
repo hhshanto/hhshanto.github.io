@@ -1,23 +1,18 @@
 ---
 layout: default
-title: All Posts
-description: A curated collection of writings across all topics
+title: Arts Literature
+description: Exploring creativity through written expression
+permalink: /arts-literature/
 ---
 
 <div class="reflections-container">
     <header class="page-header">
-        <h1>All Posts</h1>
-        <p class="header-description">A comprehensive collection of writings spanning natural sciences, social sciences, arts, literature, and personal reflections</p>
+        <h1>Arts Literature</h1>
+        <p class="header-description">Exploring the beauty of human creativity and expression through literary arts</p>
     </header>
 
     <div class="posts-container">
-        {% assign all_posts = '' | split: '' %}
-        {% assign all_posts = all_posts | concat: site.reflections %}
-        {% assign all_posts = all_posts | concat: site.natural-sciences %}
-        {% assign all_posts = all_posts | concat: site.arts-literature %}
-        {% assign all_posts = all_posts | concat: site.contemporary %}
-        {% assign all_posts = all_posts | concat: site.social-sciences %}
-        {% assign sorted_posts = all_posts | sort: 'date' | reverse %}
+        {% assign sorted_posts = site.arts-literature | sort: 'date' | reverse %}
         {% for post in sorted_posts %}
             <article class="post-item">
                 <div class="post-content">
@@ -26,7 +21,7 @@ description: A curated collection of writings across all topics
                             <time datetime="{{ post.date | date_to_xmlschema }}">
                                 {{ post.date | date: "%B %-d, %Y" }}
                             </time>
-                            {% include category-badge.html text=post.collection %}
+                            {% include category-badge.html post=post %}
                         </div>
                         <h2 class="post-title">
                             <a href="{{ post.url }}">{{ post.title }}</a>

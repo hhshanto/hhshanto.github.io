@@ -1,17 +1,18 @@
 ---
 layout: default
-title: Arts Literature
-description: Exploring creativity through written expression
+title: Natural Sciences
+description: Exploring the fundamental laws and phenomena of our universe
+permalink: /natural-sciences/
 ---
 
 <div class="reflections-container">
     <header class="page-header">
-        <h1>Arts Literature</h1>
-        <p class="header-description">Exploring the beauty of human creativity and expression through literary arts</p>
+        <h1>Natural Sciences</h1>
+        <p class="header-description">Understanding the physical world through observation, experimentation, and theoretical analysis</p>
     </header>
 
     <div class="posts-container">
-        {% assign sorted_posts = site.arts-literature | sort: 'date' | reverse %}
+        {% assign sorted_posts = site.natural-sciences | sort: 'date' | reverse %}
         {% for post in sorted_posts %}
             <article class="post-item">
                 <div class="post-content">

@@ -1,17 +1,18 @@
 ---
 layout: default
-title: Natural Sciences
-description: Exploring the fundamental laws and phenomena of our universe
+title: Social Sciences
+description: Exploring human society and social relationships
+permalink: /social-sciences/
 ---
 
 <div class="reflections-container">
     <header class="page-header">
-        <h1>Natural Sciences</h1>
-        <p class="header-description">Understanding the physical world through observation, experimentation, and theoretical analysis</p>
+        <h1>Social Sciences</h1>
+        <p class="header-description">Understanding human behavior, societies, cultures, and the complex relationships that shape our world</p>
     </header>
 
     <div class="posts-container">
-        {% assign sorted_posts = site.natural-sciences | sort: 'date' | reverse %}
+        {% assign sorted_posts = site.social-sciences | sort: 'date' | reverse %}
         {% for post in sorted_posts %}
             <article class="post-item">
                 <div class="post-content">

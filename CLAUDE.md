@@ -67,8 +67,31 @@ layouts use `padding-inline: var(--page-pad)` and never a literal.
 - **Content is five collections**, not `_posts`: `natural-sciences`,
   `social-sciences`, `arts-literature`, `reflections`, `contemporary`. Counts
   come from `site.[collection].size` in Liquid — never hardcode a number.
-- `_arts-literature/` and `_contemporary/` hold **intentionally untracked**
-  drafts. Leave them alone; do not commit them.
+- `_content/_arts-literature/` and `_content/_contemporary/` hold
+  **intentionally untracked** drafts. Leave them alone; do not commit them.
+
+## Repo layout
+
+```
+_config.yml  gemfile  gemfile.lock  index.html      # pinned at root
+README.md    LICENSE  CLAUDE.md     .gitignore
+
+_content/    the five collections (via `collections_dir`)
+pages/       every standalone page — about, all-posts, create-post, tags,
+             404, search.json, and the five section index pages
+_layouts/ _includes/ _sass/ _data/                  # Jekyll conventions
+assets/      css, js, images, files
+design/      redesign handoff + IMPLEMENTATION.md   # excluded from build
+.tools/      dev-only screenshot harness            # excluded from build
+```
+
+**Every file in `pages/` must carry an explicit `permalink:`.** The directory
+is an organisational convenience only — without a permalink a page publishes to
+`/pages/whatever/`. New standalone pages go here, with a permalink, not at the
+repo root.
+
+`index.html` stays at root. It is the site entry point and moving it buys
+nothing.
 
 ## Commands
 

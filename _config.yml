@@ -20,6 +20,14 @@ highlighter: rouge
 permalink: /:categories/:title/
 
 # Collections
+#
+# All five live under _content/ rather than at the repo root, which kept ten
+# directories there — five collections plus five more that existed only to
+# hold a single index page. Those index pages are now pages/*.md carrying an
+# explicit `permalink:`, so every URL is unchanged. Jekyll 3.7+ only; we are
+# on 3.10 via github-pages.
+collections_dir: _content
+
 collections:
   natural-sciences:
     output: true

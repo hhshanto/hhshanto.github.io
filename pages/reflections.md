@@ -1,17 +1,18 @@
 ---
 layout: default
-title: Social Sciences
-description: Exploring human society and social relationships
+title: Reflections
+description: A curated collection of thoughts, analyses, and insights
+permalink: /reflections/
 ---
 
 <div class="reflections-container">
     <header class="page-header">
-        <h1>Social Sciences</h1>
-        <p class="header-description">Understanding human behavior, societies, cultures, and the complex relationships that shape our world</p>
+        <h1>Reflections</h1>
+        <p class="header-description">Exploring ideas, analyzing concepts, and documenting growth through written discourse</p>
     </header>
 
     <div class="posts-container">
-        {% assign sorted_posts = site.social-sciences | sort: 'date' | reverse %}
+        {% assign sorted_posts = site.reflections | sort: 'date' | reverse %}
         {% for post in sorted_posts %}
             <article class="post-item">
                 <div class="post-content">

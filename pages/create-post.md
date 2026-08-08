@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Create New Post
+permalink: /create-post/
 ---
 
 <div class="create-post-container">

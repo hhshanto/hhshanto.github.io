@@ -328,9 +328,13 @@ _sass/        _tokens · _fonts · _base · _type · _primitives · _ui ·
 assets/css/   style.scss   (front-matter fenced, @imports in that order)
 assets/js/    theme · article · search (+ lunr.min) · archive-filter ·
               mobile-menu · post-creator
-styleguide.md
-search.json
+pages/        styleguide.md (new) · search.json · the existing pages
+_content/     the five collections
 ```
+
+New pages go in `pages/` **with an explicit `permalink:`** — without one they
+publish to `/pages/…`. So `styleguide.md` needs `permalink: /styleguide/` and
+`sitemap: false`.
 
 Import order in `style.scss` matters: tokens → fonts → base → type →
 primitives → ui → components. Everything downstream depends on tokens; nothing
@@ -364,6 +368,16 @@ Format: `date — decision — why`.
   `_contemporary/` stay untracked, at the owner's instruction.** Only `design/`
   and the new tooling were committed in Phase 0, so `git status` is
   deliberately not clean. Leave those two directories alone.
+- **2026-08-09 — Repo reorganised before Phase 1: `collections_dir: _content`,
+  and every standalone page moved to `pages/` with an explicit `permalink:`.**
+  Root held ten directories, five of which existed only to hold a single
+  `index.md`. Done before Phase 1 so eight phases of new files land in the
+  right place rather than being moved later. Verified by diffing `_site`
+  before and after: 38 of 40 files byte-identical, sitemap holding the same 23
+  URLs in a different order, feed differing only by build timestamp.
+  `_layouts/`, `_includes/`, `_sass/` and `_data/` were deliberately **left at
+  root** — Jekyll can relocate them, but every doc and every future session
+  assumes the conventional location.
 - *(pending)* — 1a vs 1b home-page IA. Blocks Phase 4 and a small edit to
   `head-nav.html`.
 - *(pending)* — does libsass 3.7 pass `color-mix(in srgb, …)` through intact?

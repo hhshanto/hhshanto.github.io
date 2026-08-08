@@ -2,6 +2,7 @@
 layout: default
 title: Contemporary
 description: Exploring modern issues and current developments
+permalink: /contemporary/
 ---
 
 <div class="reflections-container">
