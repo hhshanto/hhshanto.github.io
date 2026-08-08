@@ -1,0 +1,67 @@
+// Reset and global behaviour.
+//
+// Named _reset, not _base, because _base.scss is the outgoing stylesheet's
+// layout and component file. The two coexist during the migration; _base.scss
+// is imported after this one so its rules still win on pages that have not
+// been rebuilt yet, and it is deleted in Phase 8.
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+// Form controls do not inherit type by default.
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+// ── Focus ──────────────────────────────────────────────────────────────────
+// Always visible, never the browser default. :focus-visible only, so a mouse
+// click does not leave a ring behind but a keyboard tab always does.
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--wash-selection);
+}
+
+// ── Motion ─────────────────────────────────────────────────────────────────
+// The design's motion budget is colour, a 2px lift and a progress bar. Under
+// prefers-reduced-motion the lift and the bar go; colour changes stay, because
+// they carry state (hover, focus, active nav) rather than decoration.
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  // Kills the card lift specifically - a zero-duration transition would still
+  // apply the transform, just instantly.
+  .pcard:hover {
+    transform: none !important;
+  }
+}

@@ -1,0 +1,169 @@
+// Design tokens - the single source of truth for the Noema redesign.
+//
+// THIS IS THE ONLY FILE IN _sass/ ALLOWED TO CONTAIN A HEX VALUE.
+// Check with: grep -rn '#[0-9a-fA-F]\{3,6\}' _sass/ --include=*.scss
+//
+// Values are ported verbatim from the design handoff's token sheet
+// (design/design_handoff_noema_site/mockups/_ds/classical-*/styles.css).
+//
+// They are CSS custom properties, not Sass variables, deliberately: dark mode
+// works by re-declaring the same names under [data-theme="dark"], which Sass
+// variables cannot do because they resolve at compile time.
+//
+// Breakpoints are the exception - they live in @media queries, which cannot
+// read custom properties, so those stay Sass.
+
+// ── Breakpoints ────────────────────────────────────────────────────────────
+// Mobile-first: base styles are the phone, these add complexity upward.
+$bp-sm: 700px; // display type steps up, justification switches on
+$bp-md: 900px; // multi-column layouts appear, ToC rail becomes sticky
+$bp-lg: 1160px; // content frame caps, page padding reaches its full 56px
+
+$content-max: 1160px;
+
+:root {
+  // ── Colour: roles ────────────────────────────────────────────────────────
+  --color-bg: #f3f2f2;
+  --color-surface: #eae9e9;
+  --color-text: #201f1d;
+  --color-accent: #b68235;
+  --color-divider: #{rgba(#201f1d, 0.16)};
+
+  // ── Colour: neutral ramp ─────────────────────────────────────────────────
+  --color-neutral-100: #f8f4f4;
+  --color-neutral-200: #eae7e7;
+  --color-neutral-300: #d7d3d3;
+  --color-neutral-400: #bab6b6;
+  --color-neutral-500: #9b9797;
+  --color-neutral-600: #7d7979;
+  --color-neutral-700: #605d5d;
+  --color-neutral-800: #444141;
+  --color-neutral-900: #2d2b2b;
+
+  // ── Colour: accent ramp ──────────────────────────────────────────────────
+  --color-accent-100: #fff3e4;
+  --color-accent-200: #ffe3bf;
+  --color-accent-300: #facb8d;
+  --color-accent-400: #e1ad66;
+  --color-accent-500: #c28d41;
+  --color-accent-600: #a06f24;
+  --color-accent-700: #7d5411;
+  --color-accent-800: #5a3b0a;
+  --color-accent-900: #3a270d;
+
+  // Small accent TEXT must use this, never --color-accent. The base accent
+  // clears 3:1 on the light ground, which is legal for large text, icons and
+  // rules but not for body-size text. Kickers, meta lines and inline links
+  // take --color-accent-ink instead; it points at whichever ramp step is
+  // readable on the current theme's ground.
+  --color-accent-ink: var(--color-accent-700);
+
+  // Hover and selection washes. Pre-mixed here rather than written inline so
+  // the dark theme can retune them in one place - a 12% ink wash that reads
+  // as a gentle tint on paper reads as invisible on a dark ground.
+  --wash-accent: #{rgba(#b68235, 0.12)};
+  --wash-accent-strong: #{rgba(#b68235, 0.22)};
+  --wash-ink: #{rgba(#201f1d, 0.07)};
+  --wash-ink-strong: #{rgba(#201f1d, 0.14)};
+  --wash-selection: #{rgba(#b68235, 0.3)};
+  --scrim: #{rgba(#2d2b2b, 0.26)};
+
+  // Accent-tinted chip. Its own tokens because the accent ramp does not invert
+  // with the theme the way the neutral ramp does: accent-100 is a near-white
+  // that reads as a soft highlight on paper and as a glaring blob on a dark
+  // ground. The dark theme swaps it for a wash with light ink.
+  --tag-accent-bg: var(--color-accent-100);
+  --tag-accent-ink: var(--color-accent-800);
+
+  // ── Type ─────────────────────────────────────────────────────────────────
+  --font-heading: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Lora", Georgia, serif;
+  // Metadata, kickers and code. A deliberate third family - the design system
+  // is nominally two - and it is what gives the site its technical register.
+  // Dates, counts, labels, keyboard hints, URLs and code only. Never prose.
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+  // ── Spacing ──────────────────────────────────────────────────────────────
+  --space-1: 4.6px;
+  --space-2: 9.2px;
+  --space-3: 13.8px;
+  --space-4: 18.4px;
+  --space-6: 27.6px;
+  --space-8: 36.8px;
+
+  // Page gutter. Every layout uses padding-inline: var(--page-pad) rather than
+  // a literal, so one edit here re-gutters the whole site. Steps up with the
+  // viewport; see the two media queries below.
+  --page-pad: 20px;
+
+  // ── Radius ───────────────────────────────────────────────────────────────
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 7px;
+
+  // ── Elevation ────────────────────────────────────────────────────────────
+  // Cards are bordered, not shadowed, at rest. Elevation is a whisper.
+  --shadow-sm: 0 1px 2px #{rgba(#2d2b2b, 0.14)};
+  --shadow-md: 0 3px 10px #{rgba(#2d2b2b, 0.16)};
+  --shadow-lg: 0 12px 32px #{rgba(#2d2b2b, 0.22)};
+
+  // ── Motion ───────────────────────────────────────────────────────────────
+  // The whole budget: colour, a 2px lift, and a progress bar. Nothing else
+  // animates. _reset.scss zeroes both under prefers-reduced-motion.
+  --t-fast: 0.18s;
+  --t-slow: 0.22s;
+}
+
+@media (min-width: $bp-md) {
+  :root { --page-pad: 40px; }
+}
+
+@media (min-width: $bp-lg) {
+  :root { --page-pad: 56px; }
+}
+
+// ── Dark theme ─────────────────────────────────────────────────────────────
+//
+// Re-declares the same token names, so no component needs a dark-mode rule.
+// If a component ever needs one, that is the signal it is missing a token.
+//
+// The ramps are not reversed wholesale. Neutrals invert, because their job is
+// distance from the ground. The accent ramp does NOT: on a dark ground the
+// readable step is lighter, so --color-accent-ink moves to 400 rather than
+// 700, and the accent itself lifts one step so gold hairlines stay visible.
+
+[data-theme="dark"] {
+  --color-bg: #201f1d;
+  --color-surface: #2d2b2b;
+  --color-text: #f3f2f2;
+  --color-accent: #c28d41;
+  --color-divider: #{rgba(#f3f2f2, 0.16)};
+
+  --color-neutral-100: #2d2b2b;
+  --color-neutral-200: #444141;
+  --color-neutral-300: #605d5d;
+  --color-neutral-400: #7d7979;
+  --color-neutral-500: #9b9797;
+  --color-neutral-600: #bab6b6;
+  --color-neutral-700: #d7d3d3;
+  --color-neutral-800: #eae7e7;
+  --color-neutral-900: #f8f4f4;
+
+  --color-accent-ink: var(--color-accent-400);
+
+  --wash-accent: #{rgba(#e1ad66, 0.14)};
+  --wash-accent-strong: #{rgba(#e1ad66, 0.26)};
+  --wash-ink: #{rgba(#f3f2f2, 0.08)};
+  --wash-ink-strong: #{rgba(#f3f2f2, 0.16)};
+  --wash-selection: #{rgba(#e1ad66, 0.3)};
+  --scrim: #{rgba(#000000, 0.5)};
+
+  --tag-accent-bg: #{rgba(#e1ad66, 0.16)};
+  --tag-accent-ink: var(--color-accent-300);
+
+  // A dark ground swallows an ink shadow, so elevation leans on a longer,
+  // deeper cast rather than a tint that would simply disappear.
+  --shadow-sm: 0 1px 2px #{rgba(#000000, 0.4)};
+  --shadow-md: 0 3px 10px #{rgba(#000000, 0.45)};
+  --shadow-lg: 0 12px 32px #{rgba(#000000, 0.55)};
+}

@@ -1,9 +1,23 @@
 ---
 ---
-// Import variables first
-@import "variables";
+// ── Noema redesign foundation ──────────────────────────────────────────────
+// Order matters: everything downstream depends on tokens, nothing depends on
+// a component. See design/IMPLEMENTATION.md.
+//
+// These are imported BEFORE the outgoing stylesheet below, deliberately. The
+// two systems coexist during the migration, and where both style the same
+// element the old rule is meant to win until its page is rebuilt - so the old
+// partials come last. Phase 8 deletes them and this note with them.
+@import "tokens";
+@import "fonts";
+@import "reset";
+@import "type";
+@import "primitives";
+@import "ui";
+@import "styleguide";
 
-// Import component styles
+// ── Outgoing stylesheet (removed phase by phase) ───────────────────────────
+@import "variables";
 @import "base";
 @import "header";
 @import "hero";

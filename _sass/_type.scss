@@ -1,0 +1,164 @@
+// Type scale.
+//
+// Three families, each with a job:
+//   Cormorant Garamond  headings and display. Weight 300 at 40px and up, 400
+//                       for section heads and card titles, 500/600 for small
+//                       interface headings. Bold is never used.
+//   Lora                body prose.
+//   mono                dates, counts, labels, keyboard hints, URLs, code.
+//                       Never prose - it is the site's technical register.
+//
+// Sizes below are the ones the mockups actually use. Anything not in this file
+// is a size the design does not have; add it here rather than inline.
+
+// ── Fluid display sizes ────────────────────────────────────────────────────
+// The handoff steps display type down below 700px (82->44, 70->40, 54->34).
+// clamp() does it continuously instead of at one breakpoint, so there is no
+// single width where the heading jumps. The 4vw middle term is what scales;
+// the outer two are the phone and desktop sizes from the spec.
+.t-display-xl { font-size: clamp(44px, 6.2vw, 82px); } // 1b centred hero
+.t-display-lg { font-size: clamp(40px, 5.4vw, 70px); } // 1a hero
+.t-display-md { font-size: clamp(36px, 4.4vw, 60px); } // 1d category masthead
+.t-display-sm { font-size: clamp(34px, 4vw, 54px); } // 1c post title
+.t-display-xs { font-size: clamp(32px, 3.6vw, 48px); } // 1e archive title
+
+.t-display-xl,
+.t-display-lg,
+.t-display-md,
+.t-display-sm,
+.t-display-xs {
+  font-family: var(--font-heading);
+  font-weight: 300;
+  line-height: 1.03;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+// ── Headings ───────────────────────────────────────────────────────────────
+.t-h2 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+
+.t-h3 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 25px;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.t-title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 21px;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.t-title-sm {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 1.25;
+  margin: 0;
+}
+
+// Small-caps interface heading - the label above a section rule.
+.t-label {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+// ── Body ───────────────────────────────────────────────────────────────────
+.t-body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16.5px;
+  line-height: 1.7;
+}
+
+.t-body-sm {
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  line-height: 1.65;
+}
+
+.t-body-xs {
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+// Standfirst - the italic line under a post title.
+.t-standfirst {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 1.45;
+  color: var(--color-neutral-700);
+}
+
+// ── Metadata ───────────────────────────────────────────────────────────────
+// Mono, uppercase, letter-spaced. tnum because these are nearly always
+// figures, and proportional digits make a column of dates ragged.
+.t-meta,
+.t-kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-feature-settings: "tnum";
+}
+
+.t-kicker {
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  color: var(--color-accent-ink);
+}
+
+.t-meta-sm {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-feature-settings: "tnum";
+  color: var(--color-neutral-500);
+}
+
+// Any figure standing as a number - table cells, counts, word totals. Running
+// prose deliberately does not get this.
+.tnum {
+  font-feature-settings: "tnum";
+}
+
+// ── Prose measure and justification ────────────────────────────────────────
+// Justified text needs enough width to break well. Below $bp-sm the measure is
+// too narrow and justification opens rivers of white space down the column, so
+// it stays ragged-right on phones and switches on above.
+.t-prose {
+  max-width: 70ch;
+  text-align: left;
+
+  @media (min-width: $bp-sm) {
+    text-align: justify;
+    hyphens: auto;
+  }
+}
+
+// ── Colour helpers ─────────────────────────────────────────────────────────
+.t-muted { color: var(--color-neutral-700); }
+.t-faint { color: var(--color-neutral-500); }
+.t-accent { color: var(--color-accent-ink); }

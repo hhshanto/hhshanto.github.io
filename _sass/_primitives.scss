@@ -1,0 +1,138 @@
+// Primitives - the handful of structural patterns that recur on every screen.
+// If a component needs one of these, it uses the class; it does not re-derive
+// the values.
+
+// ── Page frame ─────────────────────────────────────────────────────────────
+// Every layout's outer container. The gutter is a token, so one edit in
+// _tokens.scss re-gutters the entire site.
+.frame {
+  max-width: $content-max;
+  margin-inline: auto;
+  padding-inline: var(--page-pad);
+}
+
+// ── Rules ──────────────────────────────────────────────────────────────────
+.hr {
+  height: 1px;
+  border: 0;
+  margin: var(--space-4) 0;
+  background: var(--color-divider);
+}
+
+// A section head: a label with a hairline filling the width beside it.
+.rule-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--color-divider);
+  }
+}
+
+// ── Hairline grid ──────────────────────────────────────────────────────────
+// How every tiled section draws the 1px rules between its cells: the container
+// is the divider colour showing through a 1px gap, and each child paints over
+// it. Hand-placing borders instead produces doubled lines at the seams and a
+// missing edge on the last item in a wrapped row.
+//
+// Set --cols on the element (or via a modifier) to choose the column count.
+.hgrid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 1), 1fr);
+  gap: 1px;
+  background: var(--color-divider);
+  border: 1px solid var(--color-divider);
+
+  > * {
+    background: var(--color-bg);
+  }
+}
+
+// The handoff's responsive rule for tiled sections: five across on desktop,
+// three at tablet, one on a phone.
+.hgrid-domains {
+  --cols: 1;
+
+  @media (min-width: $bp-sm) { --cols: 3; }
+  @media (min-width: $bp-lg) { --cols: 5; }
+}
+
+.hgrid-doors {
+  --cols: 1;
+
+  @media (min-width: $bp-md) { --cols: 3; }
+}
+
+// ── Plate ──────────────────────────────────────────────────────────────────
+// Every photograph on the site. The warm grade and the mat are what make a
+// stock-looking image sit inside the design rather than on top of it.
+.plate {
+  box-sizing: border-box;
+  filter: sepia(0.22) saturate(0.82) contrast(1.05);
+  border: 6px solid var(--color-surface);
+  outline: 1px solid var(--color-divider);
+}
+
+// ── Hover behaviours ───────────────────────────────────────────────────────
+// Three, and only three, named in the handoff as .nvl / .pcard / .ttl.
+
+// Link: inherits colour, goes accent on hover.
+.nvl {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--t-fast);
+
+  &:hover {
+    color: var(--color-accent);
+  }
+}
+
+// Card or tile: a 2px lift, a whisper of shadow, an accent-tinted edge.
+.pcard {
+  transition:
+    box-shadow var(--t-slow) ease,
+    transform var(--t-slow) ease,
+    border-color var(--t-slow) ease;
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--color-accent);
+  }
+}
+
+// Post title: a 1px accent underline on hover.
+.ttl {
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+}
+
+// ── Utility ────────────────────────────────────────────────────────────────
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

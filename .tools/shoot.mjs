@@ -40,22 +40,40 @@ const MIME = {
 };
 
 const args = process.argv.slice(2);
-const flag = (name) => {
+
+// Two parsers, because a boolean flag must not swallow the argument after it —
+// `--full /styleguide/` would otherwise consume the path and silently shoot the
+// home page instead.
+const boolFlag = (name) => {
+  const i = args.indexOf(name);
+  if (i === -1) return false;
+  args.splice(i, 1);
+  return true;
+};
+const valueFlag = (name) => {
   const i = args.indexOf(name);
   if (i === -1) return null;
   const [, value] = args.splice(i, 2);
-  return value ?? true;
+  return value ?? null;
 };
 
-const tag = flag('--tag');
-const noBuild = flag('--no-build') !== null;
-const fullPage = flag('--full') !== null;
+const noBuild = boolFlag('--no-build');
+const fullPage = boolFlag('--full');
+const tag = valueFlag('--tag');
 const paths = args.length ? args : ['/'];
 
 if (!noBuild) {
   console.log('building…');
   // shell: true because on Windows `bundle` is a .bat shim, which CreateProcess
   // will not execute directly.
+  //
+  // `clean` first: a stray `jekyll serve` from another terminal leaves _site
+  // holding pages built against a localhost url and files that a later
+  // `exclude` was supposed to drop. Screenshotting that is how you conclude a
+  // fix worked when it didn't.
+  spawnSync('bundle', ['exec', 'jekyll', 'clean'], {
+    cwd: ROOT, stdio: 'ignore', shell: true,
+  });
   const build = spawnSync('bundle', ['exec', 'jekyll', 'build'], {
     cwd: ROOT, stdio: 'inherit', shell: true,
   });

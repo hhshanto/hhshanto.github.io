@@ -7,12 +7,14 @@ Working plan for rebuilding hhshanto.github.io against
 
 ## STATUS — update this as the last step of every session
 
-**Next action:** Phase 1, step 1 — download and self-host the two font families.
+**Next action:** Phase 2 — `head-nav.html`, `footer.html`, `theme.js` and a
+rewritten `_layouts/default.html`. Review `/styleguide/` in both themes first;
+tokens are cheapest to argue with now.
 
 | Phase | | |
 | --- | --- | --- |
 | 0 | Prep | ✅ 2026-08-09 |
-| 1 | Foundation (tokens, type, primitives, styleguide) | ☐ |
+| 1 | Foundation (tokens, type, primitives, styleguide) | ✅ 2026-08-09 |
 | 2 | Chrome (nav, footer, theme toggle, default layout) | ☐ |
 | 3 | Post layout 1c | ☐ |
 | 4 | Home 1a/1b — **blocked on the IA decision** | ☐ |
@@ -380,6 +382,34 @@ Format: `date — decision — why`.
   assumes the conventional location.
 - *(pending)* — 1a vs 1b home-page IA. Blocks Phase 4 and a small edit to
   `head-nav.html`.
-- *(pending)* — does libsass 3.7 pass `color-mix(in srgb, …)` through intact?
-  Answered on the first Phase 1 build. If not, the divider and hover tints fall
-  back to `rgba()` literals.
+- **2026-08-09 — `color-mix()` is not used at all; the question is moot.** The
+  handoff's mixes are all a literal colour against `transparent`, so Sass
+  computes them at build time into plain `rgba()` and libsass never sees the
+  function. The mixes that *couldn't* be precomputed — hover tints over
+  `var(--color-accent)` — became named tokens instead (`--wash-accent`,
+  `--wash-ink`, and so on). That is strictly better than the spec: no runtime
+  browser support to worry about, and the dark theme can retune a wash, which
+  it needs to, since a 12% ink wash that reads as a tint on paper is invisible
+  on a dark ground.
+- **2026-08-09 — No compat shim was needed.** The plan called for aliasing old
+  token names to new ones. Unnecessary: the two systems use different names
+  (`--bg-color` vs `--color-bg`) and `_variables.scss` still defines the old
+  set, so un-migrated pages are untouched. The new foundation is imported
+  *before* the outgoing partials so old rules still win on old pages.
+- **2026-08-09 — New component classes are prefixed `n-`, and the reset is
+  `_reset.scss` not `_base.scss`.** Both avoid collisions with the outgoing
+  stylesheet's `.btn` / `.card` / `.tag` and its existing `_base.scss` while
+  the two systems coexist. Phase 8 deletes the old ones; the `n-` prefix stays,
+  since renaming a dozen partials to save one character is not worth it.
+- **2026-08-09 — Display type is fluid `clamp()`, not a breakpoint step.** The
+  handoff steps sizes down below 700px (82→44, 70→40, 54→34). clamp() hits the
+  same endpoints continuously, so no single width makes a heading jump.
+- **2026-08-09 — `.n-tag-accent` got its own tokens.** The accent ramp
+  deliberately does not invert with theme, so accent-100 stayed a near-white
+  fill and glared on the dark ground. Fixed with `--tag-accent-bg` /
+  `--tag-accent-ink` rather than a dark-mode rule — when a component seems to
+  need a `[data-theme]` rule, that is the signal it is missing a token.
+- **2026-08-09 — Buttons and inputs are min 44px tall; inputs are 16px.**
+  Taller than the mocks draw them. A control too small to hit on a phone is a
+  worse failure than one a few pixels off-spec, and iOS Safari zooms the
+  viewport on focus for any input under 16px.

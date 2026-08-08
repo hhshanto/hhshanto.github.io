@@ -1,0 +1,261 @@
+// Component layer - buttons, tags, cards, inputs, tables.
+//
+// Ported from the design system's component sheet. Class names are prefixed
+// n- (Noema) so they cannot collide with the outgoing stylesheet's .btn, .card
+// and .tag, which are still in use on pages that have not been rebuilt.
+//
+// Colour discipline, from the handoff: the accent is NEVER a fill. No solid
+// gold buttons, no gold cards, no gradients. It appears as 1px borders, 2px
+// left rules, underlines, small kicker text and 10-12% washes.
+
+// ── Buttons ────────────────────────────────────────────────────────────────
+.n-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: var(--space-2) calc(var(--space-3) * 1.2);
+  // 44px is the minimum comfortable tap target. Desktop buttons in the mocks
+  // are shorter than this, but a button too small to hit on a phone is a
+  // worse failure than one a few pixels taller than drawn.
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.n-btn-primary {
+  color: var(--color-accent-ink);
+  border-color: var(--color-accent);
+
+  &:hover { background: var(--wash-accent); }
+  &:active { background: var(--wash-accent-strong); }
+}
+
+.n-btn-secondary {
+  border-color: var(--color-divider);
+
+  &:hover { background: var(--wash-ink); }
+  &:active { background: var(--wash-ink-strong); }
+}
+
+.n-btn-ghost {
+  color: var(--color-accent-ink);
+  padding-inline: var(--space-2);
+
+  &:hover { background: var(--wash-accent); }
+}
+
+.n-btn-block {
+  width: 100%;
+}
+
+// ── Tags ───────────────────────────────────────────────────────────────────
+.n-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius-md) * 0.75);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+// The one place an accent-tinted fill is allowed. Tokenised rather than
+// pointing at the ramp directly, because the ramp does not invert with theme.
+.n-tag-accent {
+  background: var(--tag-accent-bg);
+  color: var(--tag-accent-ink);
+}
+
+.n-tag-neutral {
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-800);
+}
+
+.n-tag-outline {
+  border-color: var(--color-accent);
+  color: var(--color-accent-ink);
+
+  &:hover { background: var(--wash-accent); }
+}
+
+// ── Cards ──────────────────────────────────────────────────────────────────
+.n-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: transparent;
+}
+
+.n-card-kicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-accent-ink);
+}
+
+.n-card-title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 21px;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.n-card-body {
+  margin: 0;
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--color-neutral-700);
+}
+
+.n-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent-ink);
+}
+
+// ── Forms ──────────────────────────────────────────────────────────────────
+.n-field > label {
+  display: block;
+  margin-bottom: 5px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+
+.n-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  caret-color: var(--color-accent);
+  font-family: var(--font-body);
+  // 16px minimum: iOS Safari zooms the viewport on focus for anything smaller,
+  // which on a filter field means the page jumps every time you tap it.
+  font-size: 16px;
+
+  &::placeholder { color: var(--color-neutral-500); }
+  &:hover { border-color: var(--color-neutral-400); }
+
+  &:focus-visible {
+    border-color: var(--color-accent);
+    outline-offset: 0;
+  }
+}
+
+textarea.n-input {
+  min-height: 90px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.n-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 14px;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+
+  .dot {
+    width: 16px;
+    height: 16px;
+    flex: none;
+    border: 1.5px solid var(--color-divider);
+    border-radius: 50%;
+  }
+
+  &:hover .dot { border-color: var(--color-accent); }
+
+  input:checked + .dot {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+    box-shadow: inset 0 0 0 4px var(--color-bg);
+  }
+
+  input:focus-visible + .dot {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+// ── Table ──────────────────────────────────────────────────────────────────
+// Wide tables must scroll inside their own container rather than making the
+// page scroll sideways; wrap one in .n-table-wrap.
+.n-table-wrap {
+  overflow-x: auto;
+}
+
+.n-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 14px;
+
+  th {
+    padding: var(--space-2);
+    border-bottom: 1px solid var(--color-divider);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: left;
+    color: var(--color-neutral-600);
+  }
+
+  td {
+    padding: var(--space-2);
+    border-bottom: 1px solid var(--color-divider);
+  }
+
+  // Numeric columns right-align with lining figures.
+  .num {
+    text-align: right;
+    font-feature-settings: "tnum";
+  }
+
+  tbody tr:hover { background: var(--wash-ink); }
+}
