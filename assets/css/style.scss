@@ -13,8 +13,9 @@
 @import "search";  // Add this line
 @import "forms";
 
-// Global font imports
-@import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap');
+// Webfonts are requested from the head of the default layout, not with a
+// CSS @import: an @import here is not discoverable until this stylesheet
+// has already downloaded and parsed, which serialises the two requests.
 
 // Import dark mode last so it overrides other styles
 @import "dark-mode";

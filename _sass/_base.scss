@@ -9,8 +9,12 @@ html {
     scroll-behavior: smooth;
 }
 
+// Two families carry the site: Open Sans for reading, Playfair Display
+// for headings. Body text was previously Segoe UI here but Open Sans
+// inside posts, so the same page changed typeface between the section
+// listing and the article it linked to.
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Open Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: $text-color;
     background-color: $background-color;

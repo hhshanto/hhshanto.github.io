@@ -1,8 +1,10 @@
 ---
 layout: default
 ---
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-
+{%- comment -%}
+The webfont <link> that used to sit here loaded from inside the body and
+only on post pages; it now lives in the head of the default layout.
+{%- endcomment -%}
 <article class="post">
     <!-- Post Header -->
     {% include post-header.html %}
