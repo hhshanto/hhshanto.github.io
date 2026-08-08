@@ -6,91 +6,42 @@ last_modified_at: 2025-03-08
 status: published
 confidence: high
 abstract: >
-  An exploration of Noema as both a philosophical concept and a digital knowledge space, 
-  examining how the intentional cultivation of thoughts and ideas creates meaningful 
-  connections between diverse fields of knowledge.
+  Why this site is organized by subject rather than by date, why posts carry a confidence level, and what I'm actually trying to do by publishing things before they're finished.
 ---
 
-## Context
+In phenomenology, *noema* is the object of thought as it appears to consciousness: the thing as experienced, rather than the thing itself. Husserl's point was that you never get at the object unmediated; what you have is your grasp of it, shaped by the act of grasping.
 
-In phenomenological philosophy, "noema" refers to the object of thought as it appears to consciousness—the phenomena as experienced rather than the thing itself. This website, Noema, embodies this concept by serving as a digital garden where ideas across various domains—from data science to philosophy, technology to arts—are cultivated and interconnected. In an age of information abundance, Noema represents an intentional approach to knowledge organization and sharing.
+That's a reasonable description of what a personal site is. Nothing here is the subject itself. It's my current hold on the subject, which is a different and smaller thing.
 
-## Key Points
+## Why It's Not a Blog
 
-### 1. Philosophical Foundations
+A blog is organized by date, which implies the most recent thing is the most relevant thing. For news that's true. For ideas it's mostly false. A post I wrote two years ago about something I've thought about for a decade is more considered than one I wrote last week.
 
-- **Phenomenological Roots**: The concept of noema as the experienced object of consciousness
-- **Intentionality**: The directed nature of thought and awareness
-- **Meaning-Making**: How consciousness constructs understanding from experience
-- **Intersectionality**: The value of cross-domain knowledge connections
+So this is organized by subject: natural sciences, social sciences, arts and literature, reflections, contemporary. Posts get revised rather than superseded. If I change my mind, I'd rather edit the thing than publish a correction that fewer people will read than the original.
 
-### 2. Digital Knowledge Gardens
+The tradeoff is that nothing here is finished, and some of it contradicts other parts. I've decided that's acceptable. Waiting until a thought is complete is how most thoughts never get written down at all.
 
-- **Beyond Traditional Blogs**: Moving from chronological to topical organization
-- **Living Documents**: Ideas that evolve through continuous cultivation
-- **Knowledge Graphs**: Interconnected thoughts rather than isolated posts
-- **Public Thinking**: The value of sharing works-in-progress
+## Confidence and Uncertainty
 
-### 3. Knowledge Categories
+Every post carries a confidence level in its metadata. This is the part of the setup I'd defend most strongly.
 
-- **Natural Sciences**: Exploring the physical world through empirical methods
-- **Social Sciences**: Understanding human behavior and social structures
-- **Arts & Literature**: Examining creative expression and cultural works
-- **Reflections**: Personal contemplations on broader themes
+Ordinary prose has no way to distinguish "I've read the literature and I'm fairly sure" from "this occurred to me on a walk." Both come out as declarative sentences, and the reader has to guess. Marking it explicitly costs one line of front matter and tells you how much weight to put on what follows.
 
-## Analysis
+It also disciplines the writing. Labelling a post `confidence: low` is much easier than hedging every sentence inside it, which means the prose gets to be direct while the uncertainty stays honest.
 
-The digital garden approach to knowledge sharing represents a departure from traditional content models. Rather than optimizing for engagement metrics or adhering to strict publishing schedules, Noema prioritizes depth, connection, and evolution of thought. This approach acknowledges several realities:
+## What I'm Actually Doing Here
 
-### Knowledge as Process
+Writing to find out what I think, mostly. The half-formed version usually survives contact with a blank page badly, and the failure is informative.
 
-Ideas rarely emerge fully formed. Instead, they develop through:
+Publishing it rather than keeping it in a notebook adds a second constraint: someone might read this. That's enough to catch a fair amount of sloppiness that a private note would never surface.
 
-1. **Exploration**: Initial investigation and questioning
-2. **Connection**: Finding relationships to existing knowledge
-3. **Refinement**: Developing nuance and precision
-4. **Evolution**: Allowing thoughts to change over time
+The connections between areas are the part I care about most and have the least control over. I can't plan for a psychology post to change how I read a physics one. That either happens or it doesn't, and the only thing I can do is keep both in the same place and revisit them.
 
-### Confidence and Uncertainty
-
-Not all knowledge carries equal certainty. Noema embraces this by:
-- Explicitly stating confidence levels
-- Distinguishing between established understanding and emerging hypotheses
-- Acknowledging limitations and gaps
-- Inviting dialogue rather than claiming definitive answers
-
-## Implications
-
-### For Readers
-
-1. **Active Engagement**: Invitation to explore interconnected ideas
-2. **Intellectual Humility**: Appreciating the provisional nature of knowledge
-3. **Cross-Disciplinary Thinking**: Breaking down artificial domain boundaries
-4. **Continuous Learning**: Returning to evolving content over time
-
-### For Knowledge Creation
-
-1. **Breaking the Publish/Perfect Dichotomy**: Sharing valuable thoughts before they're "complete"
-2. **Reducing Orphaned Ideas**: Creating homes for thoughts that don't fit traditional formats
-3. **Enabling Serendipity**: Facilitating unexpected connections
-4. **Building in Public**: Creating alongside an engaged community
+Like any garden, it needs tending and it will look different in a year.
 
 ## References
 
-1. Husserl, E. (1913). Ideas Pertaining to a Pure Phenomenology and to a Phenomenological Philosophy
-2. Ahrens, S. (2017). How to Take Smart Notes: One Simple Technique to Boost Writing, Learning and Thinking
-3. Maran, T. (2018). Digital Gardens: Cultivation and Presentation of Knowledge on the Internet
-4. Bourdieu, P. (1986). The Forms of Capital
-
-## Meta
-
-This reflection represents my understanding of Noema as both a philosophical concept and approach to knowledge sharing. The confidence level is "high" regarding the fundamental principles discussed, though specific implementations continue to evolve as the digital garden grows.
-
-## Updates
-
-- Initial publication: March 8, 2025
-- Future updates will address new developments in digital knowledge sharing
-
----
-
-**Note**: This reflection aims to articulate the philosophy behind Noema while acknowledging that, like any garden, it requires continuous tending and will evolve over time.
+1. Husserl, E. (1913). *Ideas Pertaining to a Pure Phenomenology and to a Phenomenological Philosophy*
+2. Ahrens, S. (2017). *How to Take Smart Notes: One Simple Technique to Boost Writing, Learning and Thinking*
+3. Maran, T. (2018). *Digital Gardens: Cultivation and Presentation of Knowledge on the Internet*
+4. Bourdieu, P. (1986). *The Forms of Capital*

@@ -4,57 +4,41 @@ title: "Cognitive Dissonance: Loving and Questioning My Country at the Same Time
 date: 2025-03-15
 description: "An exploration of the tension between national pride and frustration, and how cognitive dissonance shapes my perception of Bangladesh."
 abstract: >
-  A deep dive into the psychological phenomenon of cognitive dissonance, particularly in the context of patriotic ambivalence. I explore how I can simultaneously feel immense love for Bangladesh while grappling with frustration over its flaws, and how this emotional tug-of-war shapes my national identity.
-
+  Festinger's term for holding two contradictory beliefs at once describes my relationship with Bangladesh better than anything else I've found. Here is what it actually looks like day to day, and why I've stopped trying to resolve it.
 ---
 
-## Introduction
-
-Loving my country isn’t simple. There are days when I feel overwhelming pride—watching Bangladeshis come together in times of crisis, seeing our culture thrive, and knowing our history of resilience. But then, there are moments of deep frustration—the corruption, the political instability, the injustices that seem to persist no matter how much progress we make. These conflicting emotions create an internal struggle, one that psychologists call **cognitive dissonance**—the discomfort of holding contradictory beliefs or feelings at the same time.
+Loving my country isn't simple. There are days when I feel overwhelming pride: watching Bangladeshis come together in a crisis, seeing the culture thrive, knowing the history behind it. Then there are the other days: the corruption, the political instability, the injustices that persist no matter how much else improves. Psychologists have a name for the discomfort of holding contradictory beliefs at the same time. They call it **cognitive dissonance**.
 
 ## Understanding Cognitive Dissonance
 
-Cognitive dissonance occurs when my beliefs or values clash with the reality I perceive. In the case of patriotic ambivalence, I deeply believe in the potential of Bangladesh, in the warmth and strength of its people, and in the sacrifices that built this nation. Yet, I can’t ignore the issues that hold us back—systemic corruption, environmental concerns, and political division. This internal conflict isn’t just frustrating; it’s emotionally exhausting.
+Cognitive dissonance happens when your beliefs clash with what you actually see. I believe in Bangladesh's potential, in the warmth and strength of its people, in what was sacrificed to build it. I also can't ignore systemic corruption, environmental damage, and political division. The conflict isn't just frustrating. It's tiring in a way that's hard to explain.
 
-Leon Festinger, the psychologist who coined the term "cognitive dissonance," argued that when people experience conflicting thoughts, they are driven to resolve the inconsistency. For me, that means either justifying my frustrations (“every country has flaws”) or reevaluating my attachment to national pride (“maybe I’m expecting too much”). But neither option fully resolves the tension—I remain caught in a loop of both love and disillusionment.
+Leon Festinger, who coined the term, argued that people can't sit in that inconsistency for long. They're driven to resolve it. For me that usually means one of two moves. Either I justify the frustration ("every country has flaws") or I question the attachment ("maybe I'm expecting too much"). Neither works. I end up back in the loop.
 
-## How Cognitive Dissonance Manifests in My National Identity
+## How It Shows Up
 
-Cognitive dissonance doesn’t just sit in my mind as an abstract thought. It actively affects how I engage with my country in my daily life. Some of the ways it manifests include:
+It doesn't stay abstract. It changes how I actually engage.
 
-### 1. The Emotional Rollercoaster
-Some days, I am fiercely proud of Bangladesh—its history of resilience, its growing economy, its deep-rooted cultural heritage. Other days, I am filled with frustration over issues like political corruption, traffic congestion, economic disparity, and bureaucratic inefficiencies. This back-and-forth can be exhausting, making it hard to settle on a single, stable perception of my country.
+The most obvious effect is the swing. Some days I'm fiercely proud of Bangladesh, other days I'm furious about traffic and bureaucracy and disparity, and I can't settle into a stable view of the place. The instability itself is the tiring part.
 
-### 2. Selective Engagement with Information
-Cognitive dissonance makes me filter what I engage with. When I see negative news—scandals, injustice, failures—I feel disheartened. But when Bangladesh achieves something significant, like technological advancements or international recognition, I latch onto that information to reaffirm my national pride. This selective engagement is my mind’s way of reducing the discomfort caused by conflicting emotions.
+Then there's what I pay attention to. A scandal, an injustice, I skim past faster than I should. Good news, a technological milestone or international recognition, I hold onto longer than it probably deserves. That's not analysis, it's my mind reducing discomfort.
 
-### 3. The Debate Between Idealism and Realism
-I often find myself oscillating between an idealistic vision of Bangladesh and a realistic acknowledgment of its flaws. I want to believe that meaningful change is possible, but I also recognize the deeply ingrained challenges that slow progress. This tug-of-war between what could be and what is often leaves me feeling restless and uncertain.
+There's also a running argument between what I want to believe is possible and what I actually expect. I want to think meaningful change is coming. I also know how deep the problems go. Sitting between those leaves me restless.
 
-### 4. Internalized Frustration and Guilt
-Loving my country while being critical of it sometimes makes me feel guilty. Am I being too harsh? Should I be more appreciative? Does my frustration mean I’m less patriotic? These questions linger in my mind, creating another layer of cognitive dissonance—one that isn’t just about Bangladesh’s issues, but about my own emotional responses to them.
+And underneath all of it, guilt. Am I being too harsh? Should I be more appreciative? Does the frustration make me less patriotic? Those questions add a second layer of dissonance, not about Bangladesh's problems but about whether I'm allowed to have this reaction to them.
 
-## How I Navigate This Contradiction
+## How I Live With It
 
-Rather than ignoring my cognitive dissonance, I try to embrace it. Here’s how:
+I've mostly stopped trying to fix it.
 
-### 1. **Accepting Complexity**
-No country is perfect. Bangladesh, like any other nation, has both triumphs and failures. Acknowledging both allows me to love it without blind patriotism. I can admire its progress while still pushing for improvements.
-   
-### 2. **Channeling Frustration into Action**
-Instead of letting disappointment turn into cynicism, I try to contribute in any way I can—whether through education, social initiatives, or simply staying informed and engaged. Frustration can be a powerful motivator for change.
-   
-### 3. **Finding Perspective**
-Talking to others, especially those from different backgrounds, helps me realize that no one’s relationship with their country is entirely simple. Many people across the world feel similarly about their nations. The more I engage in conversations about these struggles, the more I realize that cognitive dissonance is a universal experience.
+Accepting that no country is uncomplicated helps. Bangladesh has triumphs and failures, and acknowledging both lets me care about it without pretending. Channeling the frustration somewhere (education, staying informed, arguing with people who need arguing with) is better than letting it curdle into cynicism.
 
-### 4. **Holding onto Hope**
-Change is slow, but it happens. The fact that I even care this much means I believe in Bangladesh’s potential, and that’s something worth holding onto. I remind myself that progress isn’t always linear, and history has shown that meaningful change is often the result of persistent efforts over time.
+Talking to people from elsewhere helps more than I expected. Nobody's relationship with their country is simple. Everyone I've asked has some version of this.
 
-### 5. **Redefining Patriotism**
-Patriotism doesn’t mean ignoring flaws or blindly defending my country. It means caring enough to want it to be better. True love for a nation includes the willingness to acknowledge its shortcomings and work toward improvement.
+And I've had to redefine what patriotism means to me. It isn't defending the place reflexively. It's wanting it to be better, which requires admitting what's wrong with it.
 
-## Conclusion
+## The Part That Doesn't Resolve
 
-Cognitive dissonance isn’t a sign of weakness—it’s a reflection of how much I care. My patriotic ambivalence isn’t an identity crisis; it’s a nuanced, complex love for Bangladesh that acknowledges both its beauty and its flaws. In the end, my hope and frustration don’t cancel each other out—they coexist, pushing me to stay engaged and invested in the future of my country. Because loving something doesn’t mean ignoring its faults; it means believing in its ability to be better.
+The dissonance is still there. It'll be there tomorrow when I read the news.
 
-Living with cognitive dissonance means constantly questioning, reevaluating, and reconciling my emotions toward Bangladesh. But rather than seeing this as a burden, I recognize it as a part of growth. It keeps me engaged, makes me more thoughtful, and ultimately strengthens my connection to my homeland. After all, love that endures despite contradictions is the most resilient kind of love there is.
+What's changed is that I no longer treat it as a problem to solve. It keeps me paying attention. On the days I stop feeling it, that's when I'll worry.
