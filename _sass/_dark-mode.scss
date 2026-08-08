@@ -24,19 +24,14 @@
         background: #1a1a1a;
     }
     
-    /* For all sections and pages */
-    .about-section,
-    .latest-posts-section,
-    .reflections,
-    .natural-sciences,
-    .arts-literature,
-    .contemporary,
-    .social-sciences,
-    main,
-    .content,
-    .page-content {
-        background: #1a1a1a !important;
-    }
+    // The block that used to live here forced `background: #1a1a1a !important`
+    // onto main, .content, .page-content and every section wrapper. With the
+    // page ground now coming from --color-bg (#201f1d in dark), that hardcoded
+    // value painted a visibly lighter rectangle behind the content column.
+    //
+    // Removed rather than re-pointed: these elements have no background of
+    // their own to override, so inheriting the body ground is correct. It is
+    // the exact failure the "colour lives in one file" rule exists to prevent.
 }
 
 // Dark mode card styles

@@ -51,3 +51,4 @@ dir.py
 .tools/node_modules/
 .tools/shots/
 .tools/package-lock.json
+.tools/.site/

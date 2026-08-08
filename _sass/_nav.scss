@@ -1,0 +1,240 @@
+// Site masthead — screen 1a.
+//
+// Mobile-first: base rules are the phone (brand + search + a disclosure
+// button, links hidden behind it), and the row opens out above $bp-md.
+
+.masthead {
+  background: var(--color-bg);
+}
+
+.masthead-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  max-width: $content-max;
+  margin-inline: auto;
+  padding: var(--space-3) var(--page-pad);
+
+  @media (min-width: $bp-md) {
+    // The spec's 24px top / 16px bottom - the brand sits slightly high in its
+    // band, which is what makes it read as a masthead rather than a toolbar.
+    padding: 24px var(--page-pad) 16px;
+  }
+}
+
+// ── Brand ──────────────────────────────────────────────────────────────────
+.masthead-brand {
+  margin-right: auto;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 21px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: color var(--t-fast);
+
+  &:hover { color: var(--color-accent); }
+
+  @media (min-width: $bp-md) {
+    font-size: 27px;
+  }
+}
+
+// ── Disclosure button (phone only) ─────────────────────────────────────────
+.masthead-disclosure {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px; // pull the tap target's slack back off the gutter
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  cursor: pointer;
+
+  @media (min-width: $bp-md) {
+    display: none;
+  }
+}
+
+// Three rules drawn from one element plus its two pseudo-elements.
+.masthead-disclosure-bars {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 1px;
+  background: currentColor;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 18px;
+    height: 1px;
+    background: currentColor;
+  }
+
+  &::before { top: -6px; }
+  &::after { top: 6px; }
+}
+
+// ── Nav ────────────────────────────────────────────────────────────────────
+.masthead-nav {
+  display: none;
+
+  &.is-open {
+    display: block;
+    // Drops below the bar as a full-width panel rather than trying to fit a
+    // five-item list into the row.
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    padding: var(--space-3) var(--page-pad) var(--space-4);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-divider);
+    box-shadow: var(--shadow-md);
+  }
+
+  @media (min-width: $bp-md) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+
+    // Undo the panel treatment if a resize leaves .is-open behind.
+    &.is-open {
+      position: static;
+      padding: 0;
+      border: 0;
+      box-shadow: none;
+    }
+  }
+}
+
+.masthead-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @media (min-width: $bp-md) {
+    flex-direction: row;
+    align-items: center;
+    gap: 26px;
+  }
+}
+
+.masthead-link {
+  display: block;
+  padding: 11px 0; // 44px tap target on a phone
+  font-family: var(--font-body);
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--t-fast);
+
+  &:hover { color: var(--color-accent); }
+
+  // The current domain carries a 1px accent rule under it. On the phone panel
+  // the links are stacked, so the rule would read as a divider; there the
+  // accent colour alone marks position.
+  &[aria-current="page"] {
+    color: var(--color-accent-ink);
+  }
+
+  @media (min-width: $bp-md) {
+    padding: 0 0 2px;
+    font-size: 12.5px;
+
+    &[aria-current="page"] {
+      color: inherit;
+      border-bottom: 1px solid var(--color-accent);
+    }
+  }
+}
+
+// ── Tools ──────────────────────────────────────────────────────────────────
+.masthead-tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-divider);
+
+  @media (min-width: $bp-md) {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+}
+
+.masthead-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 0;
+  color: var(--color-neutral-600);
+  text-decoration: none;
+  transition: color var(--t-fast);
+
+  &:hover { color: var(--color-accent); }
+}
+
+.masthead-kbd {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+.masthead-search-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  // 1a shows a bare glyph on desktop; the word is there for the phone, where
+  // an unlabelled command symbol means nothing.
+  @media (min-width: $bp-md) {
+    display: none;
+  }
+}
+
+.masthead-theme {
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  color: var(--color-neutral-600);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--t-fast);
+
+  &:hover { color: var(--color-accent); }
+}
+
+// ── Inset rule ─────────────────────────────────────────────────────────────
+// Stops short of both edges. Deliberate in the spec, and the reason it is an
+// element rather than a border: a border cannot inset from its own box.
+.masthead-rule {
+  max-width: $content-max;
+  margin-inline: auto;
+  height: 1px;
+
+  &::after {
+    content: "";
+    display: block;
+    height: 1px;
+    margin-inline: var(--page-pad);
+    background: var(--color-divider);
+  }
+}

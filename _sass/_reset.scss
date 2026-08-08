@@ -45,6 +45,28 @@ select {
   background: var(--wash-selection);
 }
 
+// ── Skip link ──────────────────────────────────────────────────────────────
+// Off-screen until focused. Without it a keyboard reader tabs through the
+// whole masthead on every page before reaching the content.
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-accent);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-decoration: none;
+  transform: translateY(-120%);
+
+  &:focus-visible {
+    transform: translateY(0);
+  }
+}
+
 // ── Motion ─────────────────────────────────────────────────────────────────
 // The design's motion budget is colour, a 2px lift and a progress bar. Under
 // prefers-reduced-motion the lift and the bar go; colour changes stay, because

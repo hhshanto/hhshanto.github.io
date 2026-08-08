@@ -99,7 +99,14 @@ nothing.
 bundle exec jekyll build          # ~2s
 bundle exec jekyll serve          # localhost:4000
 node .tools/shoot.mjs / /about/   # screenshot paths at 4 widths x 2 themes
+node .tools/check-chrome.mjs      # behavioural checks: theme, nav, a11y
 ```
+
+`check-chrome.mjs` asserts the things a screenshot cannot show — that the theme
+is applied before first paint, that the mobile menu opens and Escape closes it
+with focus restored, that the current domain is marked while reading one of its
+posts, that Tab reaches the skip link. Run it after touching the layout, the
+masthead or either script. Extend it rather than starting a new checker.
 
 `shoot.mjs` builds the site, serves it on a throwaway port, and writes PNGs to
 `.tools/shots/`. Read them back to check work visually — this is the only way
@@ -110,6 +117,13 @@ captures full-page instead of viewport.
 **Run it from PowerShell, not the Bash tool.** Git Bash rewrites a leading `/`
 argument into a Windows path (`/` becomes `C:/Program Files/Git/`) and the
 navigation fails. From Bash, prefix with `MSYS_NO_PATHCONV=1`.
+
+**Both tools build to `.tools/.site/`, never the shared `_site/`.** A
+`jekyll serve` running in another terminal watches the repo and rebuilds
+`_site` on every save; two writers in one directory race, and the symptom is a
+page that screenshots half-empty with collection documents missing. That is
+indistinguishable from a real bug, so the harness keeps its own destination.
+Do not point it back at `_site`.
 
 **Playwright is pinned to exactly 1.58.0** in `.tools/package.json` — not a
 caret range. 1.58.0 is the version whose Chromium revision (1208) is already

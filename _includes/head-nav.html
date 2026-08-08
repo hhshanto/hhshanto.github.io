@@ -1,0 +1,63 @@
+{%- comment -%}
+  Site masthead — screen 1a of the handoff: brand at left, the five domains
+  plus a search trigger at right, and a hairline that stops short of both edges.
+
+  The domain list comes from _data/domains.yml so the header, the home page's
+  domain grid and the category mastheads cannot drift apart.
+
+  Current-page detection compares page.url against each domain url. Collection
+  documents live under their domain's path (/reflections/philosophy/foo/), so
+  `contains` marks the domain active while reading one of its posts, which is
+  what you want — the nav should say where you are, not only where you clicked.
+{%- endcomment -%}
+
+<header class="masthead">
+  <div class="masthead-bar">
+    <a class="masthead-brand" href="{{ '/' | relative_url }}">Noema</a>
+
+    <button class="masthead-disclosure" type="button"
+            aria-expanded="false" aria-controls="masthead-nav"
+            aria-label="Open navigation">
+      <span class="masthead-disclosure-bars" aria-hidden="true"></span>
+    </button>
+
+    <nav class="masthead-nav" id="masthead-nav" aria-label="Primary">
+      <ul class="masthead-links">
+        {%- for domain in site.data.domains -%}
+          {%- assign is_current = false -%}
+          {%- if page.url contains domain.url -%}{%- assign is_current = true -%}{%- endif -%}
+          <li>
+            <a href="{{ domain.url | relative_url }}"
+               class="masthead-link"
+               {% if is_current %}aria-current="page"{% endif %}>{{ domain.title }}</a>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      <div class="masthead-tools">
+        {%- comment -%}
+          A real button, not a styled span: it is keyboard-reachable and
+          announces itself. Phase 6 binds it to the search palette; until then
+          it links to the existing search-capable page so it is never a dead
+          control.
+        {%- endcomment -%}
+        <a class="masthead-search" href="{{ '/all-posts/' | relative_url }}">
+          <span class="masthead-kbd" aria-hidden="true">&#8984;K</span>
+          <span class="masthead-search-label">Search</span>
+        </a>
+
+        <button class="masthead-theme" type="button" id="themeToggle"
+                aria-label="Switch colour theme">
+          <span class="masthead-theme-label" data-theme-label>Light</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  {%- comment -%}
+    The rule is inset from the page edges rather than running full width. It is
+    drawn as its own element, not a border on .masthead, because a border
+    cannot stop short of its box.
+  {%- endcomment -%}
+  <div class="masthead-rule" role="presentation"></div>
+</header>

@@ -1,0 +1,60 @@
+// Site footer.
+
+.site-foot {
+  margin-top: 72px;
+  border-top: 1px solid var(--color-divider);
+  background: var(--color-surface);
+}
+
+.site-foot-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: $content-max;
+  margin-inline: auto;
+  padding: var(--space-4) var(--page-pad);
+  text-align: center;
+
+  @media (min-width: $bp-sm) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    padding-block: 20px;
+  }
+}
+
+.site-foot-copy {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--color-neutral-600);
+}
+
+.site-foot-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-neutral-500);
+
+  a {
+    // 44px tap target without pushing the strip taller than it looks.
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--t-fast);
+
+    &:hover { color: var(--color-accent); }
+  }
+
+  @media (min-width: $bp-sm) {
+    a { min-height: 0; }
+  }
+}

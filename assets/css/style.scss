@@ -14,12 +14,13 @@
 @import "type";
 @import "primitives";
 @import "ui";
+@import "nav";
+@import "footer";
 @import "styleguide";
 
 // ── Outgoing stylesheet (removed phase by phase) ───────────────────────────
 @import "variables";
 @import "base";
-@import "header";
 @import "hero";
 @import "about";
 @import "latest-posts";
@@ -34,3 +35,6 @@
 
 // Import dark mode last so it overrides other styles
 @import "dark-mode";
+
+// Migration bridge — must come last; see the file header.
+@import "shell";

@@ -17,7 +17,14 @@ import { existsSync } from 'node:fs';
 import { extname, join, resolve } from 'node:path';
 
 const ROOT = resolve(import.meta.dirname, '..');
-const SITE = join(ROOT, '_site');
+// Build to our own destination, never the shared _site.
+//
+// A `jekyll serve` running in another terminal watches the repo and rebuilds
+// _site on every file change. Two writers in one directory race, and the
+// visible symptom is a page that screenshots as half-empty — collection
+// documents missing, because the other build was mid-flight when this one
+// read the tree. Screenshotting that is indistinguishable from a real bug.
+const SITE = join(import.meta.dirname, '.site');
 const OUT = join(import.meta.dirname, 'shots');
 const PORT = 4998;
 
@@ -66,25 +73,19 @@ if (!noBuild) {
   console.log('building…');
   // shell: true because on Windows `bundle` is a .bat shim, which CreateProcess
   // will not execute directly.
-  //
-  // `clean` first: a stray `jekyll serve` from another terminal leaves _site
-  // holding pages built against a localhost url and files that a later
-  // `exclude` was supposed to drop. Screenshotting that is how you conclude a
-  // fix worked when it didn't.
-  spawnSync('bundle', ['exec', 'jekyll', 'clean'], {
-    cwd: ROOT, stdio: 'ignore', shell: true,
-  });
-  const build = spawnSync('bundle', ['exec', 'jekyll', 'build'], {
-    cwd: ROOT, stdio: 'inherit', shell: true,
-  });
+  const build = spawnSync(
+    'bundle',
+    ['exec', 'jekyll', 'build', '--destination', SITE],
+    { cwd: ROOT, stdio: 'inherit', shell: true },
+  );
   if (build.status !== 0) {
-    console.error('\njekyll build failed — not screenshotting a stale _site.');
+    console.error('\njekyll build failed — not screenshotting a stale build.');
     process.exit(1);
   }
 }
 
 if (!existsSync(SITE)) {
-  console.error('_site does not exist. Run without --no-build.');
+  console.error(`${SITE} does not exist. Run without --no-build.`);
   process.exit(1);
 }
 

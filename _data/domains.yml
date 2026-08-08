@@ -1,0 +1,41 @@
+# The five domains, in nav order.
+#
+# One source for the header, the home page's domain grid (1a) and the category
+# index mastheads. Adding a domain means adding a collection in _config.yml and
+# an entry here - nothing else hardcodes the list.
+#
+# `collection` is the collection key, so post counts come from
+# site[domain.collection].size rather than a number written down here.
+#
+# Descriptions are the existing `description:` values from each section index
+# page, not new copy.
+
+- title: Natural Sciences
+  short: Natural Sciences
+  url: /natural-sciences/
+  collection: natural-sciences
+  description: Exploring the fundamental laws and phenomena of our universe
+
+- title: Social Sciences
+  short: Social Sciences
+  url: /social-sciences/
+  collection: social-sciences
+  description: Exploring human society and social relationships
+
+- title: Arts & Literature
+  short: Arts
+  url: /arts-literature/
+  collection: arts-literature
+  description: Exploring creativity through written expression
+
+- title: Reflections
+  short: Reflections
+  url: /reflections/
+  collection: reflections
+  description: A curated collection of thoughts, analyses, and insights
+
+- title: Contemporary
+  short: Contemporary
+  url: /contemporary/
+  collection: contemporary
+  description: Exploring modern issues and current developments

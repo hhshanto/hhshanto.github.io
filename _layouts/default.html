@@ -16,156 +16,98 @@
     <link rel="apple-touch-icon" href="{{ '/assets/images/apple-touch-icon.png' | relative_url }}">
 
     {%- comment -%}
-    All four families in one request, from the head. Playfair Display and
-    Open Sans used to be requested by a <link> in the middle of the post
-    layout's body, which meant a flash of fallback text and no webfonts at
-    all on the section, tag and error pages. Fira Code was styled for but
-    never loaded, so code blocks fell back to the system monospace.
-    UnifrakturCook (the logo) was pulled in by an @import inside the
-    stylesheet, which the browser cannot discover until the CSS itself has
-    downloaded.
+    Theme, applied before first paint.
+
+    This has to be an inline, render-blocking script in <head>. The previous
+    version set data-theme inside DOMContentLoaded, which runs after the first
+    paint, so every navigation flashed a light page at dark-theme readers.
+    assets/js/theme.js only wires up the button and can safely be deferred.
+
+    No stored choice means follow the OS.
     {%- endcomment -%}
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var theme = stored || (window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+
+    {%- comment -%}
+    Cormorant Garamond and Lora are self-hosted and declared in _sass/_fonts.scss;
+    preloading the two roman faces here starts them before the CSS has parsed,
+    since a @font-face src is not discoverable until then.
+
+    The Google request below is what remains of the outgoing design: Playfair
+    Display and Open Sans still set the body of pages not yet rebuilt, and Fira
+    Code still sets their code blocks. UnifrakturCook has been dropped — it only
+    ever rendered the old gothic logo, which this masthead replaces. The whole
+    link goes in Phase 8 with the last old partial.
+    {%- endcomment -%}
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+          href="{{ '/assets/fonts/cormorant-garamond-normal-latin.woff2' | relative_url }}">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+          href="{{ '/assets/fonts/lora-normal-latin.woff2' | relative_url }}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Open+Sans:wght@400;600&family=Fira+Code:wght@400&family=UnifrakturCook:wght@700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Open+Sans:wght@400;600&family=Fira+Code:wght@400&display=swap">
 
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 </head>
 <body>
-    
-    <header class="site-header">
-        <div class="header-container">
-            <div class="logo">
-                <a href="{{ '/' | relative_url }}" class="gothic-font">Noema</a>
-            </div>
-            <div class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">
-                {% include icon.html name="bars" %}
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="{{ '/' | relative_url }}">{% include icon.html name="home" %} Home</a></li>
-                    <li><a href="{{ '/natural-sciences' | relative_url }}">{% include icon.html name="atom" %} Natural Sciences</a></li>
-                    <li><a href="{{ '/social-sciences' | relative_url }}">{% include icon.html name="users" %} Social Sciences</a></li>
-                    <li><a href="{{ '/arts-literature' | relative_url }}">{% include icon.html name="palette" %} Arts & Literature</a></li>
-                    <li><a href="{{ '/reflections' | relative_url }}">{% include icon.html name="brain" %} Reflections</a></li>
-                    <li><a href="{{ '/contemporary' | relative_url }}">{% include icon.html name="newspaper" %} Contemporary</a></li>
-                    <li><a href="{{ '/create-post' | relative_url }}">{% include icon.html name="plus" %} Create Post</a></li>
-                </ul>
-            </nav>
-        </div>
+    <a class="skip-link" href="#main">Skip to content</a>
 
-        <div class="theme-toggle">
-            {%- comment -%}
-            Both glyphs are rendered and CSS shows whichever matches the
-            active theme, so the script no longer has to swap icon classes.
-            {%- endcomment -%}
-            <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle colour theme">
-                {% include icon.html name="sun" %}
-                {% include icon.html name="moon" %}
-                <span class="theme-text">Light</span>
-            </button>
-        </div>
+    {% include head-nav.html %}
 
-        
-    </header>
-
-    <main class="content">
+    <main class="content" id="main">
         {{ content }}
     </main>
 
-    <footer class="site-footer">
-        <div class="footer-container">
-            <p>&copy; {{ site.time | date: '%Y' }} Noema. All rights reserved.</p>
-        </div>
-    </footer>
+    {% include footer.html %}
 
+    {%- comment -%}
+    Smooth scrolling for in-page anchors, offset by the masthead so a target
+    heading is not hidden underneath it. Honours prefers-reduced-motion, which
+    the previous version did not — it forced behavior: 'smooth' on everyone.
+    {%- endcomment -%}
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+        document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+          anchor.addEventListener('click', function (event) {
+            var id = this.getAttribute('href');
+            if (id === '#') return;
 
+            var target = document.querySelector(id);
+            if (!target) return;
 
+            event.preventDefault();
+            var masthead = document.querySelector('.masthead');
+            var offset = masthead ? masthead.offsetHeight : 0;
 
-
-<script>
-    // Smooth scrolling for anchor links
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-          anchor.addEventListener('click', function (e) {
-              e.preventDefault();
-              const targetId = this.getAttribute('href');
-              const targetElement = document.querySelector(targetId);
-              
-              if (targetElement) {  // Check if element exists
-                  // Calculate header height
-                  const headerHeight = document.querySelector('.site-header').offsetHeight;
-                  
-                  // Scroll to element with header offset
-                  window.scrollTo({
-                      top: targetElement.offsetTop - headerHeight,
-                      behavior: 'smooth'
-                  });
-              }
+            window.scrollTo({
+              top: target.getBoundingClientRect().top + window.pageYOffset - offset,
+              behavior: reduced ? 'auto' : 'smooth'
+            });
           });
-      });
-  
-      // Add active state to button when about section is in view
-      const aboutSection = document.querySelector('#about');
-      const aboutButton = document.querySelector('a[href="#about"]');
-  
-      if (aboutSection && aboutButton) {  // Check if elements exist
-          window.addEventListener('scroll', () => {
-              const rect = aboutSection.getBoundingClientRect();
-              const headerHeight = document.querySelector('.site-header').offsetHeight;
-              
-              if (rect.top <= headerHeight && rect.bottom >= headerHeight) {
-                  aboutButton.classList.add('active');
-              } else {
-                  aboutButton.classList.remove('active');
-              }
-          });
-      }
-    });
-  </script>
-
-
-
-
-
-<!-- Add this before the closing </body> tag -->
-<script src="{{ '/assets/js/search.js' | relative_url }}"></script>
-
-
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const themeToggle = document.getElementById('themeToggle');
-        const themeText = themeToggle.querySelector('.theme-text');
-
-        // Check for saved theme preference or default to 'light'
-        const currentTheme = localStorage.getItem('theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', currentTheme);
-        updateLabel(currentTheme);
-
-        // Toggle theme on button click
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateLabel(newTheme);
         });
-
-        // Only the label is set here. Which of the two inline icons shows
-        // is decided by CSS from the data-theme attribute.
-        function updateLabel(theme) {
-            themeText.textContent = theme === 'dark' ? 'Dark' : 'Light';
-        }
-    });
+      });
     </script>
 
-
-
-<!-- post-creator.js is loaded by the create-post page itself, not sitewide. -->
-<script src="{{ '/assets/js/mobile-menu.js' | relative_url }}"></script>
+    <script src="{{ '/assets/js/theme.js' | relative_url }}" defer></script>
+    <script src="{{ '/assets/js/masthead.js' | relative_url }}" defer></script>
+    {%- comment -%}
+    post-creator.js is loaded by the create-post page itself, not sitewide.
+    search.js still backs the old hero search field and goes in Phase 6, when
+    the ⌘K palette replaces it.
+    {%- endcomment -%}
+    <script src="{{ '/assets/js/search.js' | relative_url }}"></script>
 </body>
 </html>

@@ -1,0 +1,18 @@
+{%- comment -%}
+  Site footer. Flex space-between on the surface tone, hairline above, 11px.
+  Collapses to a centred stack below the small breakpoint.
+{%- endcomment -%}
+
+<footer class="site-foot">
+  <div class="site-foot-inner">
+    <p class="site-foot-copy">&copy; {{ site.time | date: '%Y' }} {{ site.title }}</p>
+
+    <nav class="site-foot-links" aria-label="Footer">
+      <a href="{{ '/feed.xml' | relative_url }}">RSS</a>
+      <span aria-hidden="true">&middot;</span>
+      <a href="{{ '/sitemap.xml' | relative_url }}">Sitemap</a>
+      <span aria-hidden="true">&middot;</span>
+      <a href="https://github.com/{{ site.social.github }}" rel="me">GitHub</a>
+    </nav>
+  </div>
+</footer>

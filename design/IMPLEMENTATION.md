@@ -7,17 +7,17 @@ Working plan for rebuilding hhshanto.github.io against
 
 ## STATUS — update this as the last step of every session
 
-**Next action:** Phase 2 — `head-nav.html`, `footer.html`, `theme.js` and a
-rewritten `_layouts/default.html`. Review `/styleguide/` in both themes first;
-tokens are cheapest to argue with now.
+**Next action:** Phase 3 — the post layout (1c). `_layouts/post.html`, the
+article styles, `_rouge.scss`, the ToC rail and `article.js` for the reading
+progress bar and scroll-spy.
 
 | Phase | | |
 | --- | --- | --- |
 | 0 | Prep | ✅ 2026-08-09 |
 | 1 | Foundation (tokens, type, primitives, styleguide) | ✅ 2026-08-09 |
-| 2 | Chrome (nav, footer, theme toggle, default layout) | ☐ |
+| 2 | Chrome (nav, footer, theme toggle, default layout) | ✅ 2026-08-09 |
 | 3 | Post layout 1c | ☐ |
-| 4 | Home 1a/1b — **blocked on the IA decision** | ☐ |
+| 4 | Home — **1a confirmed** | ☐ |
 | 5 | Category index 1d + archive 1e | ☐ |
 | 6 | Search palette 1f | ☐ |
 | 7 | Compose 1g | ☐ |
@@ -380,8 +380,38 @@ Format: `date — decision — why`.
   `_layouts/`, `_includes/`, `_sass/` and `_data/` were deliberately **left at
   root** — Jekyll can relocate them, but every doc and every future session
   assumes the conventional location.
-- *(pending)* — 1a vs 1b home-page IA. Blocks Phase 4 and a small edit to
-  `head-nav.html`.
+- **2026-08-09 — 1a wins: the six-domain nav is kept.** The masthead carries
+  all five domains; the home page will lead with a split hero, a five-tile
+  domain grid, then recent posts beside a CV column. 1b's three-door collapse
+  is not being built. Better suited to a knowledge repository, where the
+  structure should be visible from the front door.
+- **2026-08-09 — The nav is driven by `_data/domains.yml`.** One list feeds the
+  masthead, the home domain grid (Phase 4) and the category mastheads
+  (Phase 5), so they cannot drift. Counts come from
+  `site[domain.collection].size`, never a written-down number. Descriptions are
+  the existing `description:` values lifted from each section index page, not
+  new copy.
+- **2026-08-09 — Theme is applied by an inline `<head>` script, before first
+  paint.** The old toggle set `data-theme` inside `DOMContentLoaded`, which
+  runs after the first paint, so dark-theme readers saw a white flash on every
+  navigation. `theme.js` now only wires the button and is deferred. With no
+  stored choice the OS preference wins.
+- **2026-08-09 — The screenshot harness builds to `.tools/.site/`, not
+  `_site/`.** A `jekyll serve` watching the repo from another terminal rebuilds
+  `_site` on every save. Two writers in one directory race: a page screenshotted
+  mid-rebuild came back with its whole post list missing, which reads exactly
+  like a Liquid bug. Cost an hour. The harness now owns its destination.
+- **2026-08-09 — `_sass/_shell.scss` is a deliberate, temporary migration
+  bridge.** Imported last, it owns the few places where the new chrome meets
+  old page bodies: the page ground, and undoing `.content`'s 70px reservation
+  for a fixed header that no longer exists. Nothing new goes in it; Phase 8
+  deletes it with the partials it corrects.
+- **2026-08-09 — Deleted the `!important` block in `_dark-mode.scss`.** It
+  forced `background: #1a1a1a` onto `main`, `.content` and every section
+  wrapper, which painted a visibly lighter rectangle behind the content column
+  once the ground moved to `--color-bg`. Those elements have no background of
+  their own, so inheriting the body ground is correct. A clean demonstration of
+  why rule 1 exists.
 - **2026-08-09 — `color-mix()` is not used at all; the question is moot.** The
   handoff's mixes are all a literal colour against `transparent`, so Sass
   computes them at build time into plain `rgba()` and libsass never sees the
