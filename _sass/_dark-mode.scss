@@ -140,12 +140,8 @@
         }
     }
     
-    // The results panel takes its colours from the --search-* tokens in
-    // post.scss. The block that used to be here set the result title to
-    // #330303 and the abstract to #180101 against a #2d2d2d panel - near
-    // black on dark grey, effectively invisible. Only the hover accent is
-    // worth keeping.
-    .search-results .search-result-item:hover {
-        border-left: 3px solid var(--link-color);
-    }
+    // The results panel is fully token-driven in _search.scss now, so it
+    // needs no dark-mode rules at all. What used to be here set the
+    // result title to #330303 and the abstract to #180101 against a
+    // #2d2d2d panel - near black on dark grey, effectively invisible.
 }

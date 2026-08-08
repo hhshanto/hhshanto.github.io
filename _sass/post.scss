@@ -207,81 +207,9 @@ img {
     }
 }
 
-.search-container {
-    position: relative;
-    max-width: 600px;
-    margin: 20px auto;
-
-    .search-box {
-        width: 100%;
-        padding: 12px 20px;
-        border: 2px solid var(--search-border);
-        border-radius: 25px;
-        font-size: 16px;
-        transition: all 0.3s ease;
-
-        &:focus {
-            outline: none;
-            border-color: var(--link-color);
-            box-shadow: 0 0 5px rgba(0,123,255,0.3);
-        }
-    }
-
-    .search-results {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: var(--search-bg);
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        margin-top: 5px;
-        display: none;
-        z-index: 1000;
-        max-height: 400px;
-        overflow-y: auto;
-    }
-
-    .search-result-item {
-        padding: 15px;
-        border-bottom: 1px solid var(--search-border);
-
-        &:last-child {
-            border-bottom: none;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-            display: block;
-
-            &:hover {
-                background: var(--search-hover);
-            }
-        }
-
-        h3 {
-            margin: 0 0 8px 0;
-            color: var(--link-color);
-            font-size: 16px;
-        }
-
-        p {
-            margin: 0 0 8px 0;
-            font-size: 14px;
-            color: var(--muted-color);
-        }
-
-        .result-meta {
-            font-size: 12px;
-            color: var(--meta-color);
-
-            span {
-                margin-right: 10px;
-            }
-        }
-    }
-}
+// The search dropdown is styled in _search.scss. A duplicate of it
+// used to live here, which is how the panel ended up with two
+// competing definitions.
 
 // Related posts
 // Uses the theme CSS variables so dark mode is inherited automatically

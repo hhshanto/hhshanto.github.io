@@ -30,91 +30,111 @@
     left: 0;
     width: 100%;
     margin-top: 10px;
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
+    background-color: var(--search-bg);
+    border: 1px solid var(--search-border);
     border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px var(--shadow-color);
     z-index: 1000;
     max-height: 400px;
     overflow-y: auto;
-    
-    // Each search result item
+    overflow-x: hidden;
+
+    // Each search result item.
+    //
+    // Hovering changes colour and nothing else. It used to also lift the
+    // row with translateY(-2px), drop a shadow beneath it, and add a 3px
+    // left border that existed only while hovered - so pointing at a row
+    // nudged its own text sideways and floated it over its neighbours,
+    // inside a list that scrolls. `transition: all` animated every one of
+    // those at once.
+    //
+    // The accent is now an inset shadow. It paints inside the box rather
+    // than adding to it, so it cannot move anything, and only the two
+    // properties that actually change are transitioned.
     .search-result-item {
         padding: 15px;
-        border-bottom: 1px solid #e0e0e0;
-        transition: all 0.25s ease;
-        
+        border-bottom: 1px solid var(--search-border);
+        transition: background-color 0.15s ease, box-shadow 0.15s ease;
+
         &:last-child {
             border-bottom: none;
         }
-        
-        &:hover {
-            background-color: #edf7ff; // Light blue background
-            transform: translateY(-2px); // Subtle lift effect
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); // Shadow for depth
-            border-left: 3px solid #3498db; // Left accent border
+
+        // :focus-within so keyboard users get the same cue as the mouse.
+        // The title colour is nested here rather than written as
+        // `.search-result-item:hover &` from inside .search-result-title:
+        // that pattern, which the previous version used, compiles to
+        // `.search-result-item:hover .search-results .search-result-title`
+        // and puts the item outside the panel that contains it, so it
+        // never matched anything.
+        &:hover,
+        &:focus-within {
+            background-color: var(--search-hover);
+            box-shadow: inset 3px 0 0 var(--link-hover-color);
+
+            .search-result-title {
+                color: var(--link-hover-color);
+            }
         }
-        
+
         a {
             text-decoration: none;
             color: inherit;
             display: block;
         }
     }
-    
+
     // Title styling
     .search-result-title {
         margin: 0 0 10px;
         font-size: 18px;
         font-weight: 600;
-        color: #2c3e50;
-        transition: color 0.2s ease;
-        
-        .search-result-item:hover & {
-            color: #3498db; // Bright blue on hover
-        }
+        color: var(--heading-color);
+        transition: color 0.15s ease;
     }
-    
+
     // Abstract styling
     .search-result-abstract {
         margin: 0 0 10px;
         font-size: 14px;
-        color: #555;
+        color: var(--muted-color);
         line-height: 1.5;
-        transition: color 0.2s ease;
-        
-        .search-result-item:hover & {
-            color: #333; // Darker text on hover for better readability
-        }
     }
-    
+
     // Meta information
     .result-meta {
         display: flex;
         align-items: center;
         gap: 10px;
     }
-    
+
     .search-result-category {
         font-size: 12px;
         font-weight: 600;
-        color: #3498db;
-        background-color: rgba(52, 152, 219, 0.1);
+        color: var(--badge-text);
+        background-color: var(--badge-bg);
         padding: 3px 8px;
         border-radius: 12px;
     }
-    
+
     .search-result-date {
         font-size: 12px;
-        color: #777;
+        color: var(--meta-color);
     }
-    
+
     // No results message
     .no-results {
         padding: 20px;
         text-align: center;
-        color: #777;
+        color: var(--meta-color);
         font-style: italic;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .search-results .search-result-item,
+    .search-results .search-result-title {
+        transition: none;
     }
 }
 
