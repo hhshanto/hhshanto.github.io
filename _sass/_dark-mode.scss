@@ -1,35 +1,15 @@
-// Dark mode variables
-[data-theme="dark"] {
-    --bg-color: #1a1a1a;
-    --text-color: #e0e0e0;    /* Lighter text for dark mode */
-    --primary-color: #3498db;
-    --secondary-color: #2ecc71;
-    --header-bg: #2c3e50;
-    --card-bg: #2d2d2d;
-    --card-border: #404040;
-    --link-color: #61dafb;    /* Brighter blue for links in dark mode */
-    --heading-color: #ffffff; /* White headings for dark mode */
-    --search-bg: #2d2d2d;
-    --search-border: #444;
-    --search-hover: #3a3a3a;
-}
+// Dark theme overrides.
+//
+// The dark values of the theme tokens live in _variables.scss alongside
+// the light ones, so they can be read side by side; this file is only for
+// components that cannot be expressed through a token.
+//
+// Rules that existed purely to overpower a hardcoded colour have been
+// removed as those components moved onto tokens. What remains is the
+// partials that still hardcode: _about.scss, _hero.scss,
+// _latest-posts.scss, _forms.scss and _search.scss.
 
-// Dark mode base styles
 [data-theme="dark"] {
-    // Base element styles
-    body {
-        background-color: var(--bg-color);
-        color: var(--text-color);
-    }
-    
-    h1, h2, h3, h4, h5, h6 {
-        color: #ffffff !important;  /* White headings */
-    }
-    
-    a {
-        color: #61dafb !important;  /* Bright blue links */
-    }
-    
     // Layout elements
     .site-header {
         background-color: var(--header-bg);
@@ -95,20 +75,12 @@
     }
 }
 
-// Dark mode post content
-[data-theme="dark"] {
-    .post-content, 
-    .post-abstract, 
-    .post-card,
-    article {
-        color: #e0e0e0 !important;  /* Light gray, very readable */
-        background: #1a1a1a !important;
-    }
-    
-    .post-title a {
-        color: #ffffff !important;
-    }
-}
+// Post content and section listings are driven entirely by the theme
+// tokens now (post.scss, _section-index.scss), so the overrides that used
+// to live here are gone. One of them was actively harmful: .post-title a
+// was forced to #ffffff while .post-item was pinned to `background:
+// white` with no dark counterpart, which made every post title on the
+// section pages white-on-white in dark mode.
 
 // Dark mode form styles
 [data-theme="dark"] {
@@ -170,40 +142,12 @@
         }
     }
     
-    // Search results container
-    .search-results {
-        background-color: #2d2d2d !important;
-        border-color: #444 !important;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5) !important;
-        
-        .search-result-item {
-            border-color: #444 !important;
-            transition: all 0.25s ease !important;
-            
-            &:hover {
-                background: linear-gradient(to right, #2d2d2d, #3a3a3a) !important; // Subtle gradient
-                transform: translateY(-2px) !important; // Subtle lift effect  
-                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important; // Shadow for depth
-                border-left: 3px solid #61dafb !important; // Left accent border
-            }
-        }
-        
-        .search-result-title {
-            color: #330303 !important;
-            transition: color 0.2s ease !important;
-            
-            .search-result-item:hover & {
-                color: #010c0f !important; // Bright blue on hover
-            }
-        }
-        
-        .search-result-abstract {
-            color: #180101 !important;
-            transition: color 0.2s ease !important;
-            
-            .search-result-item:hover & {
-                color: #050000 !important; // Brighter text on hover for better readability
-            }
-        }
+    // The results panel takes its colours from the --search-* tokens in
+    // post.scss. The block that used to be here set the result title to
+    // #330303 and the abstract to #180101 against a #2d2d2d panel - near
+    // black on dark grey, effectively invisible. Only the hover accent is
+    // worth keeping.
+    .search-results .search-result-item:hover {
+        border-left: 3px solid var(--link-color);
     }
 }

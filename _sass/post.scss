@@ -28,14 +28,14 @@ img {
         h1 {
             font-family: 'Playfair Display', serif;  // Elegant serif font for titles
             font-size: 2.5em;
-            color: #2c3e50;
+            color: var(--heading-color);
             margin-bottom: 20px;
             line-height: 1.3;
             font-weight: 700;
         }
 
         .post-meta {
-            color: #7f8c8d;
+            color: var(--meta-color);
             font-size: 0.9em;
             font-family: 'Open Sans', sans-serif;
 
@@ -50,7 +50,7 @@ img {
         font-family: 'Open Sans', sans-serif;
         font-size: clamp(1em, 1.1vw, 1.1em); // Add this line
         line-height: 1.8;
-        color: #2c3e50;
+        color: var(--text-color);
         text-align: justify;
 
         p {
@@ -61,16 +61,16 @@ img {
         h2 {
             font-family: 'Playfair Display', serif;
             font-size: 1.8em;
-            color: #2c3e50;
+            color: var(--heading-color);
             margin: 1.5em 0 1em;
-            border-bottom: 2px solid #eee;
+            border-bottom: 2px solid var(--rule-color);
             padding-bottom: 0.5em;
         }
 
         h3 {
             font-family: 'Playfair Display', serif;
             font-size: 1.4em;
-            color: #34495e;
+            color: var(--heading-color);
             margin: 1.2em 0 0.8em;
         }
 
@@ -84,28 +84,28 @@ img {
         blockquote {
             margin: 1.5em 0;
             padding: 0.5em 1.5em;
-            border-left: 4px solid #3498db;
-            background-color: #f9f9f9;
+            border-left: 4px solid var(--link-color);
+            background-color: var(--quote-bg);
             font-style: italic;
-            color: #34495e;
+            color: var(--muted-color);
         }
 
         // Links
         a {
-            color: #3498db;
+            color: var(--link-color);
             text-decoration: none;
             border-bottom: 1px solid transparent;
             transition: border-color 0.3s ease;
 
             &:hover {
-                border-bottom-color: #3498db;
+                border-bottom-color: var(--link-color);
             }
         }
         
 
         // Code blocks
         pre {
-            background: #f8f9fa;
+            background: var(--code-bg);
             padding: 1em;
             border-radius: 5px;
             overflow-x: auto;
@@ -115,7 +115,7 @@ img {
         code {
             font-family: 'Fira Code', monospace;
             font-size: 0.9em;
-            background: #f8f9fa;
+            background: var(--code-bg);
             padding: 0.2em 0.4em;
             border-radius: 3px;
         }
@@ -215,14 +215,14 @@ img {
     .search-box {
         width: 100%;
         padding: 12px 20px;
-        border: 2px solid #ddd;
+        border: 2px solid var(--search-border);
         border-radius: 25px;
         font-size: 16px;
         transition: all 0.3s ease;
 
         &:focus {
             outline: none;
-            border-color: #007bff;
+            border-color: var(--link-color);
             box-shadow: 0 0 5px rgba(0,123,255,0.3);
         }
     }
@@ -232,7 +232,7 @@ img {
         top: 100%;
         left: 0;
         right: 0;
-        background: white;
+        background: var(--search-bg);
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         margin-top: 5px;
@@ -244,7 +244,7 @@ img {
 
     .search-result-item {
         padding: 15px;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--search-border);
 
         &:last-child {
             border-bottom: none;
@@ -256,25 +256,25 @@ img {
             display: block;
 
             &:hover {
-                background: #f8f9fa;
+                background: var(--search-hover);
             }
         }
 
         h3 {
             margin: 0 0 8px 0;
-            color: #007bff;
+            color: var(--link-color);
             font-size: 16px;
         }
 
         p {
             margin: 0 0 8px 0;
             font-size: 14px;
-            color: #666;
+            color: var(--muted-color);
         }
 
         .result-meta {
             font-size: 12px;
-            color: #888;
+            color: var(--meta-color);
 
             span {
                 margin-right: 10px;

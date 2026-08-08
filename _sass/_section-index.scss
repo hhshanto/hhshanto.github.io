@@ -1,0 +1,175 @@
+// Section index listings
+//
+// Extracted from the identical <style> blocks that were inlined in
+// natural-sciences/, social-sciences/, arts-literature/, reflections/ and
+// contemporary/index.md - five copies of the same ~155 lines. The
+// social-sciences copy had drifted by one extra .post-abstract rule,
+// which is kept here for every section.
+//
+// Colours come from the theme tokens rather than the hardcoded values
+// the inline copies used. That fixes a dark-mode bug those copies had:
+// .post-item was pinned to `background: white` with no dark override,
+// while _dark-mode.scss forced .post-title a to #ffffff, so every post
+// title on these pages was white text on a white card.
+
+.reflections-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 4rem;
+
+    h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--heading-color);
+        margin-bottom: 1rem;
+    }
+}
+
+.header-description {
+    font-size: 1.1rem;
+    color: var(--muted-color);
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.posts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.post-item {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px var(--shadow-color);
+    }
+}
+
+.post-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+
+    time {
+        font-size: 0.9rem;
+        color: var(--meta-color);
+    }
+}
+
+.category-badge {
+    background: var(--badge-bg);
+    color: var(--badge-text);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.post-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0.5rem 0;
+
+    a {
+        color: var(--heading-color);
+        text-decoration: none;
+        transition: color 0.2s ease;
+
+        &:hover {
+            color: var(--link-color);
+        }
+    }
+}
+
+.post-abstract {
+    color: var(--muted-color);
+    line-height: 1.6;
+    margin: 1rem 0;
+}
+
+.post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.post-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.tag {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+}
+
+.confidence-indicator {
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+
+    &[data-level="high"] {
+        background: var(--confidence-high-bg);
+        color: var(--confidence-high-text);
+    }
+
+    &[data-level="medium"] {
+        background: var(--confidence-medium-bg);
+        color: var(--confidence-medium-text);
+    }
+
+    &[data-level="low"] {
+        background: var(--confidence-low-bg);
+        color: var(--confidence-low-text);
+    }
+}
+
+@media (max-width: 640px) {
+    .reflections-container {
+        padding: 1rem;
+    }
+
+    .post-item {
+        padding: 1.5rem;
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+    }
+
+    .post-title {
+        font-size: 1.25rem;
+    }
+
+    .post-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .post-abstract {
+        text-align: justify;
+    }
+}
