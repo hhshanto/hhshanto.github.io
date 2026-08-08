@@ -71,27 +71,9 @@
         }
     }
 
-    .search-container {
-        margin-top: 30px;
-        max-width: 500px;
-
-        .search-box {
-            width: 100%;
-            padding: 15px 20px;
-            border: none;
-            border-radius: 25px;
-            font-size: 1.1em;
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-
-            &:focus {
-                outline: none;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-                background: white;
-            }
-        }
-    }
+    // The search box moved to the site header so it is reachable from
+    // every page rather than only this one; its styles live in
+    // _search.scss. A near-identical copy of them used to sit here.
 
     .typing-effect h1 {
         border-right: 3px solid white;
