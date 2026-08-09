@@ -1,0 +1,43 @@
+{%- comment -%}
+One piece on the constellation map.
+
+Only the piece variant lives here. The root, domain and sub-topic nodes are
+written inline in pages/constellation.html because each occurs once per loop and
+differs in element and in what it carries — a sub-topic is a span, a domain
+links to its index, the root is neither. A piece is emitted from two places
+(under its sub-topic, and under its domain when it has none) with the same nine
+attributes, and that is what earns an include.
+
+Parameters — all required, none defaulted, because a node missing one is a node
+the simulation silently drops:
+
+  document  the collection document
+  domain    its entry from _data/domains.yml
+  parent    the data-node id this hangs from
+  excerpt   the readout body, already truncated by the caller
+
+The escapes are not decoration. A title with a quote in it — and this site has
+"the 'God Particle'" — closes the attribute early and swallows the rest of the
+tag.
+{%- endcomment -%}
+<li class="constellation-item">
+    <a class="constellation-node is-post is-{{ include.domain.collection }}"
+       href="{{ include.document.url | relative_url }}"
+       data-node="{{ include.document.url }}"
+       data-kind="post"
+       data-parent="{{ include.parent }}"
+       data-domain="{{ include.domain.collection }}"
+       data-domain-name="{{ include.domain.title }}"
+       data-label="{{ include.document.title | escape }}"
+       {%- comment -%}
+       Pipe-joined, not space-joined: search.json can use a space because Lunr
+       tokenises anyway, but here the string is split back into tags, and
+       "constitutional reform" is one tag rather than two.
+       {%- endcomment -%}
+       data-tags="{{ include.document.tags | join: '|' | escape }}"
+       data-date="{{ include.document.date | date: '%d %b %Y' }}"
+       data-detail="{{ include.excerpt | escape }}">
+        <span class="constellation-dot" aria-hidden="true"></span>
+        <span class="constellation-label">{{ include.document.title }}</span>
+    </a>
+</li>

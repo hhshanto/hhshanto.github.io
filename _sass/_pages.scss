@@ -46,6 +46,15 @@
   color: var(--color-text-muted);
 }
 
+// The stats line is otherwise all counts, so the one link in it has to be
+// marked as a link. Accent-ink rather than accent: this is 11px text and the
+// base accent only clears 3:1 on paper.
+.tags-map-link {
+  color: var(--color-accent-ink);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
 .tags-cloud {
   display: flex;
   flex-wrap: wrap;

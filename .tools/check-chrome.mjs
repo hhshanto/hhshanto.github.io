@@ -966,9 +966,153 @@ for (const width of [375, 1440]) {
   await ctx.close();
 }
 
+// ── The constellation map ──────────────────────────────────────────────────
+// A screenshot of this page proves almost nothing: the nodes are dots, and
+// where a dot is, whether it is inside the box, and whether the thing under the
+// pointer is the thing named in the readout are all invisible in a still.
+//
+// The simulation cools over about a second on requestAnimationFrame, so every
+// measurement here has to wait for it. `rest` is settle() for a node: it polls
+// one element's box until it stops moving. Reading a position on a fixed
+// timeout catches the layout mid-flight and reports a failure against correct
+// code — the same trap as the smooth-scroll checks above.
+const rest = (page) => page.evaluate(() => new Promise((resolve) => {
+  const node = document.querySelector('.constellation-node.is-post');
+  if (!node) return resolve(null);
+  let last = '';
+  let still = 0;
+  (function tick() {
+    const key = node.style.left + ',' + node.style.top;
+    if (key === last) {
+      if (++still > 5) return resolve(key);
+    } else {
+      still = 0;
+      last = key;
+    }
+    requestAnimationFrame(tick);
+  })();
+}));
+
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/constellation/`);
+  await rest(page);
+
+  const map = await page.evaluate(() => {
+    const stage = document.querySelector('.constellation-stage');
+    const box = stage.getBoundingClientRect();
+    const nodes = Array.from(document.querySelectorAll('.constellation-node'));
+    const outside = nodes.filter((n) => {
+      const b = n.getBoundingClientRect();
+      return b.left < box.left - 1 || b.right > box.right + 1 ||
+             b.top < box.top - 1 || b.bottom > box.bottom + 1;
+    }).map((n) => n.getAttribute('data-label'));
+
+    // Two nodes that never separated sit on one point. It is the failure mode
+    // of a force layout seeded without spread, and it looks like a missing node
+    // rather than a broken one, so it has to be measured.
+    const seen = new Set();
+    let stacked = 0;
+    nodes.forEach((n) => {
+      const key = Math.round(parseFloat(n.style.left)) + ',' +
+                  Math.round(parseFloat(n.style.top));
+      if (seen.has(key)) stacked++;
+      seen.add(key);
+    });
+
+    const lines = Array.from(document.querySelectorAll('.constellation-edge'));
+    return {
+      live: stage.classList.contains('is-live'),
+      nodes: nodes.length,
+      posts: document.querySelectorAll('.constellation-node.is-post').length,
+      outside,
+      stacked,
+      lines: lines.length,
+      drawn: lines.filter((l) => l.getAttribute('x1') && l.getAttribute('x2')).length,
+      first: nodes[1] && nodes[1].style.left + ',' + nodes[1].style.top,
+    };
+  });
+
+  check('the map goes live above $bp-sm', map.live);
+  check('every piece is on the map',
+    map.posts >= 1 && map.nodes > map.posts, `${map.posts} of ${map.nodes} nodes`);
+  check('no node escapes the stage', map.outside.length === 0,
+    map.outside.slice(0, 3).join(' | '));
+  check('no two nodes settle on the same point', map.stacked === 0,
+    `${map.stacked} stacked`);
+  check('every edge is drawn', map.lines > 0 && map.drawn === map.lines,
+    `${map.drawn} of ${map.lines}`);
+
+  // Hover names the piece under the pointer, and letting go puts the resting
+  // copy back rather than leaving the last thing touched on screen.
+  const readTitle = () => page.textContent('[data-readout-title]');
+  const atRest = await readTitle();
+  const target = page.locator('.constellation-node.is-post').first();
+  const label = await target.getAttribute('data-label');
+  await target.hover();
+  const hovered = await readTitle();
+  check('hovering a piece names it in the readout', hovered === label,
+    `"${hovered}" vs "${label}"`);
+
+  const dimmed = await page.evaluate(() =>
+    document.querySelectorAll('.constellation-node.is-dim').length);
+  check('hovering dims everything unrelated', dimmed > 0, `${dimmed} dimmed`);
+
+  await page.mouse.move(5, 5);
+  check('the readout returns to rest', (await readTitle()) === atRest);
+
+  // Keyboard and pointer take the same path. A dot with no label is unusable
+  // without this — the readout is the only thing that says where Enter goes.
+  await target.focus();
+  check('focusing a piece names it too', (await readTitle()) === label);
+
+  // Deterministic layout: no Math.random() anywhere in the simulation, so the
+  // same page lays out the same way twice. A map that rearranges on every
+  // visit cannot be recognised, which is the whole point of the screen.
+  await page.reload();
+  await rest(page);
+  const again = await page.evaluate(() => {
+    const n = document.querySelectorAll('.constellation-node')[1];
+    return n.style.left + ',' + n.style.top;
+  });
+  check('the layout is the same on reload', again === map.first,
+    `${again} vs ${map.first}`);
+  await ctx.close();
+}
+
+// On a phone the map is not laid out at all: the same markup stays the indented
+// outline it is at rest. Assert the geometry, not the class — a node still
+// carrying inline coordinates from a wider viewport would pass a class check
+// and stack every piece in one corner.
+{
+  const ctx = await browser.newContext({ viewport: { width: 375, height: 800 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/constellation/`);
+  const outline = await page.evaluate(() => {
+    const nodes = Array.from(document.querySelectorAll('.constellation-node'));
+    const tops = nodes.map((n) => n.getBoundingClientRect().top);
+    let ascending = true;
+    for (let i = 1; i < tops.length; i++) if (tops[i] <= tops[i - 1]) ascending = false;
+    return {
+      live: document.querySelector('.constellation-stage').classList.contains('is-live'),
+      ascending,
+      note: getComputedStyle(document.querySelector('.constellation-inert')).display,
+      positioned: nodes.filter((n) => n.style.left !== '').length,
+    };
+  });
+  check('the map stays inert on a phone', !outline.live);
+  check('the outline stacks in document order', outline.ascending);
+  check('no node keeps inline coordinates on a phone', outline.positioned === 0,
+    `${outline.positioned} positioned`);
+  check('the inert note is shown', outline.note !== 'none');
+  await ctx.close();
+}
+
 // ── Phase 8: whole-site audits ─────────────────────────────────────────────
 const PAGES = ['/', '/about/', '/tags/', '/all-posts/', '/reflections/',
-  '/reflections/philosophy/stoicism/', '/styleguide/', '/404.html'];
+  '/reflections/philosophy/stoicism/', '/styleguide/', '/constellation/',
+  '/404.html'];
 
 // Keyboard pass. Every focusable control must take a visible ring, and it must
 // never be the browser default — which is what `outline: none` without a

@@ -58,9 +58,21 @@ across two files.
             {% include hgrid-fill.html count=shown cols=2 %}
         </div>
 
-        <a class="n-btn n-btn-ghost home-latest-more" href="{{ '/all-posts/' | relative_url }}">
-            All {{ pool | size }} pieces →
-        </a>
+        {%- comment -%}
+        Two ways out of the band, and the second one is the only prominent
+        entrance the constellation has. It cannot go in the masthead: at 900px,
+        where the bar first becomes a row, there are 37px of slack and a sixth
+        link needs about 104. The footer had it, next to RSS and Sitemap, where
+        it read as boilerplate and nobody found it.
+        {%- endcomment -%}
+        <div class="home-latest-more">
+            <a class="n-btn n-btn-ghost" href="{{ '/all-posts/' | relative_url }}">
+                All {{ pool | size }} pieces →
+            </a>
+            <a class="n-btn n-btn-ghost" href="{{ '/constellation/' | relative_url }}">
+                See them as a map →
+            </a>
+        </div>
     </section>
 
 </div>

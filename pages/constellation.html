@@ -1,0 +1,269 @@
+---
+layout: default
+title: Constellation
+permalink: /constellation/
+description: A map of the garden — every piece, its domain and sub-topic, and the tags that link one to another.
+# What ⌘K indexes for this page instead of its body. The body is every post
+# title on the site, so indexing it would return the map alongside the real
+# post for every title search, and copy the archive into search.json. See the
+# note beside `search_body` in pages/search.json.
+search_body: >
+  Constellation map graph network diagram. Every piece on the site drawn as a
+  node, joined to the domain and sub-topic it is filed under, with shared tags
+  as threads across it.
+---
+
+{%- comment -%}
+The constellation — a map of the whole garden as a force-directed graph.
+
+WHY THE HIERARCHY IS THE SKELETON. The obvious design is posts joined by shared
+tags, and that is what this started as. It does not work here: at the time of
+writing, eleven of thirteen pieces carry no `tags:` at all, so a tag graph is a
+field of unconnected dots. What the site does have, and has had since long
+before the redesign, is a two-level filing structure — five domains, each with
+sub-topic directories — which _layouts/category.html already reads off
+`doc.path`. That is the skeleton here, derived the same way and for the same
+reason.
+
+Tags are then drawn on top as cross-links, and that is the point of the screen
+rather than a consolation: a piece with no tags hangs off its own branch and
+nothing else, and the map shows that at a glance. Tag a post and it grows an
+edge to everything it belongs with. The map is a picture of how connected the
+writing actually is, so it is worth something even while the answer is "barely".
+
+NO DATA BLOB. Every node carries its own facts in data-* attributes and JS
+reads them back off the DOM, the way _includes/post-row.html feeds
+archive-filter.js. A parallel JSON copy of the same values would be a second
+thing to keep in step. The one derivation left to JS is which pairs of posts
+share a tag — Liquid can compute it, but only as an O(n²) nested loop emitting
+a blob, and the same loop is four lines of JS over data-tags.
+
+WITHOUT SCRIPTING the list below is a plain indented outline of the site:
+domain, sub-topic, pieces. The map is layered on by adding `is-live`, so
+nothing here depends on JS to be readable.
+{%- endcomment -%}
+
+{%- assign pool = '' | split: '' -%}
+{%- for domain in site.data.domains -%}
+    {%- assign pool = pool | concat: site[domain.collection] -%}
+{%- endfor -%}
+{%- assign all_docs = pool -%}
+
+{%- comment -%}
+Tagged-piece count, for the readout's resting state. It is the one number that
+says whether the map has anything to show beyond the filing structure.
+{%- endcomment -%}
+{%- assign tagged = 0 -%}
+{%- for doc in all_docs -%}
+    {%- if doc.tags and doc.tags.size > 0 -%}
+        {%- assign tagged = tagged | plus: 1 -%}
+    {%- endif -%}
+{%- endfor -%}
+
+<div class="frame constellation">
+
+    <header class="constellation-head">
+        <div>
+            <p class="t-kicker tnum">
+                {{ all_docs.size }} piece{% unless all_docs.size == 1 %}s{% endunless %}
+                <span aria-hidden="true"> · </span>
+                {{ site.data.domains.size }} domains
+            </p>
+            <h1 class="t-display-xs">{{ page.title }}</h1>
+            <p class="constellation-desc t-body">
+                Every piece on the site, hung off the domain and sub-topic it is
+                filed under. The gold threads are shared tags — the only links
+                that cross from one domain to another.
+            </p>
+        </div>
+    </header>
+
+    <div class="constellation-legend" role="group" aria-label="Domain colours">
+        {%- for domain in site.data.domains %}
+        <span class="constellation-key is-{{ domain.collection }}">
+            <span class="constellation-swatch" aria-hidden="true"></span>
+            <span class="constellation-key-name">{{ domain.short }}</span>
+            <span class="constellation-key-count t-meta-sm tnum">{{ site[domain.collection].size }}</span>
+        </span>
+        {%- endfor %}
+    </div>
+
+    <div class="constellation-panes">
+
+        {%- comment -%}
+        The stage. Its height is set in CSS rather than here so it can step up
+        with the viewport; the simulation reads the box back and lays out
+        inside whatever it is given.
+        {%- endcomment -%}
+        <div class="constellation-stage" data-constellation>
+            {%- comment -%}
+            Edges are decoration: every relationship they draw is also in the
+            DOM as data-parent or a shared tag, and every node is a real link
+            in the list beside them. So the SVG is hidden from the accessibility
+            tree entirely rather than described.
+            {%- endcomment -%}
+            <svg class="constellation-edges" aria-hidden="true" focusable="false"
+                 preserveAspectRatio="none" data-edges></svg>
+
+            <ul class="constellation-nodes" data-nodes>
+                <li class="constellation-item">
+                    <span class="constellation-node is-root"
+                          data-node="root" data-kind="root" data-label="Noema">
+                        <span class="constellation-dot" aria-hidden="true"></span>
+                        <span class="constellation-label">Noema</span>
+                    </span>
+                </li>
+
+                {%- for domain in site.data.domains -%}
+                    {%- assign docs = site[domain.collection] | sort: 'date' | reverse -%}
+
+                    {%- comment -%}
+                    Sub-topics, collected exactly as _layouts/category.html
+                    collects them: the second segment of doc.path, probed
+                    wrapped in pipes so one key cannot match as a prefix of
+                    another.
+                    {%- endcomment -%}
+                    {%- assign subs = '|' -%}
+                    {%- for doc in docs -%}
+                        {%- assign segments = doc.path | split: '/' -%}
+                        {%- if segments.size > 2 -%}
+                            {%- assign probe = segments[1] | prepend: '|' | append: '|' -%}
+                            {%- unless subs contains probe -%}
+                                {%- assign subs = subs | append: segments[1] | append: '|' -%}
+                            {%- endunless -%}
+                        {%- endif -%}
+                    {%- endfor -%}
+                    {%- assign sub_list = subs | split: '|' -%}
+
+                <li class="constellation-item">
+                    <a class="constellation-node is-domain is-{{ domain.collection }}"
+                       href="{{ domain.url | relative_url }}"
+                       data-node="d:{{ domain.collection }}"
+                       data-kind="domain"
+                       data-parent="root"
+                       data-domain="{{ domain.collection }}"
+                       data-domain-name="{{ domain.title }}"
+                       data-label="{{ domain.title }}"
+                       data-detail="{{ site[domain.collection].size }} piece{% unless site[domain.collection].size == 1 %}s{% endunless %}">
+                        <span class="constellation-dot" aria-hidden="true"></span>
+                        <span class="constellation-label">{{ domain.title }}</span>
+                    </a>
+                </li>
+
+                    {%- for sub in sub_list -%}
+                        {%- if sub != '' -%}
+                            {%- assign sub_count = 0 -%}
+                            {%- for doc in docs -%}
+                                {%- assign segments = doc.path | split: '/' -%}
+                                {%- if segments.size > 2 and segments[1] == sub -%}
+                                    {%- assign sub_count = sub_count | plus: 1 -%}
+                                {%- endif -%}
+                            {%- endfor -%}
+                            {%- assign sub_name = sub | replace: '-', ' ' %}
+                <li class="constellation-item">
+                    {%- comment -%}
+                    A sub-topic is a span, not a link: it has no page of its
+                    own — /reflections/philosophy/ is not a URL this site
+                    builds — and linking it to the domain index would promise
+                    a filtered view that does not exist. .constellation-node
+                    therefore has to look right as both elements, which is why
+                    it paints its own background rather than inheriting one.
+                    {%- endcomment -%}
+                    <span class="constellation-node is-sub is-{{ domain.collection }}"
+                          data-node="s:{{ domain.collection }}/{{ sub }}"
+                          data-kind="sub"
+                          data-parent="d:{{ domain.collection }}"
+                          data-domain="{{ domain.collection }}"
+                          data-domain-name="{{ domain.title }}"
+                          data-label="{{ sub_name }}"
+                          data-detail="{{ sub_count }} piece{% unless sub_count == 1 %}s{% endunless %} in {{ domain.title }}">
+                        <span class="constellation-dot" aria-hidden="true"></span>
+                        <span class="constellation-label">{{ sub_name }}</span>
+                    </span>
+                </li>
+                            {%- comment -%}
+                            The sub-topic's own pieces follow it immediately.
+
+                            Document order is the outline: on a phone, and with
+                            no scripting anywhere, this list IS the screen, and a
+                            flat run of every sub-topic followed by a flat run of
+                            every piece reads as two unrelated lists. The map
+                            does not care — it hangs each node off data-parent
+                            wherever the markup puts it — so the order is chosen
+                            entirely for the case where there is no map.
+                            {%- endcomment -%}
+                            {%- for doc in docs -%}
+                                {%- assign segments = doc.path | split: '/' -%}
+                                {%- if segments.size > 2 and segments[1] == sub -%}
+                                    {%- assign parent = sub | prepend: '/' | prepend: domain.collection | prepend: 's:' -%}
+                                    {%- assign excerpt = doc.abstract | default: doc.description | default: doc.content | strip_html | normalize_whitespace | truncatewords: 28 %}
+                                    {% include constellation-node.html document=doc domain=domain parent=parent excerpt=excerpt %}
+                                {%- endif -%}
+                            {%- endfor -%}
+                        {%- endif -%}
+                    {%- endfor -%}
+
+                    {%- comment -%}
+                    Anything filed straight in the collection root, which has no
+                    sub-topic node to hang from and so hangs off the domain.
+                    {%- endcomment -%}
+                    {%- for doc in docs -%}
+                        {%- assign segments = doc.path | split: '/' -%}
+                        {%- if segments.size <= 2 -%}
+                            {%- assign parent = domain.collection | prepend: 'd:' -%}
+                            {%- assign excerpt = doc.abstract | default: doc.description | default: doc.content | strip_html | normalize_whitespace | truncatewords: 28 %}
+                            {% include constellation-node.html document=doc domain=domain parent=parent excerpt=excerpt %}
+                        {%- endif -%}
+                    {%- endfor -%}
+                {%- endfor %}
+            </ul>
+        </div>
+        {%- comment -%}
+        The readout. Its resting copy is rendered by Liquid rather than written
+        by JS on load, so the pane is not blank for a reader without scripting
+        and does not flash empty for everyone else.
+        {%- endcomment -%}
+        <aside class="constellation-readout" data-readout aria-live="polite">
+            <p class="constellation-readout-kicker t-kicker" data-readout-kicker>The garden</p>
+            <p class="constellation-readout-title t-h3" data-readout-title>{{ all_docs.size }} pieces, {{ tagged }} tagged</p>
+            <p class="constellation-readout-body t-body-sm" data-readout-body>
+                {%- comment -%}
+                The instruction is a separate span so CSS can drop it when there
+                is no map to hover — on a phone, or with scripting off. It sits
+                inside the paragraph JS captures and restores wholesale, so the
+                class survives every reset.
+                {%- endcomment -%}
+                <span class="constellation-hint">Hover or focus a node to read it. </span>
+                {%- if tagged < all_docs.size -%}
+                Only {{ tagged }} of {{ all_docs.size }} pieces carry tags, so
+                most of what is drawn here is still the filing structure — every
+                <code>tags:</code> line added to a post draws another thread
+                across it.
+                {%- else -%}
+                Every piece carries tags, so every thread drawn here is a real
+                link between two of them.
+                {%- endif -%}
+            </p>
+            <p class="constellation-readout-tags" data-readout-tags hidden></p>
+        </aside>
+
+    </div>
+
+    {%- comment -%}
+    Shown only while the map is inert — CSS hides it once JS adds `is-live`.
+    Without it the outline above looks like a page that has lost its styling.
+
+    Worded for both reasons the map is not drawn, because they are not
+    distinguishable from here: a narrow viewport, where it is deliberately left
+    out, and no scripting, where it cannot run. Saying "needs JavaScript" would
+    be wrong on a phone that has it.
+    {%- endcomment -%}
+    <p class="constellation-inert t-body-sm t-muted">
+        The map draws itself on a wider screen. Above is the same structure as
+        an outline; <a href="{{ '/all-posts/' | relative_url }}">the archive</a>
+        lists every piece by date instead.
+    </p>
+
+</div>
+
+<script src="{{ '/assets/js/constellation.js' | relative_url }}" defer></script>

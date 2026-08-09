@@ -695,3 +695,76 @@ Format: `date — decision — why`.
   Taller than the mocks draw them. A control too small to hit on a phone is a
   worse failure than one a few pixels off-spec, and iOS Safari zooms the
   viewport on focus for any input under 16px.
+- **2026-08-09 — The constellation map (`/constellation/`) hangs on the filing
+  structure, not on tags.** It began as posts joined by shared tags, which is
+  the obvious design and does not work on this site: eleven of thirteen pieces
+  carry no `tags:` at all, so the graph was thirteen unconnected dots. What the
+  site does have is the two-level directory structure `_layouts/category.html`
+  already reads off `doc.path`, so that is the skeleton — root, five domains,
+  their sub-topic directories, then the pieces — and tag edges are drawn on top
+  as the only links that can cross a domain. That inversion is what makes the
+  screen worth having while the archive is small: a piece with no tags visibly
+  hangs off its own branch and nothing else, so the map reports how connected
+  the writing actually is rather than assuming it is.
+- **2026-08-09 — Five categorical domain colours added to `_tokens.scss`, held
+  to 3:1 rather than 4.5:1.** They are the site's only categorical colour and
+  are spent only on dots, edges and legend swatches — never on text — which is
+  what makes WCAG's graphical-object threshold the right one; the gold could not
+  clear 4.5:1 on paper without leaving the palette. Ratios against both the page
+  ground and `--color-surface` are recorded beside the tokens. They **lift**
+  between themes rather than inverting the way the neutral ramp does: teal has
+  to stay teal across a theme switch or the legend stops meaning anything.
+- **2026-08-09 — The map is added above `$bp-sm`; below it the same markup
+  stays an indented outline.** A force graph at 375px is a cluster of
+  unlabelled dots that navigate somewhere unannounced when tapped. This is the
+  mobile-first rule applied honestly — the outline is the base case and needs no
+  query, and it is also what a reader without scripting gets, so there is one
+  fallback rather than two. `constellation.js` gates on `matchMedia('(min-width:
+  700px)')`; that is the one breakpoint duplicated outside `_tokens.scss`,
+  because the positioning is gated by an `is-live` class rather than a media
+  query — CSS cannot know whether the simulation has run, and a node absolutely
+  positioned at coordinates nothing has written yet lands in the corner.
+- **2026-08-09 — Fruchterman–Reingold with a repulsion cutoff and a gravity
+  term, not textbook FR.** Textbook FR pinned every node against the boundary
+  clamp: its ideal edge length is derived from the stage area, and this stage is
+  a wide letterbox holding a shallow tree, so the figure came out longer than
+  the box is tall. Three changes fixed it, and all three matter — cap `k`
+  against the **short** side, stop repulsion past 2.5·k so a node on the rim is
+  not pushed by all twenty-seven others at once, and spring every node weakly to
+  the centre. Written with the same law as an edge so it scales with `k`.
+- **2026-08-09 — The layout is deterministic; no `Math.random()` in the
+  simulation.** Nodes seed on a radial fan from their index, so the map is the
+  same map on every reload. The value of the screen is recognising the shape of
+  your own writing, and a graph that rearranges itself each visit cannot be
+  learned. `check-chrome.mjs` asserts it by reloading and comparing coordinates.
+- **2026-08-09 — A piece's label is hidden by `opacity`, never `display` or
+  `visibility`.** The label is the link's accessible name; the other two take it
+  out of the accessibility tree and leave a keyboard reader tabbing through a
+  row of anonymous dots. Titles are hidden at rest because eleven of them
+  averaging sixty characters cannot be on screen at once and stay readable — the
+  readout beside the map carries the full text instead.
+- **2026-08-09 — The site has no default inline-link style outside
+  `.article-body`.** A bare `<a>` in a page's own prose takes the UA's blue,
+  which is what the constellation's fallback note shipped with for one build, on
+  a screen whose palette is entirely warm neutrals. Anything writing prose
+  outside a post has to set `--color-accent-ink` itself. Worth turning into a
+  primitive if a third component needs it.
+- **2026-08-09 — The constellation is not in the masthead, and that is
+  measured, not assumed.** At 900px, where the bar first becomes a row rather
+  than a panel, there are 37px of slack between the brand and the tools; a sixth
+  link needs about 104. It would break the header across the whole 900–1160
+  band. Reachable instead from four places: the home page's Recent Writing foot
+  (beside "All N pieces"), ⌘K, the tags page's stats line, and the footer.
+  Shipping it *only* in the footer was the mistake — next to RSS and Sitemap it
+  reads as boilerplate and was reported as "not accessible from anywhere".
+  Options considered and declined: tightening the nav gap from 26px to 20px to
+  make room, which changes the header's rhythm sitewide for one link; and
+  showing it only above $bp-lg, where there is 265px of slack, which makes a
+  nav item appear and disappear with window width.
+- **2026-08-09 — `search_body:` in front matter overrides what ⌘K indexes for a
+  page.** The constellation's body is every post title on the site. Indexed
+  verbatim it made the map a second hit for every search that already found the
+  post itself, and copied the whole archive into `search.json`. The key is
+  general — `page.search_body | default: page.content` in `pages/search.json` —
+  but the constellation is the only page that needs it, and any page that is
+  mostly generated markup will need it too.

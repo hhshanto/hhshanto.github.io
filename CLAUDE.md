@@ -74,6 +74,13 @@ layouts use `padding-inline: var(--page-pad)` and never a literal.
 - **Content is five collections**, not `_posts`: `natural-sciences`,
   `social-sciences`, `arts-literature`, `reflections`, `contemporary`. Counts
   come from `site.[collection].size` in Liquid — never hardcode a number.
+  A sixth domain means an entry in `_data/domains.yml`, a collection in
+  `_config.yml`, **and** a `--color-domain-*` token — the constellation map is
+  the one screen that needs a colour per domain, and a missing token shows up
+  there as a grey dot rather than as an error.
+- **Sub-topics are the subdirectory a document sits in**, read off `doc.path`'s
+  second segment. `_layouts/category.html` and `pages/constellation.html` both
+  derive them that way; there is no front-matter key for it.
 - `_content/_arts-literature/` and `_content/_contemporary/` hold
   **intentionally untracked** drafts. Leave them alone; do not commit them.
 
@@ -85,12 +92,19 @@ README.md    LICENSE  CLAUDE.md     .gitignore
 
 _content/    the five collections (via `collections_dir`)
 pages/       every standalone page — about, all-posts, create-post, tags,
-             404, search.json, and the five section index pages
+             constellation, 404, search.json, and the five section indexes
 _layouts/ _includes/ _sass/ _data/                  # Jekyll conventions
 assets/      css, js, images, files
 design/      redesign handoff + IMPLEMENTATION.md   # excluded from build
 .tools/      dev-only screenshot harness            # excluded from build
 ```
+
+A standalone page is only in ⌘K if its URL is in the `findable` list in
+`pages/search.json` — that list is explicit so the sweep does not pull in the
+styleguide, the compose tool, 404 and `search.json` itself. A page whose body is
+mostly generated markup should also set `search_body:` in its front matter,
+which is what the index uses in place of `page.content`; the constellation does,
+because its body is every post title on the site.
 
 **Every file in `pages/` must carry an explicit `permalink:`.** The directory
 is an organisational convenience only — without a permalink a page publishes to
@@ -124,10 +138,11 @@ footer read 4.88:1 in dark for two phases while actually sitting at 4.17:1,
 because it was being measured against a colour it was not on. A translucent
 ground is composited over the body before the ratio is taken.
 
-`check-chrome.mjs` is 135 assertions covering the things a screenshot cannot
+`check-chrome.mjs` is 149 assertions covering the things a screenshot cannot
 show: the theme applied before first paint, the mobile menu, the post ToC and
 progress bar, the archive filter, the ⌘K palette's focus trap and restore, the
-compose tool's target path and token handling — and four whole-site audits
+compose tool's target path and token handling, the constellation map's layout
+bounds, readout and determinism — and four whole-site audits
 (every focusable control shows a ring, every internal link resolves, no page
 requests a third-party origin, no page scrolls sideways at any of the five
 widths in either theme). Run it after touching anything. **Extend it rather
@@ -171,6 +186,17 @@ needs its own capture — `.tools/shoot-menu.mjs` opens the mobile nav and
 screenshots it, `.tools/shoot-palette.mjs` opens the ⌘K palette (optionally
 with a query: `node .tools/shoot-palette.mjs bangla`), `.tools/widths.mjs`
 prints layout box geometry at several viewport widths.
+
+`.tools/shoot-constellation.mjs` hovers a piece on the map and captures the
+readout, in both themes — at rest a piece is an unlabelled dot and its title,
+dateline and tags do not exist yet.
+
+**Wait for the force layout to settle, not for a timeout.** The constellation
+cools over about a second on `requestAnimationFrame`. Hovering or measuring a
+node mid-flight puts the pointer where the dot no longer is; `check-chrome.mjs`
+has a `rest(page)` helper that polls a node's inline `left`/`top` until it stops
+changing, and `shoot-constellation.mjs` does the same with `boundingBox()`. This
+is `settle()`'s problem in a different coordinate system.
 
 **Give scroll-and-search state its own context.** The palette's domain filter
 is session state by design, so a `Tab` pressed in one assertion still narrows

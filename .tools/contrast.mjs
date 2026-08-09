@@ -90,6 +90,36 @@ const TARGETS = [
   { sel: '.post-row-domain', name: 'archive row domain', url: '/all-posts/' },
   { sel: '.post-row-read', name: 'archive row read time', url: '/all-posts/' },
 
+  // Constellation. Only the text is here: the five domain colours are dots,
+  // edges and swatches, which WCAG holds to 3:1 as graphical objects rather
+  // than the 4.5:1 this file's threshold assumes. Their measured ratios are
+  // recorded beside the tokens in _sass/_tokens.scss.
+  //
+  // A node label is the exception worth naming — the map paints
+  // --color-surface, so every label on it is measured against that and not the
+  // page, and a piece's label carries its own chip of the same colour so it
+  // stays readable where it crosses an edge.
+  { sel: '.tags-map-link', name: 'tags → map link', url: '/tags/' },
+  { sel: '.constellation-desc', name: 'map description', url: '/constellation/' },
+  { sel: '.constellation-key-name', name: 'legend domain', url: '/constellation/' },
+  { sel: '.constellation-key-count', name: 'legend count', url: '/constellation/' },
+  {
+    sel: '.is-domain .constellation-label', name: 'map domain label',
+    url: '/constellation/', ground: '.constellation-stage',
+  },
+  {
+    sel: '.is-sub .constellation-label', name: 'map sub-topic label',
+    url: '/constellation/', ground: '.constellation-stage',
+  },
+  {
+    sel: '.is-post .constellation-label', name: 'map piece label',
+    url: '/constellation/', ground: '.constellation-stage',
+  },
+  { sel: '.constellation-readout-kicker', name: 'readout kicker', url: '/constellation/' },
+  { sel: '.constellation-readout-body', name: 'readout body', url: '/constellation/' },
+  { sel: '.constellation-inert', name: 'inert-map note', url: '/constellation/' },
+  { sel: '.constellation-inert a', name: 'inert-map link', url: '/constellation/' },
+
   // Search palette (screen 1f). `open` types a query first — the palette does
   // not exist in the DOM's rendered state until it is opened, and measuring a
   // hidden element measures nothing.

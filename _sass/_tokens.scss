@@ -87,6 +87,33 @@ $content-max: 1160px;
   --tag-accent-bg: var(--color-accent-100);
   --tag-accent-ink: var(--color-accent-800);
 
+  // ── Colour: the five domains ─────────────────────────────────────────────
+  // Categorical colour, and the only categorical colour on the site. It exists
+  // for one screen — the constellation map, where a node's domain has to be
+  // readable at 7px with no room for a label — so it is deliberately narrow in
+  // scope: dots, edges and legend swatches, never text.
+  //
+  // That restriction is what sets the target. These are graphical objects, so
+  // they are held to WCAG's 3:1, not the 4.5:1 body text answers to, and the
+  // gold could not clear 4.5:1 on paper without leaving the site's palette
+  // altogether. Measured against both the page ground and --color-surface,
+  // since the legend sits on a card:
+  //
+  //   light   teal 5.30/4.89 · blue 5.77/5.32 · mulberry 5.73/5.29
+  //           gold 3.92/3.62 · olive 4.80/4.43
+  //   dark    teal 7.75/6.63 · blue 7.09/6.06 · rose 6.77/5.79
+  //           gold 8.13/6.95 · olive 8.84/7.55
+  //
+  // Hues are spread (180° · 215° · 340° · 38° · 80°) rather than evenly spaced
+  // round the wheel, so they stay in the site's warm register. If a sixth
+  // domain is ever added, pick its hue in that gap and re-measure — do not
+  // reach for a pure primary.
+  --color-domain-natural-sciences: #1f6f6b;
+  --color-domain-social-sciences: #35618f;
+  --color-domain-arts-literature: #9c3f5c;
+  --color-domain-reflections: #a06f24;
+  --color-domain-contemporary: #5a7326;
+
   // ── Code ─────────────────────────────────────────────────────────────────
   // Deliberately outside the light/dark inversion. The handoff draws the code
   // block on a dark ground in both themes, and that is right: a code listing
@@ -214,6 +241,15 @@ $content-max: 1160px;
 
   --tag-accent-bg: #{rgba(#e1ad66, 0.16)};
   --tag-accent-ink: var(--color-accent-300);
+
+  // The domain colours lift rather than invert. A hue's identity has to
+  // survive the theme switch — teal stays teal — so each is the same hue at a
+  // lightness that clears 3:1 on ink instead of on paper.
+  --color-domain-natural-sciences: #6cc0ba;
+  --color-domain-social-sciences: #86adde;
+  --color-domain-arts-literature: #e08fa4;
+  --color-domain-reflections: #e1ad66;
+  --color-domain-contemporary: #a8c974;
 
   // See the note beside --codeblock-edge on :root. Everything else under
   // --codeblock-* / --tok-* stays as declared there, deliberately.

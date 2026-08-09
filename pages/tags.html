@@ -36,6 +36,13 @@ Posts link each tag to /tags/#<slug>, which lands on the matching section.
             {{ all_tags.size }} tag{% unless all_tags.size == 1 %}s{% endunless %}
             <span aria-hidden="true">·</span>
             {{ all_docs.size }} piece{% unless all_docs.size == 1 %}s{% endunless %}
+            {%- comment -%}
+            The constellation draws these same tags as the threads between
+            pieces, so this is the page a reader is most likely to want it from.
+            It is not in the masthead — see the note in _layouts/home.html.
+            {%- endcomment -%}
+            <span aria-hidden="true">·</span>
+            <a class="tags-map-link" href="{{ '/constellation/' | relative_url }}">as a map</a>
         </p>
     </header>
 

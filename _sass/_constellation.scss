@@ -1,0 +1,364 @@
+// The constellation map.
+//
+// Two layouts from one set of markup. At rest the node list is an indented
+// outline of the site — domain, sub-topic, pieces — which is what a phone gets
+// and what anyone without scripting gets. assets/js/constellation.js adds
+// `is-live` above $bp-sm, and everything under that class turns the same list
+// into a positioned graph.
+//
+// The rule that mobile-first *adds* complexity upward is why it is built this
+// way round rather than as a graph that degrades: the outline is the base case
+// and needs no query to work.
+
+.constellation {
+  padding-block: var(--space-6) var(--space-8);
+
+  @media (min-width: $bp-md) {
+    padding-block: 40px 50px;
+  }
+}
+
+.constellation-desc {
+  max-width: 62ch;
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-muted);
+}
+
+// ── Legend ─────────────────────────────────────────────────────────────────
+.constellation-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.constellation-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.constellation-swatch {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: none;
+  // The fallback matters: a domain added to _data/domains.yml without a
+  // matching token in _tokens.scss becomes a grey dot, not an invisible one.
+  background: var(--node-colour, var(--color-neutral-400));
+}
+
+.constellation-key-count {
+  color: var(--color-text-faint);
+}
+
+// ── Domain colour ──────────────────────────────────────────────────────────
+// The one place the five categorical tokens are spent. Looped rather than
+// composed from the element's own data-domain because CSS cannot build a
+// custom-property name out of a value — `var(--color-domain-#{attr(...)})` is
+// not a thing. A sixth domain adds a sixth token and a sixth name here.
+//
+// Scoped under .constellation deliberately. `.is-natural-sciences` is a name
+// generic enough that another component will want it one day, and a partial
+// styling a class outside its own prefix is how the stylesheet this replaced
+// became unmodifiable.
+.constellation {
+  @each $domain in natural-sciences, social-sciences, arts-literature,
+                   reflections, contemporary {
+    .is-#{$domain} { --node-colour: var(--color-domain-#{$domain}); }
+  }
+}
+
+// ── Stage ──────────────────────────────────────────────────────────────────
+.constellation-panes {
+  margin-top: var(--space-6);
+  display: grid;
+  gap: var(--space-6);
+
+  // The readout only earns a column of its own once the map is beside it.
+  @media (min-width: $bp-lg) {
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: var(--space-8);
+    align-items: start;
+  }
+}
+
+.constellation-stage {
+  position: relative;
+
+  &.is-live {
+    height: 520px;
+    border: 1px solid var(--color-divider);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    // Labels are positioned beside their node and can reach past the edge. The
+    // stage clips them rather than letting them widen the page — the sideways
+    // scroll audit in check-chrome.mjs is unforgiving and a graph is the one
+    // component with content whose width nothing else controls.
+    overflow: hidden;
+
+    @media (min-width: $bp-md) { height: 600px; }
+    @media (min-width: $bp-lg) { height: 660px; }
+  }
+}
+
+.constellation-edges {
+  display: none;
+
+  .constellation-stage.is-live > & {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.constellation-edge {
+  stroke: var(--color-divider);
+  stroke-width: 1;
+  transition: opacity var(--t-fast), stroke-width var(--t-fast);
+
+  // A shared tag is the only link on the map that can cross a domain, so it is
+  // the only one drawn in the accent. Dashed as well as gold: on the dark
+  // ground a thin gold line and a thin neutral one are closer than they look.
+  &.is-tag {
+    stroke: var(--color-accent);
+    stroke-dasharray: 3 4;
+    opacity: 0.75;
+  }
+
+  &.is-dim { opacity: 0.12; }
+
+  &.is-lit {
+    stroke: var(--color-accent);
+    stroke-width: 1.75;
+    opacity: 1;
+  }
+}
+
+// ── Nodes: the outline (base) ──────────────────────────────────────────────
+.constellation-nodes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.constellation-item { margin: 0; }
+
+.constellation-node {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 5px 0;
+  color: var(--color-text);
+  text-decoration: none;
+
+  // Reusable, and therefore eventually rendered as the other element: a
+  // sub-topic is a span because it has no page, every other node is a link.
+  // Both have to look identical at rest, so nothing here may assume an anchor.
+  &.is-root { font-family: var(--font-heading); font-size: 20px; }
+  &.is-domain { font-family: var(--font-heading); font-size: 17px; padding-left: var(--space-4); }
+  &.is-sub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-faint);
+    padding-left: var(--space-8);
+  }
+  &.is-post {
+    font-size: 14px;
+    padding-left: calc(var(--space-8) + var(--space-4));
+  }
+
+  &:hover .constellation-label { color: var(--color-accent-ink); }
+}
+
+.constellation-dot {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--node-colour, var(--color-text));
+
+  // A sub-topic is a ring, not a disc. It is the one node kind that is not a
+  // destination, and the hollow centre says so without needing a legend entry.
+  .is-sub > & {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--node-colour, var(--color-text));
+  }
+}
+
+.constellation-label { min-width: 0; }
+
+// ── Nodes: the map ─────────────────────────────────────────────────────────
+// Everything from here down applies only once JS has measured the stage and
+// written left/top onto each node.
+.constellation-stage.is-live {
+  .constellation-nodes {
+    position: absolute;
+    inset: 0;
+  }
+
+  // `display: contents` so the anchor inside positions against the list, not
+  // against a list item that has no size of its own.
+  .constellation-item { display: contents; }
+
+  .constellation-node {
+    position: absolute;
+    // left/top come from the simulation; the translate centres the hit box on
+    // the point rather than hanging it below and right of it.
+    transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border-radius: 50%;
+    transition: opacity var(--t-fast);
+
+    &.is-root { width: 44px; height: 44px; }
+    &.is-domain { width: 34px; height: 34px; }
+
+    &.is-dim { opacity: 0.22; }
+  }
+
+  .constellation-dot {
+    width: 8px;
+    height: 8px;
+    transition: transform var(--t-fast);
+
+    .is-root > & { width: 13px; height: 13px; background: var(--color-text); }
+    .is-domain > & { width: 12px; height: 12px; }
+    .is-sub > & { width: 7px; height: 7px; }
+  }
+
+  .constellation-node:hover .constellation-dot,
+  .constellation-node:focus-visible .constellation-dot,
+  .constellation-node.is-lit .constellation-dot {
+    transform: scale(1.45);
+  }
+
+  .constellation-label {
+    position: absolute;
+    // Centred under the node. Hub labels sit here permanently; a piece's label
+    // is only summoned, so it uses the side positions below and does not have
+    // to compete for this space.
+    top: calc(100% + 2px);
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    pointer-events: none;
+    max-width: 22ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // A piece's title is hidden until asked for. Eleven titles averaging sixty
+  // characters cannot all be on screen at once and stay readable, and with the
+  // readout beside the map they do not need to be.
+  //
+  // opacity, not display or visibility: the label is the link's accessible
+  // name, and both of those would take it out of the tree, leaving a keyboard
+  // reader tabbing through a row of anonymous dots.
+  .is-post .constellation-label {
+    opacity: 0;
+    transition: opacity var(--t-fast);
+    left: calc(100% + 4px);
+    top: 50%;
+    transform: translateY(-50%);
+    // Titles cross edges and other nodes, so the label carries its own ground.
+    // Without it the text sits on top of a dashed gold line and neither reads.
+    background: var(--color-surface);
+    box-shadow: 0 0 0 4px var(--color-surface);
+    border-radius: var(--radius-sm);
+    font-size: 12.5px;
+    line-height: 1.3;
+  }
+
+  // Past the two-thirds line a label to the right would be clipped by the
+  // stage. JS sets is-flipped from the node's own x, so this is the same
+  // threshold measured once rather than guessed twice.
+  .is-post.is-flipped .constellation-label {
+    left: auto;
+    right: calc(100% + 4px);
+    text-align: right;
+  }
+
+  .is-post:hover .constellation-label,
+  .is-post:focus-visible .constellation-label,
+  .is-post.is-lit .constellation-label {
+    opacity: 1;
+    z-index: 2;
+  }
+
+  .is-post:hover,
+  .is-post:focus-visible { z-index: 3; }
+}
+
+// ── Readout ────────────────────────────────────────────────────────────────
+.constellation-readout {
+  border-top: 1px solid var(--color-divider);
+  padding-top: var(--space-4);
+
+  @media (min-width: $bp-lg) {
+    position: sticky;
+    top: calc(var(--masthead-h) + var(--space-6));
+    border-top: 0;
+    border-left: 1px solid var(--color-divider);
+    padding: 0 0 0 var(--space-4);
+  }
+}
+
+.constellation-readout-title {
+  margin: var(--space-2) 0 var(--space-3);
+  // The pane is a fixed column and a title is one line to sixteen words; without
+  // a wrap rule a long unbroken word pushes the column open.
+  overflow-wrap: anywhere;
+}
+
+.constellation-readout-body {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+// "Hover or focus a node" is only true when there is a node to hover. On a
+// phone, and with no scripting, the readout is a standing note about the
+// archive and the sentence would be an instruction to do something impossible.
+.constellation-hint {
+  display: none;
+
+  .constellation.is-live & { display: inline; }
+}
+
+.constellation-readout-tags {
+  margin: var(--space-3) 0 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--color-text-faint);
+}
+
+// ── The note under an inert map ────────────────────────────────────────────
+.constellation-inert {
+  margin-top: var(--space-6);
+
+  .constellation.is-live & { display: none; }
+
+  // The site has no default inline-link style outside .article-body, so a bare
+  // <a> in a page's own prose takes the UA's blue — which is what this one did,
+  // on a screen whose entire palette is warm neutrals. Accent-ink, not accent:
+  // this is body-size text and the base accent does not clear 4.5:1 on paper.
+  a {
+    color: var(--color-accent-ink);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+}

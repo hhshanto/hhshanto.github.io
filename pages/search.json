@@ -44,7 +44,7 @@ another ("ai" inside "aid").
 Pages worth finding. Listed rather than looped over site.pages: that would
 sweep in the styleguide, the compose tool, 404 and search.json itself.
 {%- endcomment -%}
-{%- assign findable = "/about/|/all-posts/|/tags/" | split: "|" -%}
+{%- assign findable = "/about/|/all-posts/|/tags/|/constellation/" | split: "|" -%}
 [
 {%- assign first = true -%}
 {%- for post in posts -%}
@@ -81,7 +81,14 @@ sweep in the styleguide, the compose tool, 404 and search.json itself.
     and Lunr indexes fields by reading them, not by checking them.
     {%- endcomment -%}
     "abstract": {{ page.description | default: '' | jsonify }},
-    "content": {{ page.content | strip_html | normalize_whitespace | jsonify }},
+    {%- comment -%}
+    `search_body` lets a page hand the index something other than its own
+    markup. Only the constellation sets it, and it has to: that page's body is
+    every post title on the site, so indexing it verbatim would make the map a
+    second hit for every search that already finds the post itself, and would
+    duplicate the whole archive inside this file.
+    {%- endcomment -%}
+    "content": {{ page.search_body | default: page.content | strip_html | normalize_whitespace | jsonify }},
     "date": "",
     "sort": "0"
   }
