@@ -71,6 +71,8 @@
 
     {% include footer.html %}
 
+    {% include search-palette.html %}
+
     {%- comment -%}
     Smooth scrolling for in-page anchors, offset by the masthead so a target
     heading is not hidden underneath it. Honours prefers-reduced-motion, which
@@ -105,9 +107,12 @@
     <script src="{{ '/assets/js/masthead.js' | relative_url }}" defer></script>
     {%- comment -%}
     post-creator.js is loaded by the create-post page itself, not sitewide.
-    search.js still backs the old hero search field and goes in Phase 6, when
-    the ⌘K palette replaces it.
+
+    search.js is the ⌘K palette. It is deferred and tiny; Lunr and the index are
+    fetched by it on first open, so a reader who never searches downloads
+    neither. It reads its own src to find lunr.min.js beside it, which keeps
+    working if the site ever moves under a baseurl.
     {%- endcomment -%}
-    <script src="{{ '/assets/js/search.js' | relative_url }}"></script>
+    <script src="{{ '/assets/js/search.js' | relative_url }}" defer></script>
 </body>
 </html>

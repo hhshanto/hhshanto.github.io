@@ -7,12 +7,11 @@ Working plan for rebuilding hhshanto.github.io against
 
 ## STATUS — update this as the last step of every session
 
-**Next action:** Phase 6 — the ⌘K search palette (1f). Extend `pages/search.json`
-with the fields Lunr needs, vendor `lunr.min.js` into `assets/js/`, and rewrite
-`assets/js/search.js` as the palette. The focus trap and focus restore are the
-accessibility crux of that screen, not an afterthought. `search.js` is still
-loaded sitewide by `_layouts/default.html` for a hero search field that no
-longer exists — Phase 6 replaces it.
+**Next action:** Phase 7 — the compose page (1g). Redesign of
+`pages/create-post.md` + `assets/js/post-creator.js`: a toolbar and three panes
+above `$bp-md`, and a "compose on a larger screen" notice below it rather than
+an attempt to reflow. Read the security note in that section first — the page
+needs a GitHub token held client-side and must stay out of the sitemap and feed.
 
 | Phase | | |
 | --- | --- | --- |
@@ -22,7 +21,7 @@ longer exists — Phase 6 replaces it.
 | 3 | Post layout 1c | ✅ 2026-08-09 |
 | 4 | Home — **1a confirmed** | ✅ 2026-08-09 |
 | 5 | Category index 1d + archive 1e | ✅ 2026-08-09 |
-| 6 | Search palette 1f | ☐ |
+| 6 | Search palette 1f | ✅ 2026-08-09 |
 | 7 | Compose 1g | ☐ |
 | 8 | Cleanup | ☐ |
 
@@ -481,6 +480,37 @@ Format: `date — decision — why`.
   who wrote it; inventing a personal slogan is not the redesign's job. Every
   other word on the page is lifted from the old home page and about section.
   Two lines in `_data/profile.yml` change it to lead with a name instead.
+- **2026-08-09 — `--color-text-faint` is tuned against `--color-surface`, not
+  the page ground.** Surface is the lighter of the two in dark, so text that
+  clears 4.5:1 on the page can fail on a painted band. The site footer sits on
+  surface and had been reading 4.88:1 since Phase 2 only because `contrast.mjs`
+  measured it against `document.body`; against what is actually behind it, 4.17.
+  Found when the palette's credit line failed the same way. The token now
+  clears the harder ground, and every target on a painted band names its
+  `ground` — the footer, the palette foot, the code block.
+- **2026-08-09 — The palette ships in the HTML and is `hidden`, rather than
+  being built by JS on first open.** It is a modal dialog with a focus trap;
+  assembling it at the moment focus needs to move into it is how the first
+  keystroke gets lost. Lunr and `search.json` are still lazy — fetched on the
+  first open, warmed on hover over the trigger — so a reader who never searches
+  downloads neither.
+- **2026-08-09 — Tab cycles the domain filter and is the focus trap.** The
+  panel has exactly one focusable control, so there is nothing for Tab to move
+  to; the handoff gives it the filter instead. `focusin` on the document pulls
+  focus back if anything behind the scrim steals it.
+- **2026-08-09 — The ⌘K trigger stays an `<a href="/all-posts/">`.** Without JS
+  the palette cannot work at all, and the archive filters without JS, so the
+  link is a better fallback than a button that does nothing. `search.js`
+  upgrades it on load.
+- **2026-08-09 — `domainFilter` persists across open and close, per the
+  handoff's "session" state.** It cost two false test failures: a `Tab` in one
+  assertion was still narrowing results in the next, and the symptom looked
+  like a broken Enter key. Checks that need clean state get their own browser
+  context.
+- **2026-08-09 — Lunr fields are boosted title 10 / tags 5 / abstract 3 /
+  content 1.** Unweighted, a 2000-word post that mentions a word once outranks
+  the post named after it. The query also gets a trailing wildcard, without
+  which "stoic" finds nothing until "ism" lands.
 - **2026-08-09 — `.n-tag` sets `background: transparent`, and that line is
   load-bearing.** A tag is almost always an `<a>`, which paints nothing, so the
   omission went unnoticed from Phase 1 until the archive rendered its domain

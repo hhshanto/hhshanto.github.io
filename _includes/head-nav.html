@@ -36,12 +36,12 @@
 
       <div class="masthead-tools">
         {%- comment -%}
-          A real button, not a styled span: it is keyboard-reachable and
-          announces itself. Phase 6 binds it to the search palette; until then
-          it links to the existing search-capable page so it is never a dead
-          control.
+          Still an anchor to /all-posts/, not a button. search.js upgrades it
+          to the palette trigger on load; without JS the palette cannot work at
+          all, and a link to the full archive — which filters without JS too —
+          is a better fallback than a control that does nothing.
         {%- endcomment -%}
-        <a class="masthead-search" href="{{ '/all-posts/' | relative_url }}">
+        <a class="masthead-search" href="{{ '/all-posts/' | relative_url }}" data-search-open>
           <span class="masthead-kbd" aria-hidden="true">&#8984;K</span>
           <span class="masthead-search-label">Search</span>
         </a>

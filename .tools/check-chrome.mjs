@@ -644,6 +644,204 @@ for (const width of [375, 1440]) {
   await ctx.close();
 }
 
+// ── Search palette (screen 1f) ─────────────────────────────────────────────
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+
+  // Neither Lunr nor the index may be requested until someone actually
+  // searches. The index carries the full text of every post; fetching it on
+  // load would make every reader pay for a feature most never use.
+  const eager = [];
+  page.on('request', (r) => {
+    const u = r.url();
+    if (u.includes('lunr.min.js') || u.includes('search.json')) eager.push(u);
+  });
+
+  await page.goto(`http://localhost:${PORT}/`);
+  await page.waitForTimeout(400);
+  check('the index is not fetched on page load', eager.length === 0,
+    eager.map((u) => u.split('/').pop()).join(', '));
+
+  check('the palette is hidden at rest', !(await page.isVisible('.palette-panel')));
+
+  await page.keyboard.press('Control+k');
+  await page.waitForTimeout(600);
+
+  const opened = await page.evaluate(() => {
+    const panel = document.querySelector('.palette-panel');
+    return {
+      visible: !document.querySelector('[data-palette]').hidden,
+      focused: document.activeElement.className,
+      modal: panel.getAttribute('aria-modal'),
+      role: panel.getAttribute('role'),
+      width: Math.round(panel.getBoundingClientRect().width),
+      bodyScrolls: getComputedStyle(document.documentElement).overflow,
+    };
+  });
+  check('⌘K opens the palette', opened.visible);
+  check('focus moves into the query field', opened.focused.includes('palette-input'),
+    `focused "${opened.focused}"`);
+  check('the panel is a modal dialog',
+    opened.role === 'dialog' && opened.modal === 'true');
+  check('the panel is 620px on desktop', opened.width === 620, `${opened.width}px`);
+  check('the page behind cannot scroll', opened.bodyScrolls === 'hidden');
+  check('opening fetched the index', eager.length === 2,
+    eager.map((u) => u.split('/').pop()).join(', '));
+
+  // Typing, selection and wrapping.
+  await page.keyboard.type('bangla');
+  await page.waitForTimeout(300);
+
+  const listed = await page.evaluate(() => ({
+    rows: document.querySelectorAll('.palette-result').length,
+    groups: Array.from(document.querySelectorAll('.palette-group-label'))
+      .map((g) => g.textContent.trim()),
+    selected: document.querySelector('.palette-result[aria-selected="true"]')
+      ? Array.from(document.querySelectorAll('.palette-result'))
+        .indexOf(document.querySelector('.palette-result[aria-selected="true"]'))
+      : -1,
+  }));
+  check('typing produces results', listed.rows > 1, `${listed.rows} rows`);
+  check('results are grouped', listed.groups.length >= 1, listed.groups.join(' / '));
+  check('the first row is selected by default', listed.selected === 0);
+
+  // ↑ from the first row must land on the last, not stop dead.
+  await page.keyboard.press('ArrowUp');
+  const wrapped = await page.evaluate(() => {
+    const rows = Array.from(document.querySelectorAll('.palette-result'));
+    return {
+      at: rows.indexOf(document.querySelector('.palette-result[aria-selected="true"]')),
+      last: rows.length - 1,
+      active: document.querySelector('.palette-input').getAttribute('aria-activedescendant'),
+    };
+  });
+  check('arrow keys wrap around the list', wrapped.at === wrapped.last,
+    `at ${wrapped.at} of ${wrapped.last}`);
+  check('the selection is announced with aria-activedescendant',
+    !!wrapped.active, wrapped.active ?? 'none');
+
+  // Tab is the domain filter, and it must not move focus out of the panel.
+  const tabbed = await page.evaluate(async () => {
+    const before = document.querySelector('[data-palette-filter]').textContent.trim();
+    return { before };
+  });
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(200);
+  const afterTab = await page.evaluate(() => ({
+    label: document.querySelector('[data-palette-filter]').textContent.trim(),
+    focused: document.activeElement.className,
+  }));
+  check('Tab cycles the domain filter', afterTab.label !== tabbed.before,
+    `"${tabbed.before}" -> "${afterTab.label}"`);
+  check('Tab does not move focus out of the panel',
+    afterTab.focused.includes('palette-input'), `focused "${afterTab.focused}"`);
+
+  // Focus cannot be stolen by anything behind the scrim either.
+  await page.evaluate(() => document.querySelector('.masthead-brand').focus());
+  await page.waitForTimeout(100);
+  const trapped = await page.evaluate(() => document.activeElement.className);
+  check('focus is pulled back into the panel',
+    trapped.includes('palette-input'), `focused "${trapped}"`);
+
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(200);
+  const closed = await page.evaluate(() => ({
+    hidden: document.querySelector('[data-palette]').hidden,
+    overflow: document.documentElement.style.overflow,
+    query: document.querySelector('.palette-input').value,
+  }));
+  check('Escape closes the palette', closed.hidden);
+  check('the page can scroll again', closed.overflow === '');
+  check('the query is cleared on close', closed.query === '');
+  await ctx.close();
+}
+
+// Focus restore, on its own page: the element focused *before* opening is the
+// one to come back to, and the trap correctly refuses to let the test move
+// focus after the fact.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/`);
+
+  await page.evaluate(() => document.querySelector('[data-search-open]').focus());
+  await page.keyboard.press('Control+k');
+  await page.waitForTimeout(400);
+  const inside = await page.evaluate(() => document.activeElement.className);
+
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(200);
+  const back = await page.evaluate(() => document.activeElement.className);
+
+  check('focus enters the panel from the trigger', inside.includes('palette-input'));
+  check('focus is restored to the trigger on close',
+    back.includes('masthead-search'), `focused "${back}"`);
+  await ctx.close();
+}
+
+// Enter navigates. Its own context because the domain filter is session state
+// by design — a Tab pressed in an earlier assertion would still be narrowing
+// the results here, and the failure would look like a broken Enter key.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/`);
+  await page.keyboard.press('Control+k');
+  await page.waitForTimeout(500);
+  await page.keyboard.type('stoicism');
+  await page.waitForTimeout(300);
+  await page.keyboard.press('Enter');
+  await page.waitForURL('**/stoicism/**', { timeout: 3000 }).catch(() => {});
+  check('Enter opens the selected result',
+    page.url().includes('/stoicism/'), page.url().replace(`http://localhost:${PORT}`, ''));
+  await ctx.close();
+}
+
+// The trigger must still go somewhere without JS rather than being a dead
+// control: the palette cannot exist, but the archive filters without JS too.
+{
+  const ctx = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    javaScriptEnabled: false,
+  });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/`);
+  const href = await page.getAttribute('[data-search-open]', 'href');
+  check('the search trigger has a no-JS destination',
+    !!href && href !== '#', href ?? 'none');
+  await ctx.close();
+}
+
+// On a phone the panel fills the page gutter and the key hints go away, since
+// there are no keys to press.
+{
+  const ctx = await browser.newContext({ viewport: { width: 375, height: 800 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/`);
+  await page.evaluate(() => document.querySelector('[data-search-open]').click());
+  await page.waitForTimeout(500);
+
+  const phone = await page.evaluate(() => {
+    const panel = document.querySelector('.palette-panel').getBoundingClientRect();
+    const pad = parseFloat(getComputedStyle(document.documentElement)
+      .getPropertyValue('--page-pad'));
+    return {
+      width: Math.round(panel.width),
+      expected: Math.round(window.innerWidth - pad * 2),
+      inside: panel.left >= 0 && panel.right <= window.innerWidth + 1,
+      hintsShown: getComputedStyle(document.querySelector('.palette-foot')).display,
+      fits: panel.bottom <= window.innerHeight + 1,
+    };
+  });
+  check('the panel fills the gutter on a phone', phone.width === phone.expected,
+    `${phone.width}px of ${phone.expected}px`);
+  check('the panel is inside the viewport on a phone', phone.inside && phone.fits);
+  check('key hints are hidden on a phone', phone.hintsShown === 'none',
+    phone.hintsShown);
+  await ctx.close();
+}
+
 await browser.close();
 server.close();
 

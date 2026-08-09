@@ -197,7 +197,13 @@ $content-max: 1160px;
   --color-accent-ink: var(--color-accent-400);
 
   --color-text-muted: #b3afae;
-  --color-text-faint: #8f8b8a;
+  // Tuned against --color-surface, not the page ground. Surface is the lighter
+  // of the two in dark, so text that clears 4.5:1 on the page can fail on a
+  // painted band — which is exactly what happened: the footer and the search
+  // palette's credit line both sat at 4.17:1 while measuring 4.88:1 against a
+  // ground they were not actually on. Clearing the harder of the two grounds
+  // means this token is safe wherever it is used.
+  --color-text-faint: #9a9591;
 
   --wash-accent: #{rgba(#e1ad66, 0.14)};
   --wash-accent-strong: #{rgba(#e1ad66, 0.26)};

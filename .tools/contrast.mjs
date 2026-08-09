@@ -53,8 +53,11 @@ const TARGETS = [
   { sel: '.masthead-link[aria-current="page"]', name: 'nav link (current)' },
   { sel: '.masthead-search', name: 'search trigger' },
   { sel: '.masthead-theme', name: 'theme toggle' },
-  { sel: '.site-foot-copy', name: 'footer copyright' },
-  { sel: '.site-foot-links a', name: 'footer link' },
+  // The footer paints --color-surface, not the page ground. Measured against
+  // the body it read 4.88:1 in dark and passed; against what is actually
+  // behind it, 4.17:1. Name the ground for anything on a painted band.
+  { sel: '.site-foot-copy', name: 'footer copyright', ground: '.site-foot' },
+  { sel: '.site-foot-links a', name: 'footer link', ground: '.site-foot' },
 
   // Home (screen 1a).
   { sel: '.home-hero-name', name: 'hero name', url: '/' },
@@ -86,6 +89,28 @@ const TARGETS = [
   { sel: '.post-row-date', name: 'archive row date', url: '/all-posts/' },
   { sel: '.post-row-domain', name: 'archive row domain', url: '/all-posts/' },
   { sel: '.post-row-read', name: 'archive row read time', url: '/all-posts/' },
+
+  // Search palette (screen 1f). `open` types a query first — the palette does
+  // not exist in the DOM's rendered state until it is opened, and measuring a
+  // hidden element measures nothing.
+  { sel: '.palette-input', name: 'palette query', url: '/', open: 'bangla' },
+  { sel: '.palette-esc', name: 'palette ESC chip', url: '/', open: 'bangla' },
+  { sel: '.palette-group-label', name: 'palette group label', url: '/', open: 'bangla' },
+  { sel: '.palette-result-title', name: 'palette result', url: '/', open: 'bangla' },
+  { sel: '.palette-result-meta', name: 'palette result meta', url: '/', open: 'bangla' },
+  {
+    sel: '.palette-result[aria-selected="true"] .palette-result-title',
+    name: 'palette selected row', url: '/', open: 'bangla',
+    ground: '.palette-result[aria-selected="true"]',
+  },
+  {
+    sel: '.palette-credit', name: 'palette credit', url: '/', open: 'bangla',
+    ground: '.palette-foot',
+  },
+  {
+    sel: '.palette-key', name: 'palette key hint', url: '/', open: 'bangla',
+    ground: '.palette-foot',
+  },
 
   // Post (screen 1c).
   { sel: '.article-breadcrumb a', name: 'breadcrumb', url: POST },
@@ -119,12 +144,23 @@ for (const theme of ['light', 'dark']) {
   let body = null;
 
   console.log(`\n=== ${theme.toUpperCase()} ===`);
-  for (const { sel, name, url = '/reflections/', ground } of TARGETS) {
+  let opened = null;
+
+  for (const { sel, name, url = '/reflections/', ground, open } of TARGETS) {
     if (url !== loaded) {
       await page.goto(`http://localhost:${PORT}${url}`);
       loaded = url;
+      opened = null;
       body = parse(await page.evaluate(() =>
         getComputedStyle(document.body).backgroundColor));
+    }
+
+    if (open && open !== opened) {
+      await page.keyboard.press('Control+k');
+      await page.waitForTimeout(500);
+      await page.keyboard.type(open);
+      await page.waitForTimeout(300);
+      opened = open;
     }
 
     const el = page.locator(sel).first();

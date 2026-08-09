@@ -110,6 +110,13 @@ ground and illegible on the other: neutral-600 measures 8.2:1 in dark and
 `--color-text-faint`, which are tuned per theme. Add new targets to the
 `TARGETS` list in that file as components land.
 
+**Name the `ground` for anything on a painted band.** `contrast.mjs` measures
+against `document.body` unless a target says otherwise, and the footer, the
+palette's foot strip and the code block all paint their own background. The
+footer read 4.88:1 in dark for two phases while actually sitting at 4.17:1,
+because it was being measured against a colour it was not on. A translucent
+ground is composited over the body before the ratio is taken.
+
 `check-chrome.mjs` asserts the things a screenshot cannot show — that the theme
 is applied before first paint, that the mobile menu opens and Escape closes it
 with focus restored, that the current domain is marked while reading one of its
@@ -147,8 +154,14 @@ held client-side; it lives in `localStorage`, never in the repo.
 
 `shoot.mjs` captures pages at rest. State that only exists after interaction
 needs its own capture — `.tools/shoot-menu.mjs` opens the mobile nav and
-screenshots it, `.tools/widths.mjs` prints layout box geometry at several
-viewport widths.
+screenshots it, `.tools/shoot-palette.mjs` opens the ⌘K palette (optionally
+with a query: `node .tools/shoot-palette.mjs bangla`), `.tools/widths.mjs`
+prints layout box geometry at several viewport widths.
+
+**Give scroll-and-search state its own context.** The palette's domain filter
+is session state by design, so a `Tab` pressed in one assertion still narrows
+the results in the next one — a failure that reads like a broken Enter key.
+When a check depends on clean state, open a fresh `browser.newContext()`.
 
 **Wait for scrolling to settle.** `_base.scss` still sets
 `html { scroll-behavior: smooth }`, so `scrollTo()` starts an animation. Reading
