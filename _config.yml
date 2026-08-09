@@ -112,7 +112,6 @@ exclude:
   - .github
   - README.md
   - dir.py
-  - 3d-portfolio
   # Redesign working files. Both are repo documentation, not site content —
   # without these, Jekyll copies the mockups, the source zip and the agent
   # instructions straight to the public site.
