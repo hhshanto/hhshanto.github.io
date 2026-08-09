@@ -481,6 +481,14 @@ Format: `date — decision — why`.
   who wrote it; inventing a personal slogan is not the redesign's job. Every
   other word on the page is lifted from the old home page and about section.
   Two lines in `_data/profile.yml` change it to lead with a name instead.
+- **2026-08-09 — `.n-tag` sets `background: transparent`, and that line is
+  load-bearing.** A tag is almost always an `<a>`, which paints nothing, so the
+  omission went unnoticed from Phase 1 until the archive rendered its domain
+  filters as `<button>`s — and a button with no background takes the UA's
+  `buttonface`, a pale grey. On paper it disappears into the page; on the dark
+  ground it was five cream boxes. Reported as "the domain chips are light in
+  dark mode". Any component that can be either an anchor or a button needs its
+  own background declared.
 - **2026-08-09 — The five index pages and the archive are front matter only.**
   Each names its `collection:` and inherits `_layouts/category.html`; the
   archive page names nothing at all. Titles, descriptions and nav position come

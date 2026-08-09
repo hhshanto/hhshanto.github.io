@@ -69,6 +69,12 @@
   align-items: center;
   padding: 3px 10px;
   border: 1px solid transparent;
+  // Load-bearing. A tag is usually an <a>, which has no background of its own,
+  // but the archive's domain filters are <button>s — and a button defaults to
+  // the UA's `buttonface`, a pale grey. On paper that disappears into the page;
+  // on the dark ground it renders as five cream boxes. The variants below set
+  // their own background where they want one.
+  background: transparent;
   border-radius: calc(var(--radius-md) * 0.75);
   font-family: var(--font-mono);
   font-size: 11px;

@@ -539,6 +539,31 @@ const POST = `http://localhost:${PORT}/reflections/philosophy/stoicism/`;
       allChipOff: document.querySelector('[data-chip=""]').getAttribute('aria-pressed'),
     };
   });
+  // The chips are <button>s, and a button without an explicit background takes
+  // the UA's pale `buttonface`. It vanishes into the light page and reads as
+  // five cream boxes on the dark one, so it is checked in dark specifically.
+  {
+    const dark = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    await dark.addInitScript(() => { try { localStorage.setItem('theme', 'dark'); } catch {} });
+    const dp = await dark.newPage();
+    await dp.goto(`http://localhost:${PORT}/all-posts/`);
+    const grounds = await dp.evaluate(() => {
+      const body = getComputedStyle(document.body).backgroundColor;
+      const off = Array.from(document.querySelectorAll('.archive-chip:not(.is-on)'));
+      return {
+        body,
+        mismatched: off.filter((c) => {
+          const bg = getComputedStyle(c).backgroundColor;
+          return bg !== 'rgba(0, 0, 0, 0)' && bg !== body;
+        }).length,
+        total: off.length,
+      };
+    });
+    check('unselected chips do not paint their own background',
+      grounds.mismatched === 0, `${grounds.mismatched} of ${grounds.total}`);
+    await dark.close();
+  }
+
   check('a domain chip filters to that domain',
     chipped.count > 0 && chipped.allReflections, `${chipped.count} rows`);
   check('the chosen chip is the only one pressed',
