@@ -1,0 +1,159 @@
+---
+layout: default
+title: Retrieval
+permalink: /retrieval/
+description: Two ways to search the same twelve pieces — by words, and by meaning — running side by side on whatever you type.
+search_body: >
+  Retrieval. BM25 versus latent semantic analysis, lexical versus semantic
+  search, inverted index, cosine similarity, RAG. Two retrievers over the same
+  corpus, both running in the browser.
+---
+
+{%- comment -%}
+Screen: two retrievers, one query, side by side.
+
+WHY THIS IS THE INTERESTING VERSION. Everyone who has built a RAG system has
+said "we use embeddings because keyword search misses things that mean the same
+thing". Almost nobody has watched the two disagree on a corpus they know. Twelve
+pieces is small enough that a reader can hold the whole thing in their head and
+judge which column is right, which is exactly what makes it a demonstration
+rather than a claim.
+
+WHY THE RIGHT COLUMN IS LSA AND NOT AN EMBEDDING MODEL. The comparison only
+means anything if both sides run on the reader's own query. Embedding a query
+requires the model that embedded the documents — a service call, a key, and a
+third-party origin `check-chrome.mjs` asserts this site never touches. Latent
+semantic analysis solves the same problem the classical way and runs in
+arithmetic. It is weaker than a transformer and the method note at the foot says
+so plainly; what it is not is fake.
+
+Both indexes are built by .tools/retrieval.mjs into assets/data/retrieval.json
+and fetched by the page. Nothing is precomputed per query: the file is the
+corpus, not the answers.
+{%- endcomment -%}
+
+<div class="frame retrieval" data-retrieval>
+
+    <header class="retrieval-head">
+        <p class="t-kicker tnum">Lexical vs semantic · 12 pieces</p>
+        <h1 class="t-display-xs">Retrieval</h1>
+        <p class="retrieval-desc t-body">
+            The same twelve pieces, searched two ways at once. On the left,
+            BM25 — the ranking function behind Lucene and Elasticsearch, which
+            counts words. On the right, a latent space built by factorising the
+            term–document matrix, which can rank a piece containing none of the
+            words you typed. Both run here, on your query, as you type.
+        </p>
+    </header>
+
+    <div class="retrieval-bar">
+        <div class="retrieval-field">
+            <label class="visually-hidden" for="retrieval-q">Search the corpus</label>
+            {%- comment -%}
+            Disabled until the index arrives, then enabled by retrieval.js. A
+            box that accepts typing and does nothing for a second is worse than
+            one that visibly is not ready yet.
+            {%- endcomment -%}
+            <input class="n-input retrieval-input"
+                   id="retrieval-q"
+                   type="search"
+                   autocomplete="off"
+                   disabled
+                   data-query
+                   data-default="patriotism"
+                   placeholder="Loading the index…">
+        </div>
+        <p class="retrieval-status t-meta-sm tnum" role="status" aria-live="polite" data-status></p>
+    </div>
+
+    {%- comment -%}
+    Examples chosen to show the gap in both directions, not just the flattering
+    one. "ballots" and "bengali" each appear in exactly one piece, so BM25 is
+    decisive and the latent side is vaguer — the honest failure case. "how do I
+    stay calm" contains almost no corpus vocabulary at all, and that is where
+    counting words falls apart.
+    {%- endcomment -%}
+    <div class="retrieval-examples" role="group" aria-label="Example queries">
+        <span class="t-label">Try</span>
+        {%- assign examples = "patriotism|ballots|authority and obedience|how do I stay calm|particle collider|bengali poetry|machine learning ethics" | split: "|" -%}
+        {%- for q in examples %}
+        <button type="button" class="n-tag n-tag-outline retrieval-example"
+                data-example="{{ q }}">{{ q }}</button>
+        {%- endfor %}
+    </div>
+
+    <p class="retrieval-terms t-meta-sm" data-terms></p>
+
+    <div class="retrieval-columns">
+        <section class="retrieval-column">
+            <h2 class="retrieval-column-head">
+                <span class="t-h3">By words</span>
+                <span class="retrieval-column-sub t-meta-sm">BM25 · inverted index</span>
+            </h2>
+            <ol class="retrieval-results" data-results-bm25></ol>
+            <p class="retrieval-column-note t-body-sm">
+                Scores a piece for containing your terms, weighting rare words
+                above common ones and damping long documents. It cannot match a
+                word that is not there.
+            </p>
+        </section>
+
+        <section class="retrieval-column">
+            <h2 class="retrieval-column-head">
+                <span class="t-h3">By meaning</span>
+                <span class="retrieval-column-sub t-meta-sm">LSA · 6 latent dimensions</span>
+            </h2>
+            <ol class="retrieval-results" data-results-lsa></ol>
+            <p class="retrieval-column-note t-body-sm">
+                Puts your query in a space where words that co-occur across the
+                corpus point the same way, then measures the angle. It can rank
+                a piece that shares none of your words.
+            </p>
+        </section>
+    </div>
+
+    {%- comment -%}
+    Unlike the constellation and the atlas, this page has no useful inert state:
+    it is a computation, and there is nothing meaningful to render at build time.
+    So it says so, and points at the two things that do work without it.
+    {%- endcomment -%}
+    <p class="retrieval-inert t-body-sm t-muted" data-retrieval-inert>
+        This one is a live computation and needs JavaScript — there is nothing to
+        render ahead of time. <a href="{{ '/all-posts/' | relative_url }}">The
+        archive</a> filters without it, and
+        <a href="{{ '/atlas/' | relative_url }}">the atlas</a> shows the same
+        vector space as a static table.
+    </p>
+
+    <section class="retrieval-method">
+        <h2 class="t-label rule-head">What this is and is not</h2>
+        <div class="retrieval-method-body">
+            <p class="t-body-sm">
+                The right-hand column is <em>latent semantic analysis</em>, not a
+                transformer embedding, and the difference matters enough to say
+                out loud. LSA takes the term–document matrix, truncates its
+                singular value decomposition to six dimensions, and lets terms
+                that co-occur across the corpus collapse onto shared axes. That
+                is genuinely semantic — it will connect two pieces that never use
+                the same word — but the meaning it knows is only the meaning
+                present in these twelve documents. A sentence embedding model
+                brings meaning learned from far more text.
+            </p>
+            <p class="t-body-sm">
+                The reason it is not a model is the interesting constraint.
+                Embedding your query needs the same model that embedded the
+                documents, which means a network call and a key. This site is
+                static and asserts in its own test suite that no page reaches a
+                third-party origin, so the whole comparison would have to become
+                a lookup table of canned queries. That is the actual lesson
+                underneath every RAG architecture diagram: retrieval is cheap
+                arithmetic you can do anywhere, and the expensive,
+                service-shaped part is turning text into a vector in the first
+                place.
+            </p>
+        </div>
+    </section>
+
+</div>
+
+<script src="{{ '/assets/js/retrieval.js' | relative_url }}" defer></script>

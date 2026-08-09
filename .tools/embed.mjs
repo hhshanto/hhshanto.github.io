@@ -43,147 +43,27 @@
 // and it reports how much variance it kept so the page can be honest about how
 // much got thrown away.
 
-import { readFile, writeFile, readdir } from 'node:fs/promises';
-import { join, relative } from 'node:path';
+import { readFile, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { ROOT, readCorpus, termStats, tfidfMatrix, gramMatrix, topEigen, cosine }
+  from './lib/corpus.mjs';
 
-const ROOT = 'c:/Users/hasan/hhshanto.github.io';
-const CONTENT = join(ROOT, '_content');
 const OUT = join(ROOT, '_data/atlas.json');
-
 const useAzure = process.argv.includes('--azure');
 
-// ── Corpus ────────────────────────────────────────────────────────────────
-// Read the markdown directly rather than the built search.json. search.json
-// has the same text and would save the front-matter parsing, but it only
-// exists after a build, and a stale _site would silently embed yesterday's
-// corpus — the kind of wrong that looks exactly like right.
-
-async function walk(dir) {
-  const out = [];
-  for (const entry of await readdir(dir, { withFileTypes: true })) {
-    const path = join(dir, entry.name);
-    // _templates holds skeletons for new posts, not posts.
-    if (entry.isDirectory()) {
-      if (entry.name === '_templates') continue;
-      out.push(...await walk(path));
-    } else if (entry.name.endsWith('.md')) {
-      out.push(path);
-    }
-  }
-  return out;
-}
-
-function frontMatter(raw) {
-  const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
-  if (!m) return { meta: {}, body: raw };
-  const meta = {};
-  // Enough YAML for `key: value` and `key: "value"`. Anything structured is
-  // read off the path instead, so this never has to grow into a parser.
-  for (const line of m[1].split(/\r?\n/)) {
-    const kv = line.match(/^([a-z_]+):\s*(.*)$/i);
-    if (kv) meta[kv[1]] = kv[2].replace(/^["']|["']$/g, '').trim();
-  }
-  return { meta, body: m[2] };
-}
-
-const files = await walk(CONTENT);
-const docs = [];
-
-for (const file of files) {
-  const raw = await readFile(file, 'utf8');
-  const { meta, body } = frontMatter(raw);
-  // _content/_reflections/philosophy/stoicism.md
-  //   → domain "reflections", sub "philosophy", url /reflections/philosophy/stoicism/
-  const parts = relative(CONTENT, file).split(/[\\/]/);
-  const domain = parts[0].replace(/^_/, '');
-  // The date prefix STAYS. _config.yml gives each collection the permalink
-  // /<collection>/:path/, and for a collection — unlike _posts — Jekyll's :path
-  // is the filename verbatim, date and all: the real URL is
-  // /natural-sciences/physics/2025-03-08-higgs-boson-discovery-implications/.
-  // Stripping it produced twelve plausible-looking URLs of which ten 404ed, and
-  // nothing on the page looked wrong until a link was clicked.
-  const slug = parts[parts.length - 1].replace(/\.md$/, '');
-  const url = '/' + [domain, ...parts.slice(1, -1), slug].join('/') + '/';
-
-  const text = body
-    .replace(/```[\s\S]*?```/g, ' ')      // code blocks are not prose
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1') // keep link text, drop the href
-    .replace(/[#>*_`~|-]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-  docs.push({
-    url,
-    title: meta.title || slug,
-    domain,
-    sub: parts.length > 2 ? parts[1] : '',
-    date: meta.date || '',
-    words: text.split(' ').length,
-    text,
-  });
-}
-
-docs.sort((a, b) => (a.url < b.url ? -1 : 1));
+// The markdown reader, the stopword list, the tokeniser, the TF-IDF weighting
+// and the eigensolver all live in ./lib/corpus.mjs, shared with retrieval.mjs
+// and tokenizer.mjs. Two copies of a stopword list is two stopword lists that
+// drift, and the point of putting these instruments on one site is that they
+// are looking at one corpus one way.
+const docs = await readCorpus();
 console.log(`corpus: ${docs.length} pieces, ${docs.reduce((n, d) => n + d.words, 0)} words`);
 
-// ── Vectors ───────────────────────────────────────────────────────────────
-
-// A stopword list is the difference between a map of your ideas and a map of
-// how often you write "the". Kept short on purpose: TF-IDF already suppresses
-// anything that appears everywhere, so this only has to catch the words that
-// are frequent AND unevenly distributed.
-const STOP = new Set(('a about above after again against all am an and any are as at be because been '
-  + 'before being below between both but by can cannot could did do does doing down during each few '
-  + 'for from further had has have having he her here hers herself him himself his how i if in into '
-  + 'is it its itself me more most my myself no nor not of off on once only or other ought our ours '
-  + 'ourselves out over own same she should so some such than that the their theirs them themselves '
-  + 'then there these they this those through to too under until up very was we were what when where '
-  + 'which while who whom why with would you your yours yourself yourselves').split(' '));
-
-function tokens(text) {
-  return text.toLowerCase()
-    .replace(/[^a-z0-9\s'-]/g, ' ')
-    .split(/\s+/)
-    .filter((w) => w.length > 2 && !STOP.has(w));
-}
-
-function tfidf(docs) {
-  const tf = docs.map((d) => {
-    const counts = new Map();
-    const t = tokens(d.text);
-    t.forEach((w) => counts.set(w, (counts.get(w) || 0) + 1));
-    // Sublinear scaling. Raw counts let one long piece dominate every axis;
-    // 1 + log(count) is the standard fix and it matters a lot at n = 12.
-    counts.forEach((v, k) => counts.set(k, 1 + Math.log(v)));
-    return counts;
-  });
-
-  const df = new Map();
-  tf.forEach((counts) => counts.forEach((_, w) => df.set(w, (df.get(w) || 0) + 1)));
-
-  // A term in only one document cannot say anything about which documents are
-  // alike, and there are thousands of them. Dropping them cuts the vocabulary
-  // by about two thirds for no loss.
-  const vocab = [...df.keys()].filter((w) => df.get(w) > 1).sort();
-  const index = new Map(vocab.map((w, i) => [w, i]));
-  const N = docs.length;
-
-  return tf.map((counts) => {
-    const v = new Float64Array(vocab.length);
-    counts.forEach((val, w) => {
-      const i = index.get(w);
-      if (i !== undefined) v[i] = val * Math.log(N / df.get(w));
-    });
-    // L2 normalise, so cosine similarity is a dot product and a long piece is
-    // not automatically far from the origin.
-    let norm = 0;
-    for (let i = 0; i < v.length; i++) norm += v[i] * v[i];
-    norm = Math.sqrt(norm) || 1;
-    for (let i = 0; i < v.length; i++) v[i] /= norm;
-    return v;
-  });
-}
+// minDf 2: a term appearing in exactly one document cannot say anything about
+// which documents are ALIKE, and there are thousands of them. That is the
+// opposite of the call retrieval.mjs makes, where a df-1 term is the most
+// discriminative thing there is for finding that one document.
+const stats = termStats(docs, 2);
 
 async function azure(docs) {
   const env = Object.fromEntries((await readFile(join(ROOT, '.env'), 'utf8'))
@@ -222,7 +102,7 @@ async function azure(docs) {
   return out;
 }
 
-const vectors = useAzure ? await azure(docs) : tfidf(docs);
+const vectors = useAzure ? await azure(docs) : tfidfMatrix(docs, stats);
 const backend = useAzure ? 'azure · text-embedding-3-small' : 'tf-idf (lexical, offline)';
 console.log(`vectors: ${vectors.length} × ${vectors[0].length}  [${backend}]`);
 
@@ -243,47 +123,7 @@ const centred = vectors.map((v) => {
   return c;
 });
 
-const gram = [];
-for (let i = 0; i < n; i++) {
-  gram.push(new Float64Array(n));
-  for (let j = 0; j < n; j++) {
-    let s = 0;
-    for (let k = 0; k < centred[i].length; k++) s += centred[i][k] * centred[j][k];
-    gram[i][j] = s;
-  }
-}
-
-// Power iteration with deflation. Three components from a 12×12 matrix does
-// not justify a QR algorithm, and this is ten lines with no library.
-function topEigen(M, size, count) {
-  const A = M.map((row) => Float64Array.from(row));
-  const out = [];
-  for (let c = 0; c < count; c++) {
-    // Deterministic start vector. A random one converges just as well and
-    // would make the whole atlas different on every run.
-    let v = Float64Array.from({ length: size }, (_, i) => Math.cos(i * (c + 1) + 1));
-    let lambda = 0;
-    for (let iter = 0; iter < 500; iter++) {
-      const w = new Float64Array(size);
-      for (let i = 0; i < size; i++) {
-        let s = 0;
-        for (let j = 0; j < size; j++) s += A[i][j] * v[j];
-        w[i] = s;
-      }
-      let norm = Math.hypot(...w) || 1;
-      for (let i = 0; i < size; i++) w[i] /= norm;
-      lambda = norm;
-      v = w;
-    }
-    out.push({ vector: v, value: lambda });
-    // Deflate: subtract this component so the next iteration finds the next
-    // one instead of the same one again.
-    for (let i = 0; i < size; i++) {
-      for (let j = 0; j < size; j++) A[i][j] -= lambda * v[i] * v[j];
-    }
-  }
-  return out;
-}
+const gram = gramMatrix(centred);
 
 const comps = topEigen(gram, n, 3);
 let trace = 0;
@@ -302,12 +142,6 @@ const extent = Math.max(...coords.flat().map(Math.abs)) || 1;
 // lossy view; saying "nearest in the original space" and then measuring in the
 // picture would be a quiet lie, and the gap between the two is exactly what
 // the explained-variance figure is warning about.
-
-function cosine(a, b) {
-  let dot = 0, na = 0, nb = 0;
-  for (let i = 0; i < a.length; i++) { dot += a[i] * b[i]; na += a[i] * a[i]; nb += b[i] * b[i]; }
-  return dot / (Math.sqrt(na) * Math.sqrt(nb) || 1);
-}
 
 const out = docs.map((d, i) => ({
   url: d.url,
@@ -335,4 +169,4 @@ await writeFile(OUT, JSON.stringify({
   docs: out,
 }, null, 1) + '\n');
 
-console.log(`wrote ${relative(ROOT, OUT)}`);
+console.log('wrote _data/atlas.json');

@@ -1,0 +1,159 @@
+---
+layout: default
+title: Tokenizer
+permalink: /tokenizer/
+description: A byte-pair encoder trained on this site's own writing, running in your browser.
+search_body: >
+  Tokenizer. Byte pair encoding, BPE, tokens, subword vocabulary, context
+  window, how a language model reads text. Trained on this site's own corpus and
+  running in the browser.
+---
+
+{%- comment -%}
+Screen: the tokenizer playground.
+
+WHY A TOKENIZER TRAINED HERE RATHER THAN GPT-2'S. Size is the boring reason —
+GPT-2's merge table is about a megabyte and this one is 26KB. The real reason is
+that a tokenizer is a compression scheme fitted to a distribution, and that is
+almost impossible to feel while poking at one fitted to the whole internet. This
+one was fitted to twelve posts a reader can go and read. It has a single token
+for "Bangladesh" and none for "photosynthesis", and once you have seen that, the
+behaviour of every other tokenizer stops being mysterious.
+
+The headline numbers and the worked example come from _data/bpe.json at build
+time, so the page says something before any request completes. The merge table
+itself is fetched, because it is only useful once someone types.
+{%- endcomment -%}
+
+{%- assign bpe = site.data.bpe -%}
+
+<div class="frame tokenizer" data-tokenizer>
+
+    <header class="tokenizer-head">
+        <p class="t-kicker tnum">
+            {{ bpe.merges }} merges
+            <span aria-hidden="true">·</span>
+            {{ bpe.vocab }} tokens
+            <span aria-hidden="true">·</span>
+            trained on {{ bpe.chars }} characters
+        </p>
+        <h1 class="t-display-xs">Tokenizer</h1>
+        <p class="tokenizer-desc t-body">
+            A language model does not read characters or words. It reads tokens
+            — pieces found by starting from single letters and repeatedly
+            merging whichever adjacent pair was most common in its training
+            text. This one was trained on the twelve pieces on this site, which
+            is why it knows <code>Bangladesh</code> as one token and has to
+            spell out anything it has never met.
+        </p>
+    </header>
+
+    <div class="tokenizer-panes">
+        <div class="tokenizer-input-pane">
+            <label class="t-label" for="tok-in">Text</label>
+            {%- comment -%}
+            Bangladesh sits mid-sentence on purpose. At the start of the string
+            it has no leading space, so it is a different pre-token —
+            "Bangladesh" rather than "▁Bangladesh" — and encodes as three pieces
+            instead of one. That is correct behaviour and worth meeting, but not
+            while the paragraph above is claiming the corpus knows the word.
+            {%- endcomment -%}
+            <textarea class="tokenizer-input" id="tok-in" rows="5" disabled
+                      data-tok-input
+                      placeholder="Loading the merge table…">Writing about Bangladesh and stoicism is cheap here; photosynthesis is not.</textarea>
+
+            {%- comment -%}
+            Samples chosen to show both directions. The first is dense in corpus
+            vocabulary and encodes tightly; the second is technical English this
+            site has never used and shatters into letters. Watching the
+            chars-per-token figure move between them is the whole lesson.
+            {%- endcomment -%}
+            <div class="tokenizer-samples" role="group" aria-label="Sample text">
+                <span class="t-label">Try</span>
+                <button type="button" class="n-tag n-tag-outline tokenizer-sample"
+                        data-sample="Thinking about Bangladesh, patriotism, and the dichotomy of control.">in the corpus</button>
+                <button type="button" class="n-tag n-tag-outline tokenizer-sample"
+                        data-sample="Photosynthesis converts chlorophyll and carbon dioxide into glucose.">outside it</button>
+                <button type="button" class="n-tag n-tag-outline tokenizer-sample"
+                        data-sample="the The  the">the vs The vs ' the'</button>
+                <button type="button" class="n-tag n-tag-outline tokenizer-sample"
+                        data-sample="1234567890 3.14159">numbers</button>
+            </div>
+        </div>
+
+        <div class="tokenizer-output-pane">
+            <div class="tokenizer-out-head">
+                <span class="t-label">Tokens</span>
+                <p class="tokenizer-stats t-meta-sm" data-tok-stats></p>
+            </div>
+            <div class="tokenizer-out" data-tok-out aria-live="polite"></div>
+            <p class="tokenizer-inert t-body-sm t-muted" data-tok-inert>
+                The merge table is 26KB and loads separately, so this pane needs
+                JavaScript. The worked example below is rendered at build time
+                and shows the same algorithm step by step.
+            </p>
+            <p class="tokenizer-legend t-meta-sm">
+                <span class="tok is-space">␣</span> a space that begins a word is
+                part of the token after it — which is why <code>the</code> and
+                <code>&nbsp;the</code> are two different entries in every
+                vocabulary you have used.
+            </p>
+        </div>
+    </div>
+
+    {%- comment -%}
+    The worked example. Build-time, from _data/bpe.json, and the most valuable
+    thing on the page: it is the entire algorithm, on one word, with nothing
+    hidden.
+    {%- endcomment -%}
+    <section class="tokenizer-worked">
+        <h2 class="t-label rule-head">How <code>{{ bpe.example.word }}</code> gets built</h2>
+        <p class="tokenizer-worked-intro t-body-sm">
+            Every line is one merge. Start with characters, join the pair the
+            training run found most frequent, repeat until nothing left in the
+            word was ever merged. {{ bpe.example.steps.size | minus: 1 }} steps
+            here, ending in a single token — because this corpus says the word
+            constantly.
+        </p>
+        <ol class="tokenizer-steps">
+            {%- for step in bpe.example.steps %}
+            <li>
+                <span class="tokenizer-step-n tnum">{{ forloop.index0 }}</span>
+                <span class="tokenizer-step-syms">
+                    {%- assign syms = step | split: ' ' -%}
+                    {%- for s in syms %}<span class="tok{% cycle '', ' is-alt' %}">{{ s }}</span>{% endfor %}
+                </span>
+            </li>
+            {%- endfor %}
+        </ol>
+    </section>
+
+    <section class="tokenizer-method">
+        <h2 class="t-label rule-head">Why this matters</h2>
+        <div class="tokenizer-method-body">
+            <p class="t-body-sm">
+                Tokens are the unit everything is priced and limited in. A
+                context window is counted in them, an API bill is counted in
+                them, and the ratio of characters to tokens is not a constant —
+                it depends entirely on how well the text matches what the
+                tokenizer was trained on. English prose runs around four
+                characters per token. Code, unusual names, and languages written
+                in a script the training data barely contained run far worse,
+                which is a real and underappreciated cost asymmetry.
+            </p>
+            <p class="t-body-sm">
+                This one has {{ bpe.vocab }} tokens against GPT-2's 50,257, and
+                no byte fallback — a character the corpus never contained simply
+                has no id here, where a production tokenizer would drop to raw
+                bytes so that nothing is unencodable. Otherwise it is the same
+                algorithm, in about twenty lines of
+                <code>assets/js/tokenizer.js</code>. Everything modern
+                tokenizers add is engineering around edge cases rather than a
+                different idea.
+            </p>
+        </div>
+    </section>
+
+</div>
+
+<script src="{{ '/assets/js/tokenizer.js' | relative_url }}" defer></script>

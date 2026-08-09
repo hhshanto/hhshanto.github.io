@@ -155,3 +155,39 @@
   gap: var(--space-3);
   margin-top: var(--space-4);
 }
+
+// ── Instruments ────────────────────────────────────────────────────────────
+// Four ways of looking at the corpus. A band rather than more navigation:
+// they are not sections of the site, and the masthead has 37px of slack at
+// 900px anyway.
+.home-instruments {
+  margin-top: var(--space-8);
+}
+
+.home-instruments-intro {
+  max-width: 60ch;
+  margin: var(--space-3) 0 var(--space-4);
+  color: var(--color-text-muted);
+}
+
+.home-instrument-grid {
+  display: grid;
+  gap: var(--space-4);
+
+  @media (min-width: $bp-sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: $bp-lg) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.home-instrument {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  // .pcard supplies the lift and the accent edge on hover; this only has to
+  // stop the card looking like a link and then get out of the way.
+  height: 100%;
+}

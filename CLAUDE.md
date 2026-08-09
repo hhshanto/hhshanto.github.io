@@ -91,8 +91,10 @@ _config.yml  gemfile  gemfile.lock  index.html      # pinned at root
 README.md    LICENSE  CLAUDE.md     .gitignore
 
 _content/    the five collections (via `collections_dir`)
+assets/data/ generated indexes, fetched at runtime — never hand-edited
 pages/       every standalone page — about, all-posts, create-post, tags,
-             constellation, 404, search.json, and the five section indexes
+             constellation, atlas, retrieval, tokenizer, 404, search.json,
+             and the five section indexes
 _layouts/ _includes/ _sass/ _data/                  # Jekyll conventions
 assets/      css, js, images, files
 design/      redesign handoff + IMPLEMENTATION.md   # excluded from build
@@ -124,6 +126,24 @@ node .tools/check-chrome.mjs      # behavioural checks: theme, nav, a11y
 node .tools/contrast.mjs          # measured WCAG contrast, both themes
 ```
 
+**The data scripts.** Three instruments — `/atlas/`, `/retrieval/`,
+`/tokenizer/` — are computed offline and the site ships only the numbers. Re-run
+them when the corpus changes; nothing rebuilds them automatically:
+
+```
+node .tools/embed.mjs             # -> _data/atlas.json         (TF-IDF + PCA)
+node .tools/embed.mjs --azure     #    ...with real embeddings, needs .env
+node .tools/retrieval.mjs         # -> assets/data/retrieval.json (BM25 + LSA)
+node .tools/tokenizer.mjs         # -> assets/data/tokenizer.json + _data/bpe.json
+```
+
+They share `.tools/lib/corpus.mjs`, which owns the markdown reader, the
+stopword list, the tokeniser and the eigensolver. **`retrieval.js` and
+`tokenizer.js` re-implement that tokeniser client-side and cannot import it** —
+if the two ever drift, a query silently looks up words the index does not have,
+and the symptom is a search returning nothing for a word plainly on the page.
+Check that first.
+
 **Never pick a text colour by eye — measure it with `contrast.mjs`.** The
 neutral ramp inverts with the theme, so the same step is comfortable on one
 ground and illegible on the other: neutral-600 measures 8.2:1 in dark and
@@ -138,7 +158,7 @@ footer read 4.88:1 in dark for two phases while actually sitting at 4.17:1,
 because it was being measured against a colour it was not on. A translucent
 ground is composited over the body before the ratio is taken.
 
-`check-chrome.mjs` is 149 assertions covering the things a screenshot cannot
+`check-chrome.mjs` is 165 assertions covering the things a screenshot cannot
 show: the theme applied before first paint, the mobile menu, the post ToC and
 progress bar, the archive filter, the ⌘K palette's focus trap and restore, the
 compose tool's target path and token handling, the constellation map's layout

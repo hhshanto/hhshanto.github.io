@@ -100,6 +100,35 @@ const TARGETS = [
   // page, and a piece's label carries its own chip of the same colour so it
   // stays readable where it crosses an edge.
   { sel: '.tags-map-link', name: 'tags → map link', url: '/tags/' },
+
+  // Instruments band on the home page.
+  { sel: '.home-instrument .n-card-kicker', name: 'instrument kicker', url: '/' },
+  { sel: '.home-instrument .n-card-body', name: 'instrument body', url: '/' },
+  { sel: '.home-instruments-intro', name: 'instruments intro', url: '/' },
+
+  // Retrieval. The two panes and their scores; the chips carry their own wash,
+  // so they are measured against it rather than the page.
+  { sel: '.retrieval-desc', name: 'retrieval description', url: '/retrieval/' },
+  { sel: '.retrieval-column-sub', name: 'retrieval column sub', url: '/retrieval/' },
+  { sel: '.retrieval-column-note', name: 'retrieval column note', url: '/retrieval/' },
+  { sel: '.retrieval-method-body p', name: 'retrieval method note', url: '/retrieval/' },
+
+  // Tokenizer. The token chip is the component to watch: it paints its own
+  // ground in two alternating tints, so measuring it against the page would be
+  // measuring a colour it is not on — the mistake the footer shipped with for
+  // two phases.
+  { sel: '.tokenizer-desc', name: 'tokenizer description', url: '/tokenizer/' },
+  { sel: '.tokenizer-worked-intro', name: 'tokenizer worked intro', url: '/tokenizer/' },
+  { sel: '.tokenizer-step-n', name: 'tokenizer step number', url: '/tokenizer/' },
+  { sel: '.tokenizer-method-body p', name: 'tokenizer method note', url: '/tokenizer/' },
+  {
+    sel: '.tokenizer-steps .tok:not(.is-alt)', name: 'token chip',
+    url: '/tokenizer/', ground: '.tokenizer-steps .tok:not(.is-alt)',
+  },
+  {
+    sel: '.tokenizer-steps .tok.is-alt', name: 'token chip (alt)',
+    url: '/tokenizer/', ground: '.tokenizer-steps .tok.is-alt',
+  },
   { sel: '.constellation-desc', name: 'map description', url: '/constellation/' },
   { sel: '.constellation-key-name', name: 'legend domain', url: '/constellation/' },
   { sel: '.constellation-key-count', name: 'legend count', url: '/constellation/' },

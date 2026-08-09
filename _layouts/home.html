@@ -59,18 +59,78 @@ across two files.
         </div>
 
         {%- comment -%}
-        Two ways out of the band, and the second one is the only prominent
-        entrance the constellation has. It cannot go in the masthead: at 900px,
-        where the bar first becomes a row, there are 37px of slack and a sixth
-        link needs about 104. The footer had it, next to RSS and Sitemap, where
-        it read as boilerplate and nobody found it.
+        The way out of the band, and the only prominent entrance the archive has
+        besides ⌘K.
         {%- endcomment -%}
         <div class="home-latest-more">
             <a class="n-btn n-btn-ghost" href="{{ '/all-posts/' | relative_url }}">
                 All {{ pool | size }} pieces →
             </a>
-            <a class="n-btn n-btn-ghost" href="{{ '/constellation/' | relative_url }}">
-                See them as a map →
+        </div>
+    </section>
+
+    {%- comment -%}
+    The instruments — four ways of looking at the same twelve pieces rather than
+    four more places to read them, which is why they are their own band and not
+    more nav.
+
+    None of them can go in the masthead: at 900px, where the bar first becomes a
+    row, there are 37px of slack and a single extra link needs about 104. The
+    footer carried the constellation alone for a while, next to RSS and Sitemap,
+    where it read as boilerplate and went unfound — four of them there would be
+    worse. They are also all in ⌘K.
+
+    Hardcoded rather than driven off a data file: there are four, they each need
+    their own sentence, and a _data/instruments.yml holding four entries used
+    exactly once would be indirection for its own sake. If a fifth appears, that
+    calculation changes.
+    {%- endcomment -%}
+    <section class="home-instruments">
+        <h2 class="t-label rule-head">Instruments</h2>
+        <p class="home-instruments-intro t-body-sm">
+            Four ways of looking at the same writing. Everything they show is
+            computed from the corpus itself, offline, and the site ships only
+            the numbers.
+        </p>
+
+        <div class="home-instrument-grid">
+            <a class="n-card pcard home-instrument" href="{{ '/constellation/' | relative_url }}">
+                <p class="n-card-kicker">Map</p>
+                <h3 class="n-card-title">Constellation</h3>
+                <p class="n-card-body">
+                    Every piece hung off the domain and sub-topic it is filed
+                    under, with shared tags as the only threads that cross.
+                </p>
+            </a>
+
+            <a class="n-card pcard home-instrument" href="{{ '/atlas/' | relative_url }}">
+                <p class="n-card-kicker">Vectors</p>
+                <h3 class="n-card-title">Atlas</h3>
+                <p class="n-card-body">
+                    The same pieces placed by what they are about rather than
+                    where they are filed. Where the two maps disagree is the
+                    interesting part.
+                </p>
+            </a>
+
+            <a class="n-card pcard home-instrument" href="{{ '/retrieval/' | relative_url }}">
+                <p class="n-card-kicker">Search</p>
+                <h3 class="n-card-title">Retrieval</h3>
+                <p class="n-card-body">
+                    BM25 against a latent semantic space, side by side on your
+                    query. One counts words; the other can find a piece that
+                    shares none of them.
+                </p>
+            </a>
+
+            <a class="n-card pcard home-instrument" href="{{ '/tokenizer/' | relative_url }}">
+                <p class="n-card-kicker">Subwords</p>
+                <h3 class="n-card-title">Tokenizer</h3>
+                <p class="n-card-body">
+                    A byte-pair encoder trained on these twelve posts. It knows
+                    <em>Bangladesh</em> as one token and has to spell out
+                    anything it has never met.
+                </p>
             </a>
         </div>
     </section>

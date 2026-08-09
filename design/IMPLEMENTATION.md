@@ -768,3 +768,65 @@ Format: `date — decision — why`.
   general — `page.search_body | default: page.content` in `pages/search.json` —
   but the constellation is the only page that needs it, and any page that is
   mostly generated markup will need it too.
+- **2026-08-09 — Three data-science instruments, all computed offline; the site
+  ships only numbers.** `/atlas/`, `/retrieval/` and `/tokenizer/` each have a
+  dev-only script in `.tools/` that reads the corpus, does the arithmetic and
+  writes a data file. No model, no key and no third-party request ever reaches a
+  reader, so `check-chrome.mjs`'s "no page requests a third-party origin" audit
+  keeps holding. The split between `_data/` and `assets/data/` is by size, not
+  by taste: `_data/atlas.json` and `_data/bpe.json` are a few hundred numbers
+  and go through Liquid so the pages render at build time and work with
+  scripting off; `assets/data/retrieval.json` (169KB) and
+  `assets/data/tokenizer.json` (26KB) are fetched on the one page that needs
+  them, the way `lunr.min.js` and `search.json` already are.
+- **2026-08-09 — `.tools/lib/corpus.mjs` is shared by every data script.** Three
+  scripts read the same markdown, tokenise it the same way and factorise the
+  same matrix. Two copies of a stopword list is two stopword lists that drift,
+  and the whole value of putting these instruments on one site is that they are
+  looking at one corpus one way. Note that the client-side tokenisers in
+  `retrieval.js` and `tokenizer.js` must MATCH it and cannot import it — that
+  duplication is real and is the thing to check first when a query silently
+  returns nothing.
+- **2026-08-09 — The atlas is PCA of centred TF-IDF; the retrieval demo is LSA
+  of uncentred TF-IDF. Same machinery, deliberately different preprocessing.**
+  Centring asks how documents vary around their mean, which is the right
+  question for a map. Not centring asks what a document is made of, which is the
+  right question for retrieval. They give visibly different answers and both are
+  correct.
+- **2026-08-09 — The second retriever is LSA, not a neural embedding, and the
+  constraint is the lesson.** The comparison only means anything if both sides
+  run on the reader's own query, and embedding a query needs the model that
+  embedded the documents — a service call, a key, a third-party origin. So the
+  page uses the classical answer, says so plainly in a method note, and points
+  out that this is exactly why every RAG architecture has a service in it:
+  retrieval is cheap arithmetic, and turning text into a vector is not.
+- **2026-08-09 — Terms with df = 1 are dropped for the atlas and KEPT for
+  retrieval.** A word used in one document cannot say which documents resemble
+  each other, so it is noise on a similarity map. It is the most discriminative
+  thing there is for finding *that* document. Dropping them in the retrieval
+  index had a very visible symptom: "ballots", "bengali" and "obedience" each
+  occur once, so the latent column returned nothing while BM25 answered
+  instantly, and the page read as a rigged comparison.
+- **2026-08-09 — The tokenizer is trained on this corpus rather than shipping
+  GPT-2's.** Size is the boring reason (26KB against about a megabyte). The real
+  one is that a tokenizer is a compression scheme fitted to a distribution, and
+  that is invisible while poking at one fitted to the whole internet. Fitted to
+  twelve posts, it has a single token for "Bangladesh" and shatters
+  "photosynthesis", and a reader can predict it instead of watching a black box.
+- **2026-08-09 — Four bugs on this branch that a screenshot passed, all found by
+  counting instead of looking.** Worth listing together because they share a
+  shape: each rendered something plausible.
+  `classList.toggle(name, undefined)` FLIPS rather than removes, so every
+  unrelated atlas point came out lit *and* dimmed — caught by 12 lit + 8 dim out
+  of 12 points. Jekyll's `:path` for a collection keeps the date prefix, unlike
+  `_posts`, so ten atlas links 404ed while looking entirely reasonable. A
+  `.retrieval-bar` class used for both the query bar and the score rule turned
+  the search input into a 2px absolutely-positioned strip off the left edge of
+  the viewport. And a typo in the tokenizer's pre-tokenisation regex
+  (`ing? ?[0-9]+` for ` ?[0-9]+`) made every digit in the corpus match nothing
+  and disappear, silently, in both the trainer and the encoder.
+- **2026-08-09 — The four instruments live in a band on the home page, not in
+  the masthead.** They are ways of looking at the writing rather than sections
+  of it, and the header has 37px of slack at 900px — see the earlier note. All
+  four are also in ⌘K, each with a `search_body:` so their generated bodies do
+  not pollute the index.

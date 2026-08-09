@@ -1,0 +1,195 @@
+// The tokenizer playground.
+//
+// One rule does most of the work: `.tok`, the token chip, which is used both by
+// the live output and by the build-time worked example. Sharing it is
+// deliberate — the two are showing the same objects, and if the chip in the
+// example looked different from the chip in the playground the page would be
+// quietly implying they are different things.
+
+.tokenizer {
+  padding-block: var(--space-6) var(--space-8);
+
+  @media (min-width: $bp-md) {
+    padding-block: 40px 50px;
+  }
+}
+
+.tokenizer-desc {
+  max-width: 66ch;
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-muted);
+}
+
+// ── The chip ───────────────────────────────────────────────────────────────
+.tok {
+  display: inline-block;
+  padding: 2px 3px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  // Preserved, because a token can BE a space, and collapsing it would make two
+  // adjacent tokens look like one.
+  white-space: pre;
+  background: var(--wash-accent);
+
+  // Alternating tint rather than a border on every chip: at fifty tokens a grid
+  // of outlined boxes reads as a table, and the only thing that needs to be
+  // visible is where one token ends and the next begins.
+  &.is-alt { background: var(--wash-ink); }
+
+  &.is-space {
+    color: var(--color-text-faint);
+    background: var(--wash-ink-strong);
+  }
+
+  &.is-unknown {
+    // No error red — the site has no error colour, by design. A dashed edge
+    // says "this is not in the vocabulary" without inventing a new hue.
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--color-divider);
+    color: var(--color-text-faint);
+  }
+}
+
+// ── Panes ──────────────────────────────────────────────────────────────────
+.tokenizer-panes {
+  display: grid;
+  gap: var(--space-6);
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-divider);
+
+  @media (min-width: $bp-md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+}
+
+.tokenizer-input {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 16px; // iOS zooms the viewport on focus below this
+  line-height: 1.6;
+  resize: vertical;
+
+  &:disabled { opacity: 0.55; cursor: progress; }
+}
+
+.tokenizer-samples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: var(--space-3);
+
+  > .t-label { color: var(--color-text-faint); }
+}
+
+.tokenizer-sample {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  min-height: 32px;
+}
+
+.tokenizer-out-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.tokenizer-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: 0;
+  font-family: var(--font-mono);
+  color: var(--color-text-faint);
+
+  b { color: var(--color-accent-ink); font-weight: 400; }
+}
+
+.tokenizer-out {
+  margin-top: var(--space-2);
+  padding: var(--space-3);
+  min-height: 8.6em;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  // Long input has to wrap inside the box rather than widening it — the
+  // sideways-scroll audit is unforgiving and this pane's content is arbitrary.
+  overflow-wrap: anywhere;
+}
+
+.tokenizer-legend {
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-muted);
+}
+
+.tokenizer-inert {
+  margin: var(--space-3) 0 0;
+}
+
+// ── Worked example ─────────────────────────────────────────────────────────
+.tokenizer-worked {
+  margin-top: var(--space-8);
+}
+
+.tokenizer-worked-intro {
+  max-width: 62ch;
+  margin: var(--space-3) 0 var(--space-4);
+  color: var(--color-text-muted);
+}
+
+.tokenizer-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    display: grid;
+    grid-template-columns: 2.2em minmax(0, 1fr);
+    gap: var(--space-2);
+    align-items: baseline;
+    padding: 2px 0;
+  }
+}
+
+.tokenizer-step-n {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-faint);
+}
+
+.tokenizer-step-syms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+// ── Method ─────────────────────────────────────────────────────────────────
+.tokenizer-method {
+  margin-top: var(--space-8);
+}
+
+.tokenizer-method-body {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  color: var(--color-text-muted);
+
+  @media (min-width: $bp-md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+
+  p { margin: 0; }
+}

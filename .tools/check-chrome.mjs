@@ -1189,9 +1189,115 @@ const rest = (page) => page.evaluate(() => new Promise((resolve) => {
   await ctx.close();
 }
 
+// ── Retrieval: two rankers, one query ──────────────────────────────────────
+// Both sides score in the browser from a fetched index, so the assertions have
+// to wait for the fetch and then for the debounce. The interesting property is
+// not that either ranker works — it is that they DISAGREE, which is the entire
+// reason the page exists; a change that quietly made the latent side mirror
+// BM25 would leave the page looking perfect and saying nothing.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/retrieval/`);
+  await page.waitForFunction(() =>
+    !document.querySelector('[data-query]').disabled, null, { timeout: 5000 });
+  await page.waitForTimeout(250);
+
+  const read = () => page.evaluate(() => ({
+    bm: Array.from(document.querySelectorAll('[data-results-bm25] .retrieval-title'))
+      .map((a) => a.textContent),
+    lsa: Array.from(document.querySelectorAll('[data-results-lsa] .retrieval-title'))
+      .map((a) => a.textContent),
+    terms: Array.from(document.querySelectorAll('.retrieval-term')).map((t) => t.textContent),
+    unknown: document.querySelectorAll('.retrieval-term.is-unknown').length,
+  }));
+
+  const first = await read();
+  check('both rankers answer the default query',
+    first.bm.length > 0 && first.lsa.length > 0,
+    `${first.bm.length} by words, ${first.lsa.length} by meaning`);
+  check('the two rankers disagree',
+    first.lsa.some((t) => !first.bm.includes(t)),
+    `words ${first.bm.length}, meaning ${first.lsa.length}`);
+
+  // A query bar that shows which words the corpus actually contains is the most
+  // useful thing on the page when nothing comes back, so it has to be right.
+  await page.fill('[data-query]', 'photosynthesis patriotism');
+  await page.waitForTimeout(250);
+  const mixed = await read();
+  check('unknown query terms are marked as such', mixed.unknown === 1,
+    `${mixed.unknown} of ${mixed.terms.length} marked`);
+
+  // The query bar is the page's own control and shares no class with the score
+  // rule underneath each hit. It did once, and the input became a 2px
+  // absolutely-positioned strip and left the viewport entirely.
+  const bar = await page.evaluate(() => {
+    const b = document.querySelector('.retrieval-bar').getBoundingClientRect();
+    const i = document.querySelector('.retrieval-input').getBoundingClientRect();
+    return { barH: Math.round(b.height), inputW: Math.round(i.width), inputX: Math.round(i.x) };
+  });
+  check('the query bar is a real bar, not a hairline',
+    bar.barH > 30 && bar.inputW > 200 && bar.inputX > 0,
+    `${bar.barH}px tall, input ${bar.inputW}px at x=${bar.inputX}`);
+  await ctx.close();
+}
+
+// ── Tokenizer ──────────────────────────────────────────────────────────────
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/tokenizer/`);
+  await page.waitForFunction(() =>
+    !document.querySelector('[data-tok-input]').disabled, null, { timeout: 5000 });
+  await page.waitForTimeout(150);
+
+  const encode = async (text) => {
+    await page.fill('[data-tok-input]', text);
+    await page.waitForTimeout(180);
+    return page.evaluate(() =>
+      Array.from(document.querySelectorAll('[data-tok-out] .tok')).map((t) => t.textContent));
+  };
+
+  // The claim the whole page rests on: a word this corpus repeats constantly is
+  // one token, a word it has never contained is spelled out. Both phrases use
+  // the same frame so only the last word differs — and the word must be
+  // MID-STRING, because at the start it has no leading space and is a different
+  // pre-token entirely. Asserting "about Bangladesh" is two tokens fails
+  // against completely correct code, since "about" itself splits into ab+out.
+  const known = await encode('written in Bangladesh');
+  const unknown = await encode('written in photosynthesis');
+  check('a corpus word is a single token',
+    known.indexOf('▁Bangladesh') !== -1, known.join('|'));
+  check('an unseen word is spelled out',
+    unknown.length > known.length + 3,
+    `${known.length} tokens vs ${unknown.length}`);
+
+  // The digit branch of the pre-tokeniser regex was briefly a typo, and digits
+  // are excluded from every other branch too — so numbers matched nothing and
+  // vanished silently, in the trainer and the encoder alike.
+  const digits = await encode('in 2024 and 1971');
+  check('digits survive pre-tokenisation',
+    digits.join('').indexOf('2024') !== -1 && digits.join('').indexOf('1971') !== -1,
+    digits.join('|'));
+
+  // The leading-space marker is the genuinely surprising part of tokenisation,
+  // so the page had better actually show it rather than quietly normalising.
+  const spaced = await encode('the the');
+  check('a leading space is part of the token after it',
+    spaced.some((t) => t.indexOf('▁') === 0), spaced.join('|'));
+
+  const stats = await page.textContent('[data-tok-stats]');
+  check('the token count is reported', /\d+\s*tokens/.test(stats), stats.trim());
+
+  // Rendered by Liquid from _data/bpe.json, so it is there with scripting off.
+  const steps = await page.locator('.tokenizer-steps li').count();
+  check('the worked example is build-time', steps > 5, `${steps} steps`);
+  await ctx.close();
+}
+
 // ── Phase 8: whole-site audits ─────────────────────────────────────────────
 const PAGES = ['/', '/about/', '/tags/', '/all-posts/', '/reflections/',
-  '/reflections/philosophy/stoicism/', '/styleguide/', '/constellation/', '/atlas/',
+  '/reflections/philosophy/stoicism/', '/styleguide/', '/constellation/', '/atlas/', '/retrieval/', '/tokenizer/',
   '/404.html'];
 
 // Keyboard pass. Every focusable control must take a visible ring, and it must
