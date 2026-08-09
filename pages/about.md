@@ -1,14 +1,13 @@
 ---
-layout: default
+layout: page
 title: About
+kicker: Mohammad Hasan · Potsdam, DE
+standfirst: A curious soul with a passion for learning and understanding the world through different lenses — science, philosophy, culture.
 permalink: /about/
+description: Data Scientist in Potsdam, writing about science, philosophy and culture at Noema.
 ---
 
-{% include navigation.html %}
-
-# About Me
-
-Hello! I'm Hasan, currently based in the beautiful city of Potsdam, Germany. I'm a curious soul with a passion for learning and understanding the world around us through different lenses - be it science, philosophy, or culture.
+Hello! I'm Hasan, currently based in the beautiful city of Potsdam, Germany.
 
 ## My Journey
 
@@ -29,13 +28,14 @@ While my professional life revolves around data and technology, my interests spa
 
 ## Why This Space?
 
-This digital garden is my attempt to document and share my journey through various fields of knowledge. Here, you'll find my thoughts, learnings, and explorations across different subjects - from scientific concepts to philosophical musings.
+This digital garden is my attempt to document and share my journey through various fields of knowledge. Here, you'll find my thoughts, learnings, and explorations across different subjects — from scientific concepts to philosophical musings.
 
 ## Connect With Me
 
-I'm always excited to connect with fellow curious minds. You can reach me at:
-- Email: hasanibnesaleh@gmail.com
-- LinkedIn: [My LinkedIn Profile]
-- GitHub: [My GitHub Profile]
+I'm always excited to connect with fellow curious minds:
 
-Feel free to reach out if you'd like to discuss ideas, collaborate on projects, or just have an interesting conversation!
+- Email: [hasanibnesaleh@gmail.com](mailto:hasanibnesaleh@gmail.com)
+- LinkedIn: [mhasan-shanto](https://linkedin.com/in/mhasan-shanto/)
+- GitHub: [hhshanto](https://github.com/hhshanto)
+
+Feel free to reach out if you'd like to discuss ideas, collaborate on projects, or just have an interesting conversation.

@@ -966,6 +966,111 @@ for (const width of [375, 1440]) {
   await ctx.close();
 }
 
+// ── Phase 8: whole-site audits ─────────────────────────────────────────────
+const PAGES = ['/', '/about/', '/tags/', '/all-posts/', '/reflections/',
+  '/reflections/philosophy/stoicism/', '/styleguide/', '/404.html'];
+
+// Keyboard pass. Every focusable control must take a visible ring, and it must
+// never be the browser default — which is what `outline: none` without a
+// replacement leaves behind.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  let ringless = [];
+
+  for (const path of PAGES) {
+    await page.goto(`http://localhost:${PORT}${path}`);
+    for (let i = 0; i < 25; i++) {
+      await page.keyboard.press('Tab');
+      const bad = await page.evaluate((p) => {
+        const el = document.activeElement;
+        if (!el || el === document.body) return null;
+        const cs = getComputedStyle(el);
+        const ring = cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) > 0;
+        // A control may replace the ring with its own border treatment; the
+        // palette input and the editor do exactly that, inside a panel that is
+        // already framed.
+        const replaced = el.matches('.palette-input, .compose-textarea');
+        if (ring || replaced) return null;
+        return p + ' ' + (el.className || el.tagName);
+      }, path);
+      if (bad) ringless.push(bad);
+    }
+  }
+  check('every focusable control shows a focus ring',
+    ringless.length === 0, ringless.slice(0, 3).join(' | '));
+  await ctx.close();
+}
+
+// Internal links. The reorg before Phase 1 moved every page, and eight phases
+// have rewritten every template since; a link that 404s is the cheapest bug to
+// leave behind and the most annoying to find by hand.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  const broken = [];
+  const seen = new Set();
+
+  for (const path of PAGES) {
+    await page.goto(`http://localhost:${PORT}${path}`);
+    const hrefs = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('a[href]'))
+        .map((a) => a.getAttribute('href'))
+        .filter((h) => h && !/^(https?:|mailto:|#)/.test(h)));
+
+    for (const href of hrefs) {
+      const url = href.split('#')[0];
+      if (!url || seen.has(url)) continue;
+      seen.add(url);
+      const res = await page.request.get(`http://localhost:${PORT}${url}`);
+      if (res.status() >= 400) broken.push(`${url} (${res.status()} from ${path})`);
+    }
+  }
+  check(`internal links resolve (${seen.size} checked)`,
+    broken.length === 0, broken.slice(0, 3).join(' | '));
+  await ctx.close();
+}
+
+// Nothing may reach a third party. The old stylesheet pulled three families
+// from Google Fonts; the site is now entirely self-hosted, and the only
+// outbound request left should be the one the reader asks for by clicking.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  const external = [];
+  page.on('request', (r) => {
+    const u = new URL(r.url());
+    if (u.hostname !== 'localhost') external.push(u.hostname);
+  });
+  for (const path of PAGES) {
+    await page.goto(`http://localhost:${PORT}${path}`);
+    await page.waitForTimeout(150);
+  }
+  check('no page requests a third-party origin',
+    external.length === 0, Array.from(new Set(external)).join(', '));
+  await ctx.close();
+}
+
+// The site must survive at every named breakpoint without a horizontal
+// scrollbar, in both themes.
+for (const theme of ['light', 'dark']) {
+  const overflowing = [];
+  for (const width of [375, 700, 900, 1160, 1440]) {
+    const ctx = await browser.newContext({ viewport: { width, height: 900 } });
+    await ctx.addInitScript((t) => { try { localStorage.setItem('theme', t); } catch {} }, theme);
+    const page = await ctx.newPage();
+    for (const path of PAGES) {
+      await page.goto(`http://localhost:${PORT}${path}`);
+      const over = await page.evaluate(() =>
+        document.documentElement.scrollWidth - window.innerWidth);
+      if (over > 1) overflowing.push(`${path}@${width} +${over}px`);
+    }
+    await ctx.close();
+  }
+  check(`no page scrolls sideways at any width (${theme})`,
+    overflowing.length === 0, overflowing.slice(0, 3).join(' | '));
+}
+
 await browser.close();
 server.close();
 

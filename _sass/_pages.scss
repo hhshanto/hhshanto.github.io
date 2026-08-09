@@ -1,0 +1,146 @@
+// The three pages that are neither a post nor an index: /about/, /tags/ and
+// the 404. Small enough to share a partial; each owns its own class prefix.
+
+// ── Prose page (_layouts/page.html) ────────────────────────────────────────
+.page {
+  padding-block: var(--space-6) var(--space-8);
+
+  @media (min-width: $bp-md) {
+    padding-block: 48px 56px;
+  }
+}
+
+.page-head {
+  max-width: 70ch;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.page-title {
+  margin: var(--space-3) 0 0;
+}
+
+.page-standfirst {
+  max-width: 60ch;
+  margin: var(--space-3) 0 0;
+}
+
+.page-body {
+  margin-top: var(--space-6);
+}
+
+// ── Tags ───────────────────────────────────────────────────────────────────
+.tags {
+  padding-block: var(--space-6) var(--space-8);
+
+  @media (min-width: $bp-md) {
+    padding-block: 40px 50px;
+  }
+}
+
+.tags-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-muted);
+}
+
+.tags-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.tags-group {
+  // Clears the sticky masthead when the cloud jumps to an anchor. _reset.scss
+  // sets scroll-padding-top globally; this is belt and braces for browsers
+  // that ignore it on a non-focusable target.
+  scroll-margin-top: calc(var(--masthead-h) + var(--space-4));
+
+  + .tags-group {
+    margin-top: var(--space-8);
+  }
+}
+
+.tags-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin: var(--space-6) 0 0;
+  padding-bottom: 6px;
+  // Solid where the rows below are hairlines — the same device the archive
+  // uses to separate years.
+  border-bottom: 1px solid var(--color-text);
+}
+
+.tags-group-count {
+  color: var(--color-text-faint);
+}
+
+.tags-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  align-items: baseline;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--color-divider);
+  color: inherit;
+  text-decoration: none;
+
+  &:hover .tags-row-title {
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+}
+
+.tags-row-title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.tags-row-date {
+  color: var(--color-text-faint);
+}
+
+.tags-empty {
+  margin-top: var(--space-6);
+  max-width: 60ch;
+}
+
+// ── 404 ────────────────────────────────────────────────────────────────────
+.notfound {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding-block: var(--space-8);
+
+  @media (min-width: $bp-md) {
+    padding-block: 80px 100px;
+  }
+}
+
+.notfound-code {
+  margin: 0;
+  color: var(--color-divider);
+  line-height: 0.9;
+}
+
+.notfound-body {
+  max-width: 52ch;
+}
+
+.notfound-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}

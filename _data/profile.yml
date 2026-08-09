@@ -22,7 +22,7 @@ headline_italic: knowledge garden
 intro: >
   Insights from data science to philosophy, technology to arts. Based in
   Potsdam, Germany, exploring the intersection of technology and knowledge
-  sharing — and writing it down as it goes.
+  sharing, and writing it down as it goes.
 
 socials:
   - label: LinkedIn
@@ -48,7 +48,7 @@ experience:
     place: University of Potsdam
 
 education:
-  - period: 21–
+  - period: 22–
     role: MSc Data Science
     place: University of Potsdam
   - period: 16–20

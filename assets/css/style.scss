@@ -1,26 +1,31 @@
 ---
 ---
-// ── Noema redesign foundation ──────────────────────────────────────────────
-// Order matters: everything downstream depends on tokens, nothing depends on
-// a component. See design/IMPLEMENTATION.md.
+// Noema. One stylesheet, assembled from _sass/ partials.
 //
-// These are imported BEFORE the outgoing stylesheet below, deliberately. The
-// two systems coexist during the migration, and where both style the same
-// element the old rule is meant to win until its page is rebuilt - so the old
-// partials come last. Phase 8 deletes them and this note with them.
+// Order: tokens first, because everything downstream reads them; then the
+// foundation, which owns element defaults and the type scale; then components,
+// which style only their own class prefix and depend on nothing but tokens.
+//
+// The migration is over. The old stylesheet — _variables, _base, _dark-mode,
+// _hero, _about, _latest-posts, _section-index, post, _search, _forms and the
+// _shell bridge that reconciled them with the new chrome — is gone, and with it
+// the wall of !important that _dark-mode.scss needed to overpower hardcoded
+// colours. Every colour on the site now comes from _tokens.scss.
 @import "tokens";
 @import "fonts";
 @import "reset";
 @import "type";
 @import "primitives";
 @import "ui";
+
+// Chrome — on every page.
 @import "nav";
 @import "footer";
+@import "search-palette";
 
-// Components, grouped by screen. Order within the group does not matter, but
-// order between them does in one place: _compose.scss restyles .article-body
-// for its preview pane, so it must come after _article.scss. It did not, and
-// the preview quietly kept the article's rules.
+// Components, grouped by screen. Order within a group does not matter; order
+// between them does in one place: _compose.scss restyles .article-body for its
+// preview pane, so it must come after _article.scss.
 @import "article";
 @import "post-rail";
 @import "post-nav";
@@ -33,29 +38,12 @@
 
 @import "category";
 @import "archive";
+@import "pages";
 
-@import "search-palette";
 @import "compose";
 
 @import "styleguide";
 
-// ── Outgoing stylesheet (removed phase by phase) ───────────────────────────
-@import "variables";
-@import "base";
-@import "hero";
-@import "about";
-@import "latest-posts";
-@import "section-index";
-@import "post";
-@import "search";  // Add this line
-@import "forms";
-
-// Webfonts are requested from the head of the default layout, not with a
-// CSS @import: an @import here is not discoverable until this stylesheet
-// has already downloaded and parsed, which serialises the two requests.
-
-// Import dark mode last so it overrides other styles
-@import "dark-mode";
-
-// Migration bridge — must come last; see the file header.
-@import "shell";
+// Webfonts are requested from the head of the default layout, not with a CSS
+// @import: an @import here is not discoverable until this stylesheet has
+// already downloaded and parsed, which serialises the two requests.

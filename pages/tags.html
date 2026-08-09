@@ -6,21 +6,18 @@ description: Every tag used across the garden, with the posts filed under each.
 ---
 
 {%- comment -%}
-A single page with one anchor per tag, rather than a generated page per
-tag: GitHub Pages only runs its own plugin allowlist, and jekyll-archives
-is not on it, so per-tag pages cannot be built here without committing
-generated files by hand.
+A single page with one anchor per tag, rather than a generated page per tag:
+GitHub Pages only runs its own plugin allowlist, jekyll-archives is not on it,
+and per-tag pages cannot be built here without committing generated files by
+hand.
 
-post-header.html links each tag to /tags/#<slug>, which lands on the
-matching section below.
+Posts link each tag to /tags/#<slug>, which lands on the matching section.
 {%- endcomment -%}
 
 {%- assign all_docs = '' | split: '' -%}
-{%- assign all_docs = all_docs | concat: site.reflections -%}
-{%- assign all_docs = all_docs | concat: site.natural-sciences -%}
-{%- assign all_docs = all_docs | concat: site.social-sciences -%}
-{%- assign all_docs = all_docs | concat: site.arts-literature -%}
-{%- assign all_docs = all_docs | concat: site.contemporary -%}
+{%- for domain in site.data.domains -%}
+    {%- assign all_docs = all_docs | concat: site[domain.collection] -%}
+{%- endfor -%}
 {%- assign all_docs = all_docs | sort: 'date' | reverse -%}
 
 {%- assign all_tags = '' | split: '' -%}
@@ -31,38 +28,56 @@ matching section below.
 {%- endfor -%}
 {%- assign all_tags = all_tags | uniq | sort_natural -%}
 
-<div class="tags-page">
-    <header class="tags-header">
-        <h1>Tags</h1>
-        <p>{{ all_tags.size }} tag{% unless all_tags.size == 1 %}s{% endunless %} across {{ all_docs.size }} post{% unless all_docs.size == 1 %}s{% endunless %}.</p>
+<div class="frame tags">
+
+    <header class="tags-head">
+        <h1 class="t-display-xs">Tags</h1>
+        <p class="tags-stats t-meta tnum">
+            {{ all_tags.size }} tag{% unless all_tags.size == 1 %}s{% endunless %}
+            <span aria-hidden="true">·</span>
+            {{ all_docs.size }} piece{% unless all_docs.size == 1 %}s{% endunless %}
+        </p>
     </header>
 
     {%- if all_tags.size > 0 %}
-        <nav class="tag-cloud" aria-label="All tags">
-            {%- for tag in all_tags %}
-                <a href="#{{ tag | slugify }}" class="tag">{{ tag }}</a>
-            {%- endfor %}
-        </nav>
-
+    <nav class="tags-cloud" aria-label="All tags">
         {%- for tag in all_tags %}
-            <section class="tag-group" id="{{ tag | slugify }}">
-                <h2>{{ tag }}</h2>
-                <ul>
-                    {%- for doc in all_docs -%}
-                        {%- if doc.tags contains tag %}
-                            <li>
-                                <a href="{{ doc.url | relative_url }}">{{ doc.title }}</a>
-                                <time datetime="{{ doc.date | date_to_xmlschema }}">{{ doc.date | date: "%B %-d, %Y" }}</time>
-                            </li>
-                        {%- endif -%}
-                    {%- endfor %}
-                </ul>
-            </section>
+        <a class="n-tag n-tag-outline" href="#{{ tag | slugify }}">{{ tag }}</a>
         {%- endfor %}
+    </nav>
+
+    {%- for tag in all_tags %}
+    <section class="tags-group" id="{{ tag | slugify }}">
+        <h2 class="tags-group-head">
+            <span class="tags-group-name t-kicker">{{ tag }}</span>
+            {%- assign tag_count = 0 -%}
+            {%- for doc in all_docs -%}
+                {%- if doc.tags contains tag -%}{%- assign tag_count = tag_count | plus: 1 -%}{%- endif -%}
+            {%- endfor %}
+            <span class="tags-group-count t-meta-sm tnum">
+                {{ tag_count }} piece{% unless tag_count == 1 %}s{% endunless %}
+            </span>
+        </h2>
+
+        <div class="tags-rows">
+            {%- for doc in all_docs -%}
+                {%- if doc.tags contains tag %}
+            <a class="tags-row" href="{{ doc.url | relative_url }}">
+                <span class="tags-row-title">{{ doc.title }}</span>
+                <time class="tags-row-date t-meta-sm tnum"
+                      datetime="{{ doc.date | date_to_xmlschema }}">{{ doc.date | date: "%d %b %Y" }}</time>
+            </a>
+                {%- endif -%}
+            {%- endfor %}
+        </div>
+    </section>
+    {%- endfor %}
+
     {%- else %}
-        <p class="tags-empty">
-            No posts carry tags yet. Add a <code>tags:</code> line to a post's
-            front matter and it will be listed here automatically.
-        </p>
+    <p class="tags-empty t-body t-muted">
+        No posts carry tags yet. Add a <code>tags:</code> line to a post's front
+        matter and it will be listed here automatically.
+    </p>
     {%- endif %}
+
 </div>

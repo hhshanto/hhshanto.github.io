@@ -7,12 +7,20 @@ Working plan for rebuilding hhshanto.github.io against
 
 ## STATUS — update this as the last step of every session
 
-**Next action:** Phase 8 — cleanup. Delete `_shell.scss`, `_dark-mode.scss`,
-`_variables.scss` and the superseded `_hero / _about / _latest-posts /
-_section-index / post / _search / _forms` partials; drop the Google fonts
-`<link>` from `_layouts/default.html`; then the hex grep, the contrast audit and
-a keyboard pass. Check what `pages/tags.html` and `pages/404.html` still depend
-on before deleting — they are the last two pages never rebuilt.
+**Next action:** none — the redesign is done. All eight phases are complete,
+the old stylesheet is deleted, and `check-chrome.mjs` runs 135 assertions
+including four whole-site audits.
+
+Open items, none blocking:
+
+- **Density.** 1e is drawn for 57 pieces and 1d for 14 per domain; there are 12
+  documents. The "Load 2023 and earlier" and "Older notes" affordances were
+  left out and should go in when the archive outgrows a screen.
+- **`figure:`** is read by 1d's lead-piece plate and no document sets it yet.
+- **`$content-max` is still 1160px.** Raising it was deferred through Phases 4
+  and 5 and never became a problem; leave it unless it starts to feel narrow.
+- **Deferred ideas, not scheduled:** a 3D Noema logo, and the "Escape the Data
+  Lab" mini-game. Both are additions to a finished site rather than part of it.
 
 | Phase | | |
 | --- | --- | --- |
@@ -24,7 +32,7 @@ on before deleting — they are the last two pages never rebuilt.
 | 5 | Category index 1d + archive 1e | ✅ 2026-08-09 |
 | 6 | Search palette 1f | ✅ 2026-08-09 |
 | 7 | Compose 1g | ✅ 2026-08-09 |
-| 8 | Cleanup | ☐ |
+| 8 | Cleanup | ✅ 2026-08-09 |
 
 Never end a session on a failing build. A half-finished phase gets committed
 working-but-incomplete, never broken.
@@ -481,6 +489,28 @@ Format: `date — decision — why`.
   who wrote it; inventing a personal slogan is not the redesign's job. Every
   other word on the page is lifted from the old home page and about section.
   Two lines in `_data/profile.yml` change it to lead with a name instead.
+- **2026-08-09 — The body's own ground, type and margin were coming from the
+  old stylesheet, and `_reset.scss` never had them.** `body { background; color;
+  font-family }` lived in the `_shell.scss` bridge and `margin: 0` came from a
+  `* { margin: 0 }` in `post.scss`. Deleting both left the site on a transparent
+  body with an 8px browser margin — which surfaced as *every* contrast target
+  failing at once against `rgb(0,0,0)`, and the mobile nav panel measuring
+  359px of 375. A reset that does not set the body ground is not a reset.
+- **2026-08-09 — `html { scroll-behavior: smooth }` went with `_base.scss` and
+  was not replaced.** Anchor clicks still smooth-scroll through the handler in
+  `_layouts/default.html`, which honours `prefers-reduced-motion`; what changed
+  is that find-in-page and `:target` jumps are now instant, which is the better
+  behaviour anyway.
+- **2026-08-09 — `/about/`, `/tags/` and `/404.html` were rebuilt before the
+  deletions, not after.** All three were styled entirely by `_base.scss`.
+  Deleting it first would have left three broken pages and no way to tell which
+  breakage was intended. `/about/` got a general `page` layout that reuses
+  `.article-body`, so prose looks the same there as in a post.
+- **2026-08-09 — Four whole-site audits were added rather than a spot check.**
+  Every focusable control on eight pages must show a focus ring; every internal
+  link must resolve; no page may request a third-party origin; no page may
+  scroll sideways at any of the five widths in either theme. They are the
+  cheapest possible regression net for a site nobody will hand-test again.
 - **2026-08-09 — The compose tool was committing to a path Jekyll cannot
   see.** `post-creator.js` still wrote to `_<domain>/<sub>/<file>.md` at the
   repo root; the collections moved under `_content/` in the reorg before Phase

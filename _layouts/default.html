@@ -43,20 +43,15 @@
     preloading the two roman faces here starts them before the CSS has parsed,
     since a @font-face src is not discoverable until then.
 
-    The Google request below is what remains of the outgoing design: Playfair
-    Display and Open Sans still set the body of pages not yet rebuilt, and Fira
-    Code still sets their code blocks. UnifrakturCook has been dropped — it only
-    ever rendered the old gothic logo, which this masthead replaces. The whole
-    link goes in Phase 8 with the last old partial.
+    The Google Fonts request that used to sit below is gone. It loaded Playfair
+    Display, Open Sans and Fira Code for the outgoing stylesheet, which no
+    longer exists — three families, two preconnects and a render-blocking
+    request to a third party, for nothing.
     {%- endcomment -%}
     <link rel="preload" as="font" type="font/woff2" crossorigin
           href="{{ '/assets/fonts/cormorant-garamond-normal-latin.woff2' | relative_url }}">
     <link rel="preload" as="font" type="font/woff2" crossorigin
           href="{{ '/assets/fonts/lora-normal-latin.woff2' | relative_url }}">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Open+Sans:wght@400;600&family=Fira+Code:wght@400&display=swap">
 
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 </head>

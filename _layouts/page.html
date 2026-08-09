@@ -1,0 +1,29 @@
+---
+layout: default
+---
+{%- comment -%}
+A plain prose page: a title, an optional standfirst, and markdown.
+
+Used by /about/ and available to anything else that is simply words. It reuses
+.article-body rather than defining its own prose styles, so a list or a
+blockquote looks the same here as it does in a post — which is the point of
+having one prose stylesheet.
+{%- endcomment -%}
+
+<div class="frame page">
+    <header class="page-head">
+        {%- if page.kicker %}
+        <p class="t-kicker">{{ page.kicker }}</p>
+        {%- endif %}
+
+        <h1 class="page-title t-display-sm">{{ page.title }}</h1>
+
+        {%- if page.standfirst %}
+        <p class="page-standfirst t-standfirst">{{ page.standfirst }}</p>
+        {%- endif %}
+    </header>
+
+    <div class="page-body article-body t-prose">
+        {{ content }}
+    </div>
+</div>

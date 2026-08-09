@@ -1,9 +1,15 @@
 // Reset and global behaviour.
 //
-// Named _reset, not _base, because _base.scss is the outgoing stylesheet's
-// layout and component file. The two coexist during the migration; _base.scss
-// is imported after this one so its rules still win on pages that have not
-// been rebuilt yet, and it is deleted in Phase 8.
+// Named _reset rather than _base because the outgoing stylesheet already had a
+// _base.scss; that file is gone now, and the name stays because a dozen
+// partials no longer needing to be renamed is worth more than the word.
+//
+// Everything the page needs before any component loads lives here — the body's
+// own ground, type and margin included. Those three were, for seven phases,
+// coming from the old stylesheet: `body` from _shell.scss and `margin: 0` from
+// a `* { margin: 0 }` in post.scss. Deleting both left the site on a
+// transparent body with an 8px browser margin, which read as every colour
+// check failing at once against rgb(0,0,0).
 
 *,
 *::before,
@@ -17,6 +23,28 @@ html {
   // load, and browser find-in-page — none of which the layout's click handler
   // sees.
   scroll-padding-top: calc(var(--masthead-h) + var(--space-3));
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+// Headings and paragraphs arrive with browser margins that every component
+// then has to undo. The type scale sets its own spacing.
+h1, h2, h3, h4, h5, h6,
+p, figure, blockquote, dl, dd {
+  margin: 0;
+}
+
+ul, ol {
+  margin: 0;
 }
 
 img,

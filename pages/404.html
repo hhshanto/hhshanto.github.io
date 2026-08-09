@@ -5,18 +5,21 @@ permalink: /404.html
 sitemap: false
 ---
 
-<div class="error-page">
-    <div class="error-code">404</div>
-    <h1>This page isn't here</h1>
-    <p>
-        The link may be out of date, or the page may have been moved while the
-        garden was being tended. Here is where everything lives:
+<div class="frame notfound">
+    <p class="notfound-code t-display-xl tnum" aria-hidden="true">404</p>
+
+    <h1 class="t-h2">This page isn't here</h1>
+
+    <p class="notfound-body t-body t-muted">
+        The link may be out of date, or the page may have moved while the garden
+        was being tended. Everything lives in one of these.
     </p>
-    <div class="error-links">
-        <a href="{{ '/' | relative_url }}">Home</a>
-        <a href="{{ '/natural-sciences' | relative_url }}">Natural Sciences</a>
-        <a href="{{ '/social-sciences' | relative_url }}">Social Sciences</a>
-        <a href="{{ '/reflections' | relative_url }}">Reflections</a>
-        <a href="{{ '/all-posts' | relative_url }}">All Posts</a>
-    </div>
+
+    <nav class="notfound-links" aria-label="Where to go instead">
+        <a class="n-btn n-btn-primary" href="{{ '/' | relative_url }}">Home</a>
+        <a class="n-btn n-btn-secondary" href="{{ '/all-posts/' | relative_url }}">All posts</a>
+        {%- for domain in site.data.domains %}
+        <a class="n-btn n-btn-secondary" href="{{ domain.url | relative_url }}">{{ domain.short }}</a>
+        {%- endfor %}
+    </nav>
 </div>
