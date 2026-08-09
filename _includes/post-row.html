@@ -1,0 +1,31 @@
+{%- comment -%}
+One row in the archive (screen 1e). A scanning grid, not a summary: date,
+title, domain, read time, no excerpt.
+
+    {% include post-row.html document=doc %}
+
+The data- attributes are what archive-filter.js matches against, so the filter
+never has to read the DOM's text or know how the row is laid out. They carry
+the searchable text pre-lowercased for the same reason.
+{%- endcomment -%}
+
+{%- assign doc = include.document -%}
+{%- assign domain = site.data.domains | where: 'collection', doc.collection | first -%}
+{%- assign words = doc.content | strip_html | number_of_words -%}
+{%- assign minutes = words | divided_by: 200 -%}
+{%- if minutes < 1 -%}{%- assign minutes = 1 -%}{%- endif -%}
+
+{%- capture haystack -%}
+{{ doc.title }} {{ doc.tags | join: ' ' }} {{ domain.title }} {{ doc.date | date: "%Y %B" }}
+{%- endcapture -%}
+
+<a class="post-row"
+   href="{{ doc.url | relative_url }}"
+   data-row
+   data-domain="{{ doc.collection }}"
+   data-search="{{ haystack | strip_html | downcase | normalize_whitespace | escape }}">
+    <span class="post-row-date t-meta-sm tnum">{{ doc.date | date: "%d %b" }}</span>
+    <span class="post-row-title">{{ doc.title }}</span>
+    <span class="post-row-domain">{{ domain.title }}</span>
+    <span class="post-row-read t-meta-sm tnum">{{ minutes }} min</span>
+</a>

@@ -1,0 +1,188 @@
+// Screen 1e — the archive.
+//
+// A scanning layout. The one piece of visual hierarchy that matters here is the
+// year rule: it is a solid 1px of --color-text where every other rule on the
+// page is a hairline of --color-divider, and that difference is the only thing
+// separating one year from the next.
+
+.archive {
+  padding-block: var(--space-6) var(--space-8);
+
+  @media (min-width: $bp-md) {
+    padding-block: 40px 50px;
+  }
+}
+
+// ── Head ───────────────────────────────────────────────────────────────────
+.archive-head-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  @media (min-width: $bp-sm) {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-6);
+  }
+}
+
+.archive-search {
+  width: 100%;
+
+  @media (min-width: $bp-sm) {
+    width: 300px;
+    flex: none;
+  }
+}
+
+.archive-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-muted);
+}
+
+// ── Domain chips ───────────────────────────────────────────────────────────
+.archive-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.archive-chip {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  // .n-tag is sized for a static label; as a button it needs a real target.
+  min-height: 30px;
+}
+
+// The chosen chip takes the accent fill; the rest stay outlined. `is-on` is set
+// by JS, and the markup ships with "All" already carrying it, so the row is
+// correct before the script runs even though it cannot do anything yet.
+.archive-chip.is-on {
+  background: var(--tag-accent-bg);
+  border-color: transparent;
+  color: var(--tag-accent-ink);
+}
+
+// ── Year groups ────────────────────────────────────────────────────────────
+.archive-year + .archive-year {
+  margin-top: var(--space-8);
+}
+
+.archive-year-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin: var(--space-6) 0 0;
+  padding-bottom: 6px;
+  // Solid, and the page's text colour — heavier than the hairlines between
+  // rows. That contrast is what makes a year read as a division rather than as
+  // another row.
+  border-bottom: 1px solid var(--color-text);
+}
+
+.archive-year-label {
+  color: var(--color-accent-ink);
+}
+
+.archive-year-count {
+  color: var(--color-text-faint);
+}
+
+// ── Rows ───────────────────────────────────────────────────────────────────
+.post-row {
+  display: grid;
+  // Phone: date and read time share a line above the title, domain below it.
+  grid-template-columns: auto 1fr;
+  gap: 4px var(--space-3);
+  align-items: baseline;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-divider);
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    background: var(--wash-ink);
+
+    .post-row-title {
+      text-decoration: underline;
+      text-decoration-color: var(--color-accent);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+  }
+
+  @media (min-width: $bp-md) {
+    grid-template-columns: 82px minmax(0, 1fr) 150px 62px;
+    gap: 20px;
+    padding: 13px 0;
+    // The wash would otherwise stop at the text and leave the gutters bare.
+    padding-inline: var(--space-2);
+    margin-inline: calc(var(--space-2) * -1);
+  }
+}
+
+// Placement is explicit at both widths. Left to auto-flow, the phone layout
+// gives each of the four spans its own line — four lines a row on the one
+// screen whose whole point is density.
+.post-row-date {
+  grid-area: 1 / 1;
+  color: var(--color-text-faint);
+
+  @media (min-width: $bp-md) {
+    grid-area: auto / 1;
+  }
+}
+
+.post-row-read {
+  grid-area: 1 / 2;
+  justify-self: end;
+  color: var(--color-text-faint);
+
+  @media (min-width: $bp-md) {
+    grid-area: auto / 4;
+    justify-self: stretch;
+    text-align: right;
+  }
+}
+
+.post-row-title {
+  grid-area: 2 / 1 / auto / -1;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 1.25;
+
+  @media (min-width: $bp-md) {
+    grid-area: auto / 2;
+    font-size: 21px;
+  }
+}
+
+.post-row-domain {
+  grid-area: 3 / 1 / auto / -1;
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  color: var(--color-text-muted);
+
+  @media (min-width: $bp-md) {
+    grid-area: auto / 3;
+  }
+}
+
+// ── Empty state ────────────────────────────────────────────────────────────
+.archive-empty {
+  margin-top: var(--space-6);
+}
+
+// A year whose every row has been filtered out hides its heading too, or the
+// page ends up a column of years with nothing under them.
+.archive-year[hidden] {
+  display: none;
+}

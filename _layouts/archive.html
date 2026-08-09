@@ -1,0 +1,113 @@
+---
+layout: default
+---
+{%- comment -%}
+Screen 1e — the archive. Every piece on the site, grouped by year, built to be
+scanned rather than read.
+
+Density note, from the handoff and worth keeping in view: 1e is designed for 57
+pieces and says "density is the point". There are a dozen. The layout is right
+and will grow into itself; what has been left out is the "Load 2023 and
+earlier" footer button, which would have nothing to load.
+
+Filtering is client-side over rows Jekyll has already rendered — no pagination
+plugin, and jekyll-paginate is not in GitHub Pages' list anyway.
+{%- endcomment -%}
+
+{%- assign pool = '' | split: '' -%}
+{%- for domain in site.data.domains -%}
+    {%- assign pool = pool | concat: site[domain.collection] -%}
+{%- endfor -%}
+{%- assign docs = pool | sort: 'date' | reverse -%}
+
+{%- assign total_words = 0 -%}
+{%- for doc in docs -%}
+    {%- assign w = doc.content | strip_html | number_of_words -%}
+    {%- assign total_words = total_words | plus: w -%}
+{%- endfor -%}
+{%- comment -%}
+Liquid has no thousands separator, and the handoff sets these figures with a
+thin space (96 400). Split at the thousand and pad the remainder.
+{%- endcomment -%}
+{%- assign thousands = total_words | divided_by: 1000 -%}
+{%- assign remainder = total_words | modulo: 1000 -%}
+
+{%- assign newest = docs | first -%}
+{%- assign oldest = docs | last -%}
+{%- comment -%}
+Assigned rather than filtered inline: Liquid cannot take a filter on either
+side of a comparison, so `unless a | date: "%Y" == b | date: "%Y"` is a syntax
+error, not a false condition.
+{%- endcomment -%}
+{%- assign first_year = oldest.date | date: "%Y" -%}
+{%- assign last_year = newest.date | date: "%Y" -%}
+
+<div class="frame archive">
+
+    <header class="archive-head">
+        <div class="archive-head-row">
+            <h1 class="t-display-xs">{{ page.title }}</h1>
+
+            <div class="archive-search">
+                <label class="visually-hidden" for="archive-filter">Filter pieces</label>
+                <input class="n-input archive-input"
+                       id="archive-filter"
+                       type="search"
+                       autocomplete="off"
+                       placeholder="Filter by title, tag or year…"
+                       data-archive-input>
+            </div>
+        </div>
+
+        <p class="archive-stats t-meta tnum">
+            {{ docs | size }} {% if docs.size == 1 %}piece{% else %}pieces{% endif %}
+            <span aria-hidden="true">·</span>
+            {{ first_year }}{% unless first_year == last_year %} – {{ last_year }}{% endunless %}
+            <span aria-hidden="true">·</span>
+            {% if thousands > 0 %}{{ thousands }} {{ remainder | prepend: '00' | slice: -3, 3 }}{% else %}{{ remainder }}{% endif %} words
+        </p>
+    </header>
+
+    <div class="archive-chips" role="group" aria-label="Filter by domain">
+        <button type="button" class="n-tag n-tag-accent archive-chip is-on"
+                data-chip="" aria-pressed="true">All</button>
+        {%- for domain in site.data.domains %}
+        <button type="button" class="n-tag n-tag-outline archive-chip"
+                data-chip="{{ domain.collection }}" aria-pressed="false">{{ domain.short }}</button>
+        {%- endfor %}
+    </div>
+
+    {%- assign years = docs | group_by_exp: 'doc', 'doc.date | date: "%Y"' %}
+    <div class="archive-years">
+        {%- for year in years %}
+        <section class="archive-year" data-year-group>
+            <h2 class="archive-year-head">
+                <span class="archive-year-label t-kicker tnum">{{ year.name }}</span>
+                {%- assign year_count = year.items | size %}
+                <span class="archive-year-count t-meta-sm tnum" data-year-count>
+                    {{ year_count }} {% if year_count == 1 %}piece{% else %}pieces{% endif %}
+                </span>
+            </h2>
+
+            <div class="archive-rows">
+                {%- for doc in year.items %}
+                {% include post-row.html document=doc %}
+                {%- endfor %}
+            </div>
+        </section>
+        {%- endfor %}
+    </div>
+
+    <p class="archive-empty t-body t-muted" data-archive-empty hidden>
+        Nothing here matches that. Try a shorter word, or clear the filter.
+    </p>
+
+    {%- comment -%}
+    Announces the result count to a screen reader as the filter narrows; the
+    sighted equivalent is watching rows disappear.
+    {%- endcomment -%}
+    <p class="visually-hidden" role="status" aria-live="polite" data-archive-status></p>
+
+</div>
+
+<script src="{{ '/assets/js/archive-filter.js' | relative_url }}" defer></script>

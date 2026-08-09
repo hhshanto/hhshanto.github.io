@@ -1,0 +1,181 @@
+// Screen 1d — a domain's front page.
+
+.category {
+  padding-block: var(--space-6) var(--space-8);
+
+  @media (min-width: $bp-md) {
+    padding-block: 0 50px;
+  }
+}
+
+// ── Masthead band ──────────────────────────────────────────────────────────
+// A hairline grid of two cells rather than a hand-drawn vertical rule: the
+// divider then runs the full height of the taller cell without anyone having
+// to know which one that is.
+.category-head {
+  margin-top: var(--space-4);
+
+  @media (min-width: $bp-md) {
+    // Overrides .hgrid's repeat(var(--cols), 1fr): the aside is a fixed 340px,
+    // not a share. _category.scss is imported after _primitives.scss, so this
+    // wins on order at equal specificity.
+    grid-template-columns: minmax(0, 1fr) 340px;
+    margin-top: 0;
+  }
+}
+
+.category-head-main {
+  padding: var(--space-4);
+
+  @media (min-width: $bp-md) {
+    padding: 48px 44px 44px var(--space-4);
+  }
+}
+
+.category-title {
+  margin: var(--space-3) 0 0;
+}
+
+.category-desc {
+  max-width: 48ch;
+  margin: var(--space-4) 0 0;
+  color: var(--color-text-muted);
+
+  @media (min-width: $bp-sm) {
+    text-align: justify;
+    hyphens: auto;
+  }
+}
+
+.category-head-aside {
+  padding: var(--space-4);
+
+  @media (min-width: $bp-md) {
+    padding: 48px var(--space-4) 44px 40px;
+  }
+
+  .t-label {
+    color: var(--color-text-muted);
+  }
+}
+
+.category-subs {
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.category-sub {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 9px 0;
+  border-bottom: 1px solid var(--color-divider);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.category-sub-name {
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  text-transform: capitalize;
+}
+
+.category-sub-count {
+  color: var(--color-text-faint);
+}
+
+.category-subs-empty {
+  margin: var(--space-3) 0 0;
+}
+
+// ── Body ───────────────────────────────────────────────────────────────────
+.category-body {
+  display: grid;
+  gap: var(--space-8);
+  margin-top: var(--space-6);
+
+  @media (min-width: $bp-md) {
+    grid-template-columns: 1.1fr 1fr;
+    gap: 44px;
+    align-items: start;
+    margin-top: 44px;
+  }
+}
+
+.category-lead-figure {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  margin: var(--space-3) 0 0;
+}
+
+.category-lead-title {
+  margin: var(--space-3) 0 0;
+
+  @media (min-width: $bp-md) {
+    font-size: 36px;
+  }
+}
+
+.category-lead-excerpt {
+  margin: var(--space-3) 0 0;
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+
+  @media (min-width: $bp-sm) {
+    text-align: justify;
+    hyphens: auto;
+  }
+}
+
+.category-lead-meta {
+  display: flex;
+  gap: 6px;
+  margin: var(--space-3) 0 0;
+}
+
+// ── Notes list ─────────────────────────────────────────────────────────────
+.category-list .rule-head {
+  margin-bottom: var(--space-2);
+  color: var(--color-text-muted);
+}
+
+.category-note {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  align-items: baseline;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-divider);
+  color: inherit;
+  text-decoration: none;
+
+  &:hover .category-note-title {
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+}
+
+.category-note-title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.category-note-date {
+  color: var(--color-text-faint);
+}
+
+.category-none {
+  margin-top: var(--space-6);
+}

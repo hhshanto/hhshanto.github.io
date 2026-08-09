@@ -1,0 +1,144 @@
+---
+layout: default
+---
+{%- comment -%}
+Screen 1d — a domain's front page.
+
+The page supplies `collection:` in its front matter; everything else is
+derived. The title, description and position in the nav come from
+_data/domains.yml, the same list the masthead reads, so a domain's name cannot
+say one thing in the header and another in the nav.
+
+Density note: 1d is drawn for 14 notes per domain and these hold between one
+and five. The "Older notes" button at the foot of the list is left out — it
+would have nothing to load — and the lead piece's figure plate only appears if
+the document sets `figure:` in its front matter. That is deliberately NOT
+`image:`: _config.yml gives every page a fallback `image` for link previews, so
+testing that key would put the site logo on every domain page.
+{%- endcomment -%}
+
+{%- assign domain = site.data.domains | where: 'collection', page.collection | first -%}
+{%- assign docs = site[page.collection] | sort: 'date' | reverse -%}
+{%- assign count = docs | size -%}
+
+{%- comment -%}
+Sub-topics are the subdirectory each document sits in — the site has organised
+its writing that way since long before this redesign. Collected by hand rather
+than with group_by_exp, which cannot address the second path segment, and the
+keys are probed wrapped in pipes so one cannot match as a prefix of another.
+{%- endcomment -%}
+{%- assign subs = '|' -%}
+{%- for doc in docs -%}
+    {%- assign segments = doc.path | split: '/' -%}
+    {%- if segments.size > 2 -%}
+        {%- assign probe = segments[1] | prepend: '|' | append: '|' -%}
+        {%- unless subs contains probe -%}
+            {%- assign subs = subs | append: segments[1] | append: '|' -%}
+        {%- endunless -%}
+    {%- endif -%}
+{%- endfor -%}
+{%- assign sub_list = subs | split: '|' -%}
+
+<div class="frame category">
+
+    <header class="category-head hgrid">
+        <div class="category-head-main">
+            <p class="t-kicker tnum">
+                {%- for d in site.data.domains -%}
+                    {%- if d.collection == page.collection -%}
+                        Domain {{ forloop.index | prepend: '0' | slice: -2, 2 }}
+                    {%- endif -%}
+                {%- endfor -%}
+                <span aria-hidden="true"> · </span>
+                {{ count }} {% if count == 1 %}note{% else %}notes{% endif %}
+            </p>
+
+            <h1 class="category-title t-display-md">{{ domain.title | default: page.title }}</h1>
+
+            <p class="category-desc t-body">{{ page.description | default: domain.description }}</p>
+        </div>
+
+        <div class="category-head-aside">
+            {%- if sub_list.size > 1 %}
+            <h2 class="t-label">Sub-topics</h2>
+            <ul class="category-subs">
+                {%- for sub in sub_list -%}
+                    {%- if sub != '' -%}
+                        {%- assign sub_count = 0 -%}
+                        {%- for doc in docs -%}
+                            {%- assign segments = doc.path | split: '/' -%}
+                            {%- if segments.size > 2 and segments[1] == sub -%}
+                                {%- assign sub_count = sub_count | plus: 1 -%}
+                            {%- endif -%}
+                        {%- endfor %}
+                <li class="category-sub">
+                    <span class="category-sub-name">{{ sub | replace: '-', ' ' }}</span>
+                    <span class="category-sub-count t-meta-sm tnum">{{ sub_count }}</span>
+                </li>
+                    {%- endif -%}
+                {%- endfor %}
+            </ul>
+            {%- else %}
+            <h2 class="t-label">Sub-topics</h2>
+            <p class="category-subs-empty t-body-sm t-muted">
+                Nothing filed under a sub-topic yet.
+            </p>
+            {%- endif %}
+        </div>
+    </header>
+
+    {%- if count > 0 %}
+    {%- assign lead = docs | first %}
+    <div class="category-body">
+
+        <article class="category-lead">
+            <p class="t-kicker">Lead piece</p>
+
+            {%- if lead.figure %}
+            <img class="plate category-lead-figure"
+                 src="{{ lead.figure | relative_url }}"
+                 alt=""
+                 loading="lazy">
+            {%- endif %}
+
+            <h2 class="category-lead-title t-h2">
+                <a class="ttl" href="{{ lead.url | relative_url }}">{{ lead.title }}</a>
+            </h2>
+
+            {%- assign excerpt = lead.abstract | default: lead.description | default: lead.content %}
+            <p class="category-lead-excerpt">{{ excerpt | strip_html | truncatewords: 48 }}</p>
+
+            <p class="category-lead-meta t-meta-sm tnum">
+                {{ lead.date | date: "%d %b %Y" }}
+                <span aria-hidden="true">·</span>
+                {% include reading-time.html document=lead %}
+            </p>
+        </article>
+
+        <section class="category-list">
+            <h2 class="t-label rule-head">All notes in this domain</h2>
+
+            <div class="category-notes">
+                {%- for doc in docs %}
+                <a class="category-note" href="{{ doc.url | relative_url }}">
+                    <span class="category-note-title">{{ doc.title }}</span>
+                    <span class="category-note-date t-meta-sm tnum">{{ doc.date | date: "%d %b" }}</span>
+                </a>
+                {%- endfor %}
+            </div>
+        </section>
+
+    </div>
+    {%- else %}
+    <p class="category-none t-body t-muted">
+        Nothing published in this domain yet.
+    </p>
+    {%- endif %}
+
+    {%- comment -%}
+    Anything the page itself wants to add sits under the generated body. All
+    five index pages are currently front matter only.
+    {%- endcomment -%}
+    {{ content }}
+
+</div>

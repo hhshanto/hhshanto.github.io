@@ -7,10 +7,12 @@ Working plan for rebuilding hhshanto.github.io against
 
 ## STATUS — update this as the last step of every session
 
-**Next action:** Phase 5 — the category index (1d) and the archive (1e). Read
-the density note in that section first: 1e is designed for 57 posts and 1d for
-14 per domain, and there are 12 documents across five collections. Building 1e
-first and deferring 1d is reasonable.
+**Next action:** Phase 6 — the ⌘K search palette (1f). Extend `pages/search.json`
+with the fields Lunr needs, vendor `lunr.min.js` into `assets/js/`, and rewrite
+`assets/js/search.js` as the palette. The focus trap and focus restore are the
+accessibility crux of that screen, not an afterthought. `search.js` is still
+loaded sitewide by `_layouts/default.html` for a hero search field that no
+longer exists — Phase 6 replaces it.
 
 | Phase | | |
 | --- | --- | --- |
@@ -19,7 +21,7 @@ first and deferring 1d is reasonable.
 | 2 | Chrome (nav, footer, theme toggle, default layout) | ✅ 2026-08-09 |
 | 3 | Post layout 1c | ✅ 2026-08-09 |
 | 4 | Home — **1a confirmed** | ✅ 2026-08-09 |
-| 5 | Category index 1d + archive 1e | ☐ |
+| 5 | Category index 1d + archive 1e | ✅ 2026-08-09 |
 | 6 | Search palette 1f | ☐ |
 | 7 | Compose 1g | ☐ |
 | 8 | Cleanup | ☐ |
@@ -479,6 +481,37 @@ Format: `date — decision — why`.
   who wrote it; inventing a personal slogan is not the redesign's job. Every
   other word on the page is lifted from the old home page and about section.
   Two lines in `_data/profile.yml` change it to lead with a name instead.
+- **2026-08-09 — The five index pages and the archive are front matter only.**
+  Each names its `collection:` and inherits `_layouts/category.html`; the
+  archive page names nothing at all. Titles, descriptions and nav position come
+  from `_data/domains.yml`, so a domain cannot be called one thing in its own
+  header and another in the masthead. The long `header-description` sentences
+  that used to sit in each page body were kept — they are better copy than the
+  short `description:` fields — and are now the `description:` themselves, which
+  also improves what jekyll-seo-tag emits.
+- **2026-08-09 — Sub-topics are derived from the directory each document sits
+  in.** The site has organised writing that way since long before the redesign,
+  and it means 1d's sub-topic list needs no new front matter. Collected with a
+  hand-rolled loop rather than `group_by_exp`, which cannot address the second
+  path segment; keys are probed wrapped in pipes so one cannot match as a
+  prefix of another.
+- **2026-08-09 — The lead piece's figure reads `figure:`, not `image:`.**
+  `_config.yml` gives every page a fallback `image` for link previews, so
+  testing that key would put the site logo on all five domain pages. No
+  document sets `figure:` yet, so the plate simply does not render — which is
+  the intended behaviour, not a gap.
+- **2026-08-09 — Both density affordances are left out.** 1e's "Load 2023 and
+  earlier" and 1d's "Older notes" have nothing to load: twelve documents across
+  five collections, against layouts drawn for 57 and for 14 per domain. Add
+  them when the archive outgrows one screen.
+- **2026-08-09 — Liquid cannot take a filter on either side of a comparison.**
+  `{% unless a | date: "%Y" == b | date: "%Y" %}` is a syntax error, not a
+  false condition, and Jekyll reports it as a warning while rendering the page
+  anyway. Assign both sides first.
+- **2026-08-09 — The archive row places its four spans explicitly at both
+  widths.** Left to auto-flow the phone layout gives each span its own line —
+  four lines a row, on the one screen whose stated point is density. Date and
+  read time share the top line; title and domain span beneath.
 - **2026-08-09 — The home page has no domain tile grid.** 1a's five-tile band
   restated the masthead, which carries all five domains on every page, one
   screen below it. Removed at the owner's call, and `domain-tile.html` /

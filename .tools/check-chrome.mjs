@@ -474,6 +474,151 @@ const POST = `http://localhost:${PORT}/reflections/philosophy/stoicism/`;
   await ctx.close();
 }
 
+// ── Archive (screen 1e) ────────────────────────────────────────────────────
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/all-posts/`);
+
+  const built = await page.evaluate(() => {
+    const rows = Array.from(document.querySelectorAll('[data-row]'));
+    const years = Array.from(document.querySelectorAll('[data-year-group]'))
+      .map((g) => Number(g.querySelector('.archive-year-label').textContent.trim()));
+    return {
+      rows: rows.length,
+      years,
+      stated: Number(document.querySelector('.archive-stats').textContent.trim().split(' ')[0]),
+      domains: new Set(rows.map((r) => r.getAttribute('data-domain'))).size,
+    };
+  });
+
+  check('every piece is rendered as a row', built.rows > 0, `${built.rows} rows`);
+  check('the stats line agrees with the rows', built.stated === built.rows,
+    `says ${built.stated}, rendered ${built.rows}`);
+  check('years run newest first',
+    built.years.every((y, i) => i === 0 || built.years[i - 1] > y), built.years.join(' > '));
+
+  // Filtering is the whole screen. It has to narrow, empty and recover.
+  const filtered = await page.evaluate(async () => {
+    const input = document.querySelector('[data-archive-input]');
+    const fire = (v) => {
+      input.value = v;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    const visible = () =>
+      document.querySelectorAll('[data-row]:not([hidden])').length;
+
+    fire('stoicism');
+    const narrowed = visible();
+    const groupsShown = document.querySelectorAll('[data-year-group]:not([hidden])').length;
+
+    fire('zzzzz');
+    const none = visible();
+    const emptyShown = !document.querySelector('[data-archive-empty]').hidden;
+
+    fire('');
+    return { narrowed, groupsShown, none, emptyShown, restored: visible() };
+  });
+
+  check('typing narrows the list', filtered.narrowed === 1, `${filtered.narrowed} rows`);
+  check('a year with nothing left is hidden', filtered.groupsShown === 1,
+    `${filtered.groupsShown} groups still shown`);
+  check('a query matching nothing shows the empty state',
+    filtered.none === 0 && filtered.emptyShown);
+  check('clearing the filter restores every row', filtered.restored === built.rows,
+    `${filtered.restored} of ${built.rows}`);
+
+  const chipped = await page.evaluate(async () => {
+    const chip = document.querySelector('[data-chip="reflections"]');
+    chip.click();
+    const rows = Array.from(document.querySelectorAll('[data-row]:not([hidden])'));
+    return {
+      count: rows.length,
+      allReflections: rows.every((r) => r.getAttribute('data-domain') === 'reflections'),
+      pressed: chip.getAttribute('aria-pressed'),
+      allChipOff: document.querySelector('[data-chip=""]').getAttribute('aria-pressed'),
+    };
+  });
+  check('a domain chip filters to that domain',
+    chipped.count > 0 && chipped.allReflections, `${chipped.count} rows`);
+  check('the chosen chip is the only one pressed',
+    chipped.pressed === 'true' && chipped.allChipOff === 'false');
+
+  await ctx.close();
+}
+
+// The archive without JS is still the complete archive — that is the reason for
+// rendering every row at build time instead of paginating.
+{
+  const ctx = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    javaScriptEnabled: false,
+  });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/all-posts/`);
+  const rows = await page.locator('[data-row]:not([hidden])').count();
+  check('the archive is complete without JS', rows > 0, `${rows} rows`);
+  await ctx.close();
+}
+
+// ── Category index (screen 1d) ─────────────────────────────────────────────
+for (const width of [375, 1440]) {
+  const ctx = await browser.newContext({ viewport: { width, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/reflections/`);
+
+  const cat = await page.evaluate(() => {
+    const notes = Array.from(document.querySelectorAll('.category-note'));
+    const kicker = document.querySelector('.category-head-main .t-kicker').textContent;
+    const subs = Array.from(document.querySelectorAll('.category-sub-count'))
+      .map((s) => Number(s.textContent.trim()));
+    return {
+      notes: notes.length,
+      stated: Number(kicker.replace(/[^0-9]/g, '').slice(2)),
+      lead: document.querySelector('.category-lead-title a')?.textContent.trim(),
+      first: notes[0]?.querySelector('.category-note-title')?.textContent.trim(),
+      subTotal: subs.reduce((a, b) => a + b, 0),
+      doc: document.documentElement.scrollWidth,
+      vw: window.innerWidth,
+    };
+  });
+
+  if (width === 1440) {
+    check('the note count agrees with the notes listed',
+      cat.stated === cat.notes, `says ${cat.stated}, listed ${cat.notes}`);
+    check('the lead piece is the newest note', cat.lead === cat.first,
+      `"${cat.lead}" vs "${cat.first}"`);
+    // Documents filed at the root of a collection belong to no sub-topic, so
+    // the counts can be short of the total but never over it.
+    check('sub-topic counts never exceed the domain', cat.subTotal <= cat.notes,
+      `${cat.subTotal} of ${cat.notes}`);
+  }
+
+  check(`category index does not scroll sideways (${width}px)`,
+    cat.doc <= cat.vw + 1, `${cat.doc} vs ${cat.vw}`);
+  await ctx.close();
+}
+
+// Every domain page must build, including the ones with a single document and
+// no sub-topics at all — that branch is easy to leave broken.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  let broken = 0;
+  const domains = ['natural-sciences', 'social-sciences', 'arts-literature',
+    'reflections', 'contemporary'];
+
+  for (const d of domains) {
+    const response = await page.goto(`http://localhost:${PORT}/${d}/`);
+    const ok = response.status() === 200 &&
+      (await page.locator('.category-head').count()) === 1 &&
+      (await page.locator('.category-note').count()) > 0;
+    if (!ok) broken++;
+  }
+  check('all five domain pages render their notes', broken === 0, `${broken} broken`);
+  await ctx.close();
+}
+
 await browser.close();
 server.close();
 

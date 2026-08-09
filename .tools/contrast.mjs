@@ -73,6 +73,20 @@ const TARGETS = [
   { sel: '.n-tag-accent', name: 'accent chip', url: '/', ground: '.n-tag-accent' },
   { sel: '.n-tag-neutral', name: 'neutral chip', url: '/', ground: '.n-tag-neutral' },
 
+  // Category index (screen 1d) and archive (1e).
+  { sel: '.category-head-main .t-kicker', name: 'domain kicker', url: '/reflections/' },
+  { sel: '.category-desc', name: 'domain description', url: '/reflections/' },
+  { sel: '.category-sub-name', name: 'sub-topic', url: '/reflections/' },
+  { sel: '.category-sub-count', name: 'sub-topic count', url: '/reflections/' },
+  { sel: '.category-lead-excerpt', name: 'lead excerpt', url: '/reflections/' },
+  { sel: '.category-note-date', name: 'note date', url: '/reflections/' },
+  { sel: '.archive-stats', name: 'archive stats', url: '/all-posts/' },
+  { sel: '.archive-year-label', name: 'archive year', url: '/all-posts/' },
+  { sel: '.archive-year-count', name: 'archive year count', url: '/all-posts/' },
+  { sel: '.post-row-date', name: 'archive row date', url: '/all-posts/' },
+  { sel: '.post-row-domain', name: 'archive row domain', url: '/all-posts/' },
+  { sel: '.post-row-read', name: 'archive row read time', url: '/all-posts/' },
+
   // Post (screen 1c).
   { sel: '.article-breadcrumb a', name: 'breadcrumb', url: POST },
   { sel: '.article-standfirst', name: 'standfirst', url: POST },
