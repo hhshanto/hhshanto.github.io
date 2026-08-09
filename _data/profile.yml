@@ -1,0 +1,56 @@
+# Everything the home page says about its author.
+#
+# Kept as data rather than markup so the page can be reworded without opening a
+# template. Every value here is lifted from the previous home page and about
+# section — none of it is new copy. The handoff's own hero text is placeholder
+# and is not used.
+
+# Mono line above the headline.
+kicker: Data Scientist · Potsdam, DE
+
+# The headline runs over two lines, the second in italic. This is the site's
+# tagline rather than a name: the masthead already says NOEMA, the portrait and
+# CV beside it say who wrote it, and inventing a slogan for someone is not the
+# redesign's job. Change these two lines to lead with a name instead.
+headline: A digital
+headline_italic: knowledge garden
+
+intro: >
+  Insights from data science to philosophy, technology to arts. Based in
+  Potsdam, Germany, exploring the intersection of technology and knowledge
+  sharing — and writing it down as it goes.
+
+portrait_alt: Hasan
+
+socials:
+  - label: LinkedIn
+    url: https://linkedin.com/in/mhasan-shanto/
+  - label: GitHub
+    url: https://github.com/hhshanto
+  - label: Email
+    url: mailto:hasanibnesaleh@gmail.com
+
+# The CV column. `period` sits in a 62px rail beside `detail`, so keep periods
+# short — they are set in mono and will not wrap gracefully.
+cv:
+  - period: Now
+    detail: Research Data Scientist, KPMG Global Solution Group
+  - period: 23–24
+    detail: Research Assistant, University of Potsdam
+  - period: 21–
+    detail: MSc Data Science, University of Potsdam
+  - period: 16–20
+    detail: BSc Computer Science & Engineering, AIUB
+
+# "Working with". The first list takes the accent chip, the second the neutral
+# one — the split is what the two are for, not a ranking.
+focus_accent:
+  - RAG Systems
+  - LLMs
+focus:
+  - Python
+  - Azure OpenAI
+  - Machine Learning
+  - Data Science
+
+currently: Building RAG systems with Azure OpenAI, and learning German.

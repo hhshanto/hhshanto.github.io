@@ -7,9 +7,10 @@ Working plan for rebuilding hhshanto.github.io against
 
 ## STATUS — update this as the last step of every session
 
-**Next action:** Phase 4 — the home page (1a). Split hero, the five-tile domain
-grid from `_data/domains.yml`, recent posts beside a CV column. Decide there
-whether `$content-max` should rise above 1160px; it has been deferred twice.
+**Next action:** Phase 5 — the category index (1d) and the archive (1e). Read
+the density note in that section first: 1e is designed for 57 posts and 1d for
+14 per domain, and there are 12 documents across five collections. Building 1e
+first and deferring 1d is reasonable.
 
 | Phase | | |
 | --- | --- | --- |
@@ -17,7 +18,7 @@ whether `$content-max` should rise above 1160px; it has been deferred twice.
 | 1 | Foundation (tokens, type, primitives, styleguide) | ✅ 2026-08-09 |
 | 2 | Chrome (nav, footer, theme toggle, default layout) | ✅ 2026-08-09 |
 | 3 | Post layout 1c | ✅ 2026-08-09 |
-| 4 | Home — **1a confirmed** | ☐ |
+| 4 | Home — **1a confirmed** | ✅ 2026-08-09 |
 | 5 | Category index 1d + archive 1e | ☐ |
 | 6 | Search palette 1f | ☐ |
 | 7 | Compose 1g | ☐ |
@@ -467,6 +468,37 @@ Format: `date — decision — why`.
   fill and glared on the dark ground. Fixed with `--tag-accent-bg` /
   `--tag-accent-ink` rather than a dark-mode rule — when a component seems to
   need a `[data-theme]` rule, that is the signal it is missing a token.
+- **2026-08-09 — Everything the home page says about its author lives in
+  `_data/profile.yml`.** Kicker, headline, intro, socials, CV rows, focus chips
+  and the "currently" line. `index.html` is now front matter only; the page is
+  composed entirely by `_layouts/home.html` from that file and
+  `_data/domains.yml`. Rewording the home page should not mean opening a
+  template, and none of the handoff's hero copy is used — it is placeholder.
+- **2026-08-09 — The hero headline is the site's tagline, not a name.** The
+  masthead already says NOEMA and the portrait, CV and socials beside it say
+  who wrote it; inventing a personal slogan is not the redesign's job. Every
+  other word on the page is lifted from the old home page and about section.
+  Two lines in `_data/profile.yml` change it to lead with a name instead.
+- **2026-08-09 — A ragged hairline grid needs filler cells.** The grid draws
+  its rules by showing its own background through a 1px gap, so five tiles in
+  three columns do not leave the sixth cell empty — they leave it *grey*, a
+  solid block of divider colour. `_includes/hgrid-fill.html` emits the blanks,
+  one set per column count the grid can take, computed from the item count in
+  Liquid. `overflow: hidden` on the container would also work and would clip
+  the tiles' 2px hover lift, which is why it was not used.
+- **2026-08-09 — The domain numeral uses `--color-accent-ink`, not
+  `--color-accent`.** The spec asks for the base accent at 22px weight 300,
+  which measures 3.02:1 on the light ground — and WCAG only relaxes to 3:1 at
+  24px, so it is fractionally under the line for text that size.
+- **2026-08-09 — `contrast.mjs` composites translucent backgrounds.** The
+  accent chip in dark is a 16% gold wash; measured against its own raw colour
+  it reported 1.35:1, which is neither what is painted nor what anyone sees.
+  The ground is now blended over the body colour before the ratio is taken.
+- **2026-08-09 — `naturalWidth` cannot verify a 2x image source.** It is
+  reported in CSS pixels with the density descriptor already divided out, so a
+  correctly chosen 600px `2x` candidate reports 300 — indistinguishable from
+  the 1x source failing to upgrade. `check-chrome.mjs` asserts on `currentSrc`
+  at `deviceScaleFactor: 2` instead.
 - **2026-08-09 — The contents list is built by Liquid at build time, not by
   JS.** The old `toc.html` assembled it in a `DOMContentLoaded` handler, so it
   did not exist for a reader with scripting off, did not exist in the HTML for

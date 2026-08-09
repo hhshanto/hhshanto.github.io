@@ -202,21 +202,83 @@ for (const [label, width] of [['mobile', 375], ['desktop', 1440]]) {
   await ctx.close();
 }
 
-// ── Home hero clears the masthead ──────────────────────────────────────────
-// _hero.scss pulls the hero up by -70px for the old fixed header. Left in, it
-// drags the dark hero card over the bar and the nav text vanishes into it.
-{
-  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+// ── Home (screen 1a) ───────────────────────────────────────────────────────
+for (const width of [375, 700, 1160, 1440]) {
+  const ctx = await browser.newContext({ viewport: { width, height: 900 } });
   const page = await ctx.newPage();
   await page.goto(`http://localhost:${PORT}/`);
-  const gap = await page.evaluate(() => {
-    const bar = document.querySelector('.masthead').getBoundingClientRect();
-    const hero = document.querySelector('.hero-section');
-    if (!hero) return null;
-    return hero.getBoundingClientRect().top - bar.bottom;
+
+  // The hairline grid draws its rules by showing its own background through a
+  // 1px gap, so a last row that does not fill shows a solid grey block where a
+  // tile would be. hgrid-fill.html emits blanks to cover it — but only for the
+  // column counts it was told about, so the arithmetic is checked at every
+  // width rather than assumed.
+  const grid = await page.evaluate(() => {
+    const el = document.querySelector('.hgrid-domains');
+    const cols = getComputedStyle(el).gridTemplateColumns.split(' ').length;
+    const cells = Array.from(el.children)
+      .filter((c) => getComputedStyle(c).display !== 'none').length;
+    return { cols, cells, tiles: el.querySelectorAll('.domain-tile').length };
   });
-  check('home hero starts below the masthead, not under it',
-    gap === null || gap >= 0, gap === null ? 'no hero' : `gap ${gap.toFixed(1)}px`);
+  check(`domain grid has no uncovered cells (${width}px)`,
+    grid.cells % grid.cols === 0,
+    `${grid.cells} cells in ${grid.cols} columns`);
+
+  if (width === 1440) {
+    check('one tile per domain in _data/domains.yml', grid.tiles === 5, `${grid.tiles} tiles`);
+
+    const portrait = await page.evaluate(() => {
+      const img = document.querySelector('.home-hero-portrait');
+      const r = img.getBoundingClientRect();
+      return { w: r.width, h: r.height };
+    });
+    check('portrait is 4:5', Math.abs(portrait.w / portrait.h - 0.8) < 0.02,
+      `${portrait.w.toFixed(0)}x${portrait.h.toFixed(0)}`);
+
+    check('the CV divider column is drawn',
+      await page.isVisible('.home-latest-rule'));
+
+    // Proves index.html is on the new layout rather than the old inline body.
+    check('the old hero markup is gone',
+      (await page.locator('.hero-section, .about-section, .latest-posts-section').count()) === 0);
+  }
+
+  const doc = await page.evaluate(() => ({
+    w: document.documentElement.scrollWidth, vw: window.innerWidth }));
+  check(`home does not scroll sideways (${width}px)`, doc.w <= doc.vw + 1,
+    `${doc.w} vs ${doc.vw}`);
+  await ctx.close();
+}
+
+// The portrait is drawn at 300px, so a retina screen needs a 600px candidate.
+// This has to run at deviceScaleFactor 2 — at 1 the browser correctly picks the
+// 300px source and the check would be asserting the wrong thing.
+{
+  const ctx = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    deviceScaleFactor: 2,
+  });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/`);
+  // naturalWidth is the wrong thing to read here: it is reported in CSS pixels
+  // and already divided by the density descriptor, so a correctly chosen 600px
+  // 2x source reports 300 — identical to the 1x source failing to upgrade.
+  // currentSrc is what actually says which file the browser fetched.
+  const chosen = await page.evaluate(() =>
+    document.querySelector('.home-hero-portrait').currentSrc);
+  check('portrait serves a 2x source on a retina screen',
+    chosen.includes('portrait-600'), chosen.split('/').pop());
+  await ctx.close();
+}
+
+// Below $bp-md the two columns stack, and the 1px divider column would draw a
+// hairline straight across the middle of the page.
+{
+  const ctx = await browser.newContext({ viewport: { width: 700, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/`);
+  check('the CV divider is hidden when the columns stack',
+    !(await page.isVisible('.home-latest-rule')));
   await ctx.close();
 }
 

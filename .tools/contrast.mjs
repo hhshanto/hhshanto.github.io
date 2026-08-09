@@ -19,6 +19,14 @@ const server = createServer(async (req, res) => {
 await new Promise((r) => server.listen(PORT, r));
 
 const parse = (s) => s.match(/\d+(\.\d+)?/g).slice(0, 3).map(Number);
+const alphaOf = (s) => {
+  const n = s.match(/\d+(\.\d+)?/g);
+  return n && n.length === 4 ? Number(n[3]) : 1;
+};
+// A translucent background is not the colour a reader sees. The accent chip in
+// dark is a 16% gold wash: measured raw it reports 1.35:1 against its own gold,
+// which is neither what is painted nor what anyone looks at.
+const over = (fg, bg, a) => fg.map((c, i) => c * a + bg[i] * (1 - a));
 const lum = ([r, g, b]) => {
   const f = (v) => {
     v /= 255;
@@ -47,6 +55,22 @@ const TARGETS = [
   { sel: '.masthead-theme', name: 'theme toggle' },
   { sel: '.site-foot-copy', name: 'footer copyright' },
   { sel: '.site-foot-links a', name: 'footer link' },
+
+  // Home (screen 1a).
+  { sel: '.home-hero-title em', name: 'hero second line', url: '/' },
+  { sel: '.home-hero-intro', name: 'hero intro', url: '/' },
+  { sel: '.home-social', name: 'social link', url: '/' },
+  { sel: '.domain-tile-num', name: 'domain numeral', url: '/' },
+  { sel: '.domain-tile-desc', name: 'domain description', url: '/' },
+  { sel: '.domain-tile-count', name: 'domain count', url: '/' },
+  { sel: '.post-brief-rail span', name: 'post date rail', url: '/' },
+  { sel: '.post-brief-read', name: 'post read time', url: '/' },
+  { sel: '.post-brief-excerpt', name: 'post excerpt', url: '/' },
+  { sel: '.home-cv-entry dt', name: 'cv period', url: '/' },
+  { sel: '.home-cv-entry dd', name: 'cv detail', url: '/' },
+  { sel: '.home-currently', name: 'currently note', url: '/' },
+  { sel: '.n-tag-accent', name: 'accent chip', url: '/', ground: '.n-tag-accent' },
+  { sel: '.n-tag-neutral', name: 'neutral chip', url: '/', ground: '.n-tag-neutral' },
 
   // Post (screen 1c).
   { sel: '.article-breadcrumb a', name: 'breadcrumb', url: POST },
@@ -95,7 +119,8 @@ for (const theme of ['light', 'dark']) {
     if (ground) {
       const g = page.locator(ground).first();
       if (await g.count()) {
-        bg = parse(await g.evaluate((n) => getComputedStyle(n).backgroundColor));
+        const raw = await g.evaluate((n) => getComputedStyle(n).backgroundColor);
+        bg = over(parse(raw), body, alphaOf(raw));
       }
     }
 
@@ -110,7 +135,7 @@ for (const theme of ['light', 'dark']) {
     const need = large ? 3 : 4.5;
     const verdict = r >= need ? 'ok  ' : 'FAIL';
     console.log(
-      `  ${verdict} ${name.padEnd(22)} ${r.toFixed(2)}:1  (needs ${need})  ${info.size}px  on rgb(${bg.join(',')})`,
+      `  ${verdict} ${name.padEnd(22)} ${r.toFixed(2)}:1  (needs ${need})  ${info.size}px  on rgb(${bg.map((c) => Math.round(c)).join(',')})`,
     );
   }
   await ctx.close();

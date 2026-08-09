@@ -1,0 +1,42 @@
+{%- comment -%}
+A recent-writing row on the home page: a mono rail carrying the date and read
+time, then the title, excerpt and tags.
+
+    {% include post-brief.html document=doc %}
+
+Not the same component as the archive's row (1e), which is a four-column
+scanning grid — that one arrives in Phase 5 as post-row.html.
+{%- endcomment -%}
+
+{%- assign doc = include.document -%}
+{%- assign domain = site.data.domains | where: 'collection', doc.collection | first -%}
+
+<article class="post-brief">
+    <div class="post-brief-rail t-meta-sm">
+        <span>{{ doc.date | date: "%d %b" }}</span>
+        <span>{{ doc.date | date: "%Y" }}</span>
+        <span class="post-brief-read">{% include reading-time.html document=doc %}</span>
+    </div>
+
+    <div class="post-brief-body">
+        <h3 class="post-brief-title t-h3">
+            <a class="ttl" href="{{ doc.url | relative_url }}">{{ doc.title }}</a>
+        </h3>
+
+        {%- assign excerpt = doc.abstract | default: doc.description -%}
+        {%- if excerpt and excerpt != '' %}
+        <p class="post-brief-excerpt">{{ excerpt | strip_html | truncatewords: 34 }}</p>
+        {%- else %}
+        <p class="post-brief-excerpt">{{ doc.content | strip_html | truncatewords: 34 }}</p>
+        {%- endif %}
+
+        <div class="post-brief-tags">
+            {%- if domain %}
+            <a class="n-tag n-tag-outline" href="{{ domain.url | relative_url }}">{{ domain.title }}</a>
+            {%- endif %}
+            {%- for tag in doc.tags limit: 3 %}
+            <a class="n-tag n-tag-outline" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>
+            {%- endfor %}
+        </div>
+    </div>
+</article>

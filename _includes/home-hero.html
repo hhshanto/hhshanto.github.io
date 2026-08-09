@@ -1,0 +1,55 @@
+{%- comment -%}
+Screen 1a's hero: an introduction on the left, portrait and social links on
+the right. Everything it says comes from _data/profile.yml.
+{%- endcomment -%}
+
+{%- assign me = site.data.profile -%}
+
+<section class="home-hero">
+    <div class="home-hero-text">
+        <p class="t-kicker">{{ me.kicker }}</p>
+
+        <h1 class="home-hero-title t-display-lg">
+            {{ me.headline }}<br>
+            <em>{{ me.headline_italic }}</em>
+        </h1>
+
+        <p class="home-hero-intro t-body">{{ me.intro }}</p>
+
+        <div class="home-hero-actions">
+            <a class="n-btn n-btn-primary" href="{{ '/all-posts/' | relative_url }}">Read the writing</a>
+            <a class="n-btn n-btn-secondary" href="{{ '/assets/files/Resume.pdf' | relative_url }}" download>Download CV</a>
+        </div>
+    </div>
+
+    <div class="home-hero-aside">
+        {%- comment -%}
+        Rendered at 300px wide, 4:5, so the 600px variant is the @2x. Both are
+        cropped to 4:5 at build-of-the-repo time rather than by object-fit, so
+        the browser never downloads pixels it will not draw. The square 200/400
+        variants that the old hero used are a different crop and are still in
+        use elsewhere.
+        {%- endcomment -%}
+        <picture>
+            <source type="image/webp"
+                    srcset="{{ '/assets/images/portrait-300.webp' | relative_url }} 1x,
+                            {{ '/assets/images/portrait-600.webp' | relative_url }} 2x">
+            <img class="plate home-hero-portrait"
+                 src="{{ '/assets/images/portrait-300.jpg' | relative_url }}"
+                 srcset="{{ '/assets/images/portrait-300.jpg' | relative_url }} 1x,
+                         {{ '/assets/images/portrait-600.jpg' | relative_url }} 2x"
+                 width="300" height="375"
+                 alt="{{ me.portrait_alt }}">
+        </picture>
+
+        <ul class="home-socials">
+            {%- for link in me.socials %}
+            <li>
+                <a class="home-social nvl" href="{{ link.url }}"{% unless link.url contains 'mailto:' %} rel="me noopener" target="_blank"{% endunless %}>
+                    {{ link.label }}
+                </a>
+            </li>
+            {%- endfor %}
+        </ul>
+    </div>
+</section>

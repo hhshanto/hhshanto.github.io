@@ -52,6 +52,17 @@
   }
 }
 
+// A blank cell finishing a ragged last row. Without it the container's divider
+// colour shows through where a tile would have been — a solid grey block, not
+// an empty space. See _includes/hgrid-fill.html, which emits the right number.
+//
+// Each filler is tagged with the column count it belongs to and is shown only
+// in that breakpoint's range, because how many are needed depends on how many
+// columns there are.
+.hgrid-fill {
+  display: none;
+}
+
 // The handoff's responsive rule for tiled sections: five across on desktop,
 // three at tablet, one on a phone.
 .hgrid-domains {
@@ -59,6 +70,15 @@
 
   @media (min-width: $bp-sm) { --cols: 3; }
   @media (min-width: $bp-lg) { --cols: 5; }
+}
+
+// One column never has a ragged row, so the base width needs no fillers.
+@media (min-width: $bp-sm) and (max-width: $bp-lg - 1px) {
+  .hgrid-fill-3 { display: block; }
+}
+
+@media (min-width: $bp-lg) {
+  .hgrid-fill-5 { display: block; }
 }
 
 .hgrid-doors {

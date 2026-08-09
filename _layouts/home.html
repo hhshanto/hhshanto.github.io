@@ -1,0 +1,74 @@
+---
+layout: default
+---
+{%- comment -%}
+Screen 1a — the masthead home.
+
+Four bands: hero, the five domains, recent writing beside the CV, footer (from
+the default layout). This layout owns the page-level grid and nothing else;
+every band is an include and every style lives in _sass/_home.scss.
+
+`content` is deliberately unused. index.html carries front matter only — there
+is no page-specific body, and putting one there would split the home page
+across two files.
+{%- endcomment -%}
+
+<div class="frame home">
+
+    {% include home-hero.html %}
+
+    <section class="home-domains">
+        <h2 class="t-label rule-head">The Domains</h2>
+        <div class="hgrid hgrid-domains">
+            {%- for domain in site.data.domains %}
+            {% include domain-tile.html domain=domain index=forloop.index %}
+            {%- endfor %}
+
+            {%- comment -%}
+            Five domains do not divide into three columns, and the hairline
+            grid shows its divider colour wherever a tile is missing. Both
+            column counts the grid can take need their own fillers.
+            {%- endcomment -%}
+            {%- assign domain_count = site.data.domains | size -%}
+            {% include hgrid-fill.html count=domain_count cols=3 %}
+            {% include hgrid-fill.html count=domain_count cols=5 %}
+        </div>
+    </section>
+
+    <section class="home-latest">
+        <div class="home-latest-main">
+            <h2 class="t-label rule-head">Recent Writing</h2>
+
+            {%- comment -%}
+            Liquid cannot sort across collections, so they are concatenated
+            first. `site.natural-sciences` is not addressable with a dot
+            because of the hyphen — hence the bracket form throughout.
+            {%- endcomment -%}
+            {%- assign pool = '' | split: '' -%}
+            {%- for domain in site.data.domains -%}
+                {%- assign pool = pool | concat: site[domain.collection] -%}
+            {%- endfor -%}
+            {%- assign recent = pool | sort: 'date' | reverse -%}
+
+            <div class="home-briefs">
+                {%- for doc in recent limit: 3 %}
+                {% include post-brief.html document=doc %}
+                {%- endfor %}
+            </div>
+
+            <a class="n-btn n-btn-ghost home-latest-more" href="{{ '/all-posts/' | relative_url }}">
+                All {{ pool | size }} pieces →
+            </a>
+        </div>
+
+        {%- comment -%}
+        The divider is an element, not a border, because the spec's grid has it
+        as its own 1px column — a border on either neighbour would sit against
+        that column's padding rather than between the two.
+        {%- endcomment -%}
+        <div class="home-latest-rule" aria-hidden="true"></div>
+
+        {% include cv-column.html %}
+    </section>
+
+</div>

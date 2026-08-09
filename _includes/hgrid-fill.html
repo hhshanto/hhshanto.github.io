@@ -1,0 +1,22 @@
+{%- comment -%}
+Blank cells that finish a .hgrid's last row.
+
+    {% include hgrid-fill.html count=5 cols=3 %}
+
+The hairline grid draws its rules by letting the container's background show
+through a 1px gap. That is why an incomplete last row is not empty but *grey*:
+with five tiles in three columns the sixth cell shows the divider colour as a
+solid block. These fillers paint it back to the page ground.
+
+`cols` must be one of the column counts a .hgrid- modifier actually uses, since
+the fillers are shown and hidden by breakpoint in _primitives.scss. Include it
+once per column count the grid can take.
+{%- endcomment -%}
+
+{%- assign remainder = include.count | modulo: include.cols -%}
+{%- if remainder > 0 -%}
+    {%- assign missing = include.cols | minus: remainder -%}
+    {%- for i in (1..missing) -%}
+<span class="hgrid-fill hgrid-fill-{{ include.cols }}" aria-hidden="true"></span>
+    {%- endfor -%}
+{%- endif -%}

@@ -1,0 +1,200 @@
+// Screen 1a — the home page.
+//
+// Owns the four bands and the CV column. The domain tiles and the recent-post
+// rows are components with their own partials (_domain-tile.scss,
+// _post-brief.scss); the hairline grid the tiles sit in is a primitive.
+
+.home > * + * {
+  margin-top: var(--space-8);
+}
+
+.home > :first-child {
+  padding-top: var(--space-6);
+
+  @media (min-width: $bp-md) {
+    padding-top: 46px;
+  }
+}
+
+.home > :last-child {
+  padding-bottom: var(--space-8);
+
+  @media (min-width: $bp-md) {
+    padding-bottom: 50px;
+  }
+}
+
+// ── Hero ───────────────────────────────────────────────────────────────────
+// One column on a phone with the portrait *below* the introduction: the
+// headline is what the page is for, and a 300px plate above it would push it
+// off the first screen.
+.home-hero {
+  display: grid;
+  gap: var(--space-6);
+
+  @media (min-width: $bp-md) {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 56px;
+    align-items: start;
+  }
+}
+
+.home-hero-title {
+  margin-top: var(--space-3);
+
+  em {
+    // The second line is the only italic in the type system that is not a
+    // standfirst; it is the handoff's, and it is what stops a two-line display
+    // heading reading as a headline.
+    font-style: italic;
+    color: var(--color-text-muted);
+  }
+}
+
+.home-hero-intro {
+  max-width: 52ch;
+  margin-top: var(--space-4);
+  color: var(--color-text-muted);
+
+  @media (min-width: $bp-sm) {
+    text-align: justify;
+    hyphens: auto;
+  }
+}
+
+.home-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.home-hero-aside {
+  // The plate is a fixed 300px in the mock, so below $bp-md — where the aside
+  // is a full-width row under the introduction — it is capped rather than
+  // stretched, and pinned left. Centred, it reads as floating in the middle of
+  // a 620px column at tablet width.
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  @media (min-width: $bp-md) {
+    align-items: stretch;
+  }
+}
+
+.home-hero-portrait {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.home-socials {
+  width: 100%;
+  max-width: 300px;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-social {
+  display: block;
+  padding: 11px 0; // 44px tap target
+  border-bottom: 1px solid var(--color-divider);
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+}
+
+// ── Domains ────────────────────────────────────────────────────────────────
+.home-domains .rule-head,
+.home-latest .rule-head {
+  margin-bottom: var(--space-4);
+  color: var(--color-text-muted);
+}
+
+// ── Recent + CV ────────────────────────────────────────────────────────────
+// 1.55fr / 1px / 1fr in the spec. The 1px is a real column holding a real
+// element, so the rule runs the full height of whichever side is taller.
+.home-latest {
+  display: grid;
+  gap: var(--space-8);
+
+  @media (min-width: $bp-md) {
+    grid-template-columns: 1.55fr 1px 1fr;
+    gap: 44px;
+    align-items: start;
+  }
+}
+
+.home-latest-rule {
+  // Below $bp-md the two stack, and a 1px column between them would draw a
+  // hairline across the page in the middle of the flow.
+  display: none;
+
+  @media (min-width: $bp-md) {
+    display: block;
+    align-self: stretch;
+    background: var(--color-divider);
+  }
+}
+
+.home-latest-more {
+  margin-top: var(--space-4);
+}
+
+// ── CV column ──────────────────────────────────────────────────────────────
+.home-cv .rule-head {
+  margin-bottom: var(--space-3);
+  color: var(--color-text-muted);
+}
+
+.home-cv-list {
+  margin: 0 0 var(--space-4);
+}
+
+.home-cv-entry {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr);
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+
+  + .home-cv-entry {
+    border-top: 1px solid var(--color-divider);
+  }
+
+  dt {
+    // Periods are mono and short; nudged down so they sit on the first line of
+    // the detail beside them rather than above it.
+    padding-top: 3px;
+  }
+
+  dd {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+}
+
+.home-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.home-currently {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+
+  .t-meta-sm {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--color-accent-ink);
+  }
+}
