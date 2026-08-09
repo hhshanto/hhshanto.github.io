@@ -30,17 +30,28 @@ socials:
   - label: Email
     url: mailto:hasanibnesaleh@gmail.com
 
-# The CV column. `period` sits in a 62px rail beside `detail`, so keep periods
-# short — they are set in mono and will not wrap gracefully.
-cv:
+# The curriculum band, in two lists rather than one. Blended together, a degree
+# and a job read as the same kind of row and neither stands out; separated, the
+# education is legible at a glance, which is the point of putting it this high
+# on the page.
+#
+# `period` sits in a narrow mono rail beside the rest, so keep it short — it is
+# set in mono and will not wrap gracefully. `place` is the line under `role`.
+experience:
   - period: Now
-    detail: Research Data Scientist, KPMG Global Solution Group
+    role: Research Data Scientist
+    place: KPMG Global Solution Group
   - period: 23–24
-    detail: Research Assistant, University of Potsdam
+    role: Research Assistant
+    place: University of Potsdam
+
+education:
   - period: 21–
-    detail: MSc Data Science, University of Potsdam
+    role: MSc Data Science
+    place: University of Potsdam
   - period: 16–20
-    detail: BSc Computer Science & Engineering, AIUB
+    role: BSc Computer Science & Engineering
+    place: American International University-Bangladesh
 
 # "Working with". The first list takes the accent chip, the second the neutral
 # one — the split is what the two are for, not a ranking.

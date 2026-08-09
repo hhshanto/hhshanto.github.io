@@ -4,9 +4,16 @@ layout: default
 {%- comment -%}
 Screen 1a — the masthead home.
 
-Four bands: hero, the five domains, recent writing beside the CV, footer (from
-the default layout). This layout owns the page-level grid and nothing else;
-every band is an include and every style lives in _sass/_home.scss.
+Four bands: hero, curriculum, the five domains, recent writing — then the
+footer from the default layout.
+
+The curriculum sits second, directly under the hero, rather than in a column at
+the foot of the page. That was a deliberate change after the first build: in a
+1fr column at the bottom it was the last thing anyone reached and half of each
+entry was a wrapped degree title.
+
+This layout owns the page-level grid and nothing else; every band is an include
+and every style lives in its own partial.
 
 `content` is deliberately unused. index.html carries front matter only — there
 is no page-specific body, and putting one there would split the home page
@@ -16,6 +23,8 @@ across two files.
 <div class="frame home">
 
     {% include home-hero.html %}
+
+    {% include cv-band.html %}
 
     <section class="home-domains">
         <h2 class="t-label rule-head">The Domains</h2>
@@ -36,39 +45,38 @@ across two files.
     </section>
 
     <section class="home-latest">
-        <div class="home-latest-main">
-            <h2 class="t-label rule-head">Recent Writing</h2>
-
-            {%- comment -%}
-            Liquid cannot sort across collections, so they are concatenated
-            first. `site.natural-sciences` is not addressable with a dot
-            because of the hyphen — hence the bracket form throughout.
-            {%- endcomment -%}
-            {%- assign pool = '' | split: '' -%}
-            {%- for domain in site.data.domains -%}
-                {%- assign pool = pool | concat: site[domain.collection] -%}
-            {%- endfor -%}
-            {%- assign recent = pool | sort: 'date' | reverse -%}
-
-            <div class="home-briefs">
-                {%- for doc in recent limit: 3 %}
-                {% include post-brief.html document=doc %}
-                {%- endfor %}
-            </div>
-
-            <a class="n-btn n-btn-ghost home-latest-more" href="{{ '/all-posts/' | relative_url }}">
-                All {{ pool | size }} pieces →
-            </a>
-        </div>
+        <h2 class="t-label rule-head">Recent Writing</h2>
 
         {%- comment -%}
-        The divider is an element, not a border, because the spec's grid has it
-        as its own 1px column — a border on either neighbour would sit against
-        that column's padding rather than between the two.
+        Liquid cannot sort across collections, so they are concatenated first.
+        `site.natural-sciences` is not addressable with a dot because of the
+        hyphen — hence the bracket form throughout.
         {%- endcomment -%}
-        <div class="home-latest-rule" aria-hidden="true"></div>
+        {%- assign pool = '' | split: '' -%}
+        {%- for domain in site.data.domains -%}
+            {%- assign pool = pool | concat: site[domain.collection] -%}
+        {%- endfor -%}
+        {%- assign recent = pool | sort: 'date' | reverse -%}
 
-        {% include cv-column.html %}
+        {%- comment -%}
+        Four across two columns, now that the band has the full width. The
+        filler count is computed from what is actually rendered rather than
+        from the limit: a site with three documents would otherwise leave the
+        fourth cell showing the divider colour.
+        {%- endcomment -%}
+        {%- assign shown = pool | size -%}
+        {%- if shown > 4 -%}{%- assign shown = 4 -%}{%- endif -%}
+
+        <div class="hgrid home-briefs">
+            {%- for doc in recent limit: 4 %}
+            {% include post-brief.html document=doc %}
+            {%- endfor %}
+            {% include hgrid-fill.html count=shown cols=2 %}
+        </div>
+
+        <a class="n-btn n-btn-ghost home-latest-more" href="{{ '/all-posts/' | relative_url }}">
+            All {{ pool | size }} pieces →
+        </a>
     </section>
 
 </div>

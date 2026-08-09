@@ -1,0 +1,115 @@
+// The curriculum band on the home page.
+//
+// Sits directly under the hero, which is the whole reason it is a band rather
+// than a column: at the foot of the page in a 1fr column it was the last thing
+// anyone saw, and half of it was a wrapped degree title.
+
+.cv-band .rule-head {
+  margin-bottom: var(--space-4);
+  color: var(--color-text-muted);
+}
+
+// Three cells, but only from $bp-md. At $bp-sm three columns leave about 200px
+// each, and "BSc Computer Science & Engineering" wraps to four lines in that.
+.cv-grid {
+  --cols: 1;
+
+  @media (min-width: $bp-md) {
+    --cols: 3;
+  }
+}
+
+.cv-cell {
+  padding: var(--space-4);
+}
+
+.cv-cell-head {
+  margin: 0 0 var(--space-3);
+  color: var(--color-accent-ink);
+}
+
+.cv-list {
+  margin: 0;
+}
+
+.cv-entry {
+  display: grid;
+  // The period is mono and fixed-width; 54px holds "16–20" without wrapping and
+  // leaves the rest of a narrow cell to the role.
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+
+  + .cv-entry {
+    border-top: 1px solid var(--color-divider);
+  }
+
+  &:first-child { padding-top: 0; }
+  &:last-child { padding-bottom: 0; }
+}
+
+.cv-period {
+  // Sits on the first line of the role beside it rather than above it.
+  padding-top: 3px;
+}
+
+.cv-detail {
+  margin: 0;
+}
+
+.cv-role {
+  display: block;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.cv-place {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.cv-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+// ── Foot ───────────────────────────────────────────────────────────────────
+.cv-foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+
+  @media (min-width: $bp-sm) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+  }
+}
+
+.cv-currently {
+  margin: 0;
+  max-width: 60ch;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+
+  .t-meta-sm {
+    margin-right: 6px;
+    color: var(--color-accent-ink);
+  }
+}
+
+.cv-download {
+  flex: none;
+  font-size: 13px;
+}

@@ -115,86 +115,18 @@
   color: var(--color-text-muted);
 }
 
-// ── Recent + CV ────────────────────────────────────────────────────────────
-// 1.55fr / 1px / 1fr in the spec. The 1px is a real column holding a real
-// element, so the rule runs the full height of whichever side is taller.
-.home-latest {
-  display: grid;
-  gap: var(--space-8);
+// ── Recent writing ─────────────────────────────────────────────────────────
+// A full-width band since the curriculum moved out of the column beside it.
+// Two across from $bp-md: one column at 1160px would set a 14px excerpt across
+// 145 characters, which is roughly twice a readable line.
+.home-briefs {
+  --cols: 1;
 
   @media (min-width: $bp-md) {
-    grid-template-columns: 1.55fr 1px 1fr;
-    gap: 44px;
-    align-items: start;
-  }
-}
-
-.home-latest-rule {
-  // Below $bp-md the two stack, and a 1px column between them would draw a
-  // hairline across the page in the middle of the flow.
-  display: none;
-
-  @media (min-width: $bp-md) {
-    display: block;
-    align-self: stretch;
-    background: var(--color-divider);
+    --cols: 2;
   }
 }
 
 .home-latest-more {
   margin-top: var(--space-4);
-}
-
-// ── CV column ──────────────────────────────────────────────────────────────
-.home-cv .rule-head {
-  margin-bottom: var(--space-3);
-  color: var(--color-text-muted);
-}
-
-.home-cv-list {
-  margin: 0 0 var(--space-4);
-}
-
-.home-cv-entry {
-  display: grid;
-  grid-template-columns: 62px minmax(0, 1fr);
-  gap: var(--space-2);
-  padding: var(--space-2) 0;
-
-  + .home-cv-entry {
-    border-top: 1px solid var(--color-divider);
-  }
-
-  dt {
-    // Periods are mono and short; nudged down so they sit on the first line of
-    // the detail beside them rather than above it.
-    padding-top: 3px;
-  }
-
-  dd {
-    margin: 0;
-    font-family: var(--font-body);
-    font-size: 13.5px;
-    line-height: 1.55;
-  }
-}
-
-.home-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.home-currently {
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: var(--color-text-muted);
-
-  .t-meta-sm {
-    display: block;
-    margin-bottom: 4px;
-    color: var(--color-accent-ink);
-  }
 }

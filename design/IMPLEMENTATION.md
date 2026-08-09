@@ -479,6 +479,15 @@ Format: `date — decision — why`.
   who wrote it; inventing a personal slogan is not the redesign's job. Every
   other word on the page is lifted from the old home page and about section.
   Two lines in `_data/profile.yml` change it to lead with a name instead.
+- **2026-08-09 — The curriculum is its own band under the hero, not a column
+  at the foot.** Requested after the first build, and a departure from 1a,
+  which puts the CV in a 1fr column beside recent writing. In that column it
+  was the last thing on the page and every entry wrapped; as a band it gets the
+  full width, and experience and education become separate lists rather than
+  one merged timeline — blended, a degree and a job read as the same kind of
+  row and neither stands out. Recent writing takes the width it left behind,
+  two briefs across from `$bp-md`, because one column at 1160px sets a 14px
+  excerpt across about 145 characters.
 - **2026-08-09 — A ragged hairline grid needs filler cells.** The grid draws
   its rules by showing its own background through a 1px gap, so five tiles in
   three columns do not leave the sixth cell empty — they leave it *grey*, a

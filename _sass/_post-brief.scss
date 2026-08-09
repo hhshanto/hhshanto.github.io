@@ -1,21 +1,23 @@
 // A recent-writing row on the home page.
 //
-// On a phone the 88px mono rail becomes a single line above the title —
-// stacking date, year and read time in an 88px column beside a title that
-// then has 200px to work with is worse than either.
+// It lives in a hairline grid, so the rules between rows are the container
+// showing through a 1px gap — the row draws no borders of its own.
+//
+// The 88px mono rail only earns a column of its own once the title has room
+// beside it. That is true between $bp-sm and $bp-md, where the band is one
+// column across the page, and again from $bp-lg, where the band's two columns
+// are wide enough — but not in between, where a half-width cell would leave the
+// title about 200px. Hence the mixin: two disjoint ranges, one set of rules.
+
+@mixin brief-columns {
+  @media (min-width: $bp-sm) and (max-width: $bp-md - 1px) { @content; }
+  @media (min-width: $bp-lg) { @content; }
+}
 
 .post-brief {
-  padding: var(--space-4) 0;
+  padding: var(--space-4);
 
-  + .post-brief {
-    border-top: 1px solid var(--color-divider);
-  }
-
-  &:first-child {
-    padding-top: 0;
-  }
-
-  @media (min-width: $bp-sm) {
+  @include brief-columns {
     display: grid;
     grid-template-columns: 88px minmax(0, 1fr);
     gap: 22px;
@@ -28,7 +30,7 @@
   gap: var(--space-2);
   margin-bottom: var(--space-2);
 
-  @media (min-width: $bp-sm) {
+  @include brief-columns {
     flex-direction: column;
     gap: 2px;
     margin-bottom: 0;
@@ -43,8 +45,9 @@
 
 .post-brief-title {
   font-weight: 500;
+  font-size: 21px;
 
-  @media (min-width: $bp-sm) {
+  @media (min-width: $bp-lg) {
     font-size: 25px;
   }
 }

@@ -213,19 +213,43 @@ for (const width of [375, 700, 1160, 1440]) {
   // tile would be. hgrid-fill.html emits blanks to cover it — but only for the
   // column counts it was told about, so the arithmetic is checked at every
   // width rather than assumed.
-  const grid = await page.evaluate(() => {
-    const el = document.querySelector('.hgrid-domains');
-    const cols = getComputedStyle(el).gridTemplateColumns.split(' ').length;
-    const cells = Array.from(el.children)
-      .filter((c) => getComputedStyle(c).display !== 'none').length;
-    return { cols, cells, tiles: el.querySelectorAll('.domain-tile').length };
-  });
-  check(`domain grid has no uncovered cells (${width}px)`,
-    grid.cells % grid.cols === 0,
-    `${grid.cells} cells in ${grid.cols} columns`);
+  const grids = await page.evaluate(() =>
+    ['.hgrid-domains', '.home-briefs', '.cv-grid'].map((sel) => {
+      const el = document.querySelector(sel);
+      return {
+        sel,
+        cols: getComputedStyle(el).gridTemplateColumns.split(' ').length,
+        cells: Array.from(el.children)
+          .filter((c) => getComputedStyle(c).display !== 'none').length,
+      };
+    }));
+
+  for (const g of grids) {
+    check(`${g.sel} has no uncovered cells (${width}px)`,
+      g.cells % g.cols === 0, `${g.cells} cells in ${g.cols} columns`);
+  }
+
+  const tiles = await page.locator('.domain-tile').count();
 
   if (width === 1440) {
-    check('one tile per domain in _data/domains.yml', grid.tiles === 5, `${grid.tiles} tiles`);
+    check('one tile per domain in _data/domains.yml', tiles === 5, `${tiles} tiles`);
+
+    // The curriculum was moved out of the foot column and up under the hero.
+    // Its position is the point of the change, so it is asserted rather than
+    // left to a screenshot nobody re-reads.
+    const order = await page.evaluate(() => {
+      const y = (s) => document.querySelector(s).getBoundingClientRect().top;
+      return {
+        cv: y('.cv-band'),
+        domains: y('.home-domains'),
+        latest: y('.home-latest'),
+        hero: y('.home-hero'),
+      };
+    });
+    check('the curriculum sits between the hero and the domains',
+      order.cv > order.hero && order.cv < order.domains && order.domains < order.latest);
+    check('experience and education are separate lists',
+      (await page.locator('.cv-cell .cv-list').count()) === 2);
 
     const portrait = await page.evaluate(() => {
       const img = document.querySelector('.home-hero-portrait');
@@ -234,9 +258,6 @@ for (const width of [375, 700, 1160, 1440]) {
     });
     check('portrait is 4:5', Math.abs(portrait.w / portrait.h - 0.8) < 0.02,
       `${portrait.w.toFixed(0)}x${portrait.h.toFixed(0)}`);
-
-    check('the CV divider column is drawn',
-      await page.isVisible('.home-latest-rule'));
 
     // Proves index.html is on the new layout rather than the old inline body.
     check('the old hero markup is gone',
@@ -271,16 +292,6 @@ for (const width of [375, 700, 1160, 1440]) {
   await ctx.close();
 }
 
-// Below $bp-md the two columns stack, and the 1px divider column would draw a
-// hairline straight across the middle of the page.
-{
-  const ctx = await browser.newContext({ viewport: { width: 700, height: 900 } });
-  const page = await ctx.newPage();
-  await page.goto(`http://localhost:${PORT}/`);
-  check('the CV divider is hidden when the columns stack',
-    !(await page.isVisible('.home-latest-rule')));
-  await ctx.close();
-}
 
 // ── Post layout (screen 1c) ────────────────────────────────────────────────
 const POST = `http://localhost:${PORT}/reflections/philosophy/stoicism/`;

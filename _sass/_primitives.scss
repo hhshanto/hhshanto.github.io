@@ -73,6 +73,10 @@
 }
 
 // One column never has a ragged row, so the base width needs no fillers.
+@media (min-width: $bp-md) {
+  .hgrid-fill-2 { display: block; }
+}
+
 @media (min-width: $bp-sm) and (max-width: $bp-lg - 1px) {
   .hgrid-fill-3 { display: block; }
 }
