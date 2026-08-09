@@ -830,3 +830,48 @@ Format: `date — decision — why`.
   of it, and the header has 37px of slack at 900px — see the earlier note. All
   four are also in ⌘K, each with a `search_body:` so their generated bodies do
   not pollute the index.
+- **2026-08-09 — `/model/` runs a real transformer in the browser; the honest
+  part is that it is bad.** 2 layers, 4 heads, 128 dimensions, ~500k parameters,
+  trained by `.tools/train.py` on the twelve posts and shipped as 489KB of int8
+  weights. `assets/js/model.js` reimplements the forward pass in about two
+  hundred lines of plain JS — no library, no WebGPU — because at 64 tokens by
+  128 dimensions the arithmetic is trivial. What makes real inference need a
+  framework is the size of the matrices, not the difficulty of the maths.
+  Training loss 1.4 against validation loss 9.5: it memorises the corpus and
+  learns almost nothing about language, and the loss curve is drawn at the top of
+  the page rather than mentioned at the bottom. The mechanism is the frontier
+  mechanism; the missing ingredient is data.
+- **2026-08-09 — Only the residual stream is drawn in 3D, and that is a design
+  position, not a limitation.** A token enters as a vector and every layer adds
+  to it, so its history is a path — the one object in a transformer that
+  genuinely wants three dimensions. Attention is a relation between two tokens
+  and reads better as bars; putting it in the same scene adds an axis carrying
+  nothing and costs the legibility of both. "The whole model in 3D" is not a
+  visualisation: at 500k parameters it is a fog and at GPT-2's 124M it is a
+  screensaver. Say so if it is asked for again.
+- **2026-08-09 — Shipping GPT-2's weights was rejected on arithmetic.** 124M
+  parameters is 500MB in float32 and 124MB at int8 — past GitHub's 100MB
+  per-file limit — and loading them from a CDN would break the "no third-party
+  origin" audit. Precomputed traces of a real model were the alternative and
+  would have meant fixed prompts; a small live model keeps the page interactive,
+  which is the whole reason to build it rather than draw it.
+- **2026-08-09 — `assets/js/bpe.js` is now the single client-side encoder,
+  shared by `/tokenizer/` and `/model/`.** CLAUDE.md already warned that the
+  browser tokeniser duplicates `.tools/lib/corpus.mjs` and cannot import it; a
+  second browser copy would have made three. There are still three
+  implementations in total — the Node library, `.tools/train.py`, and this — and
+  any change to the pre-tokenisation regex has to land in all of them. A drifted
+  tokeniser feeds the model tokens it was never trained on, which looks like the
+  model being bad rather than the split being wrong.
+- **2026-08-09 — The loss curve uses accent-against-ink, not two domain hues,
+  and the `dataviz` validator was run rather than eyeballed.** Two reasons, one
+  semantic and one measured. The five `--color-domain-*` tokens MEAN something
+  on this site — gold is Reflections on every other screen — so spending two of
+  them on "training" and "validation" is a collision. And they fail: lifted for
+  the dark ground, the closest pair sits at ΔE 13 in normal vision, under the 15
+  floor, with tritan separation of 5.3. Accent against ink measures ΔE 42 in
+  light and 30 in dark. That pair fails two of the validator's checks — a
+  categorical lightness band and a chroma floor that flags ink as "reads gray" —
+  and both of those assume a categorical ramp, which this is not: ink reads gray
+  because it is ink. Identity does not rest on colour either way; both lines are
+  direct-labelled and validation is dashed.

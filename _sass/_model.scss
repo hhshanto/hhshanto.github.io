@@ -1,0 +1,455 @@
+// A transformer with the lid off.
+//
+// The layout's job is to keep four views of one forward pass legible next to
+// each other: the token strip, the residual stream in 3D, the attention bars,
+// and the logit lens. They share the token chip (`.tok`, from _tokenizer.scss)
+// deliberately — a token is the same object in all four, and giving it a
+// different look per panel would imply otherwise.
+
+.model {
+  padding-block: var(--space-6) var(--space-8);
+
+  @media (min-width: $bp-md) {
+    padding-block: 40px 50px;
+  }
+}
+
+.model-desc {
+  max-width: 66ch;
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-muted);
+
+  a {
+    color: var(--color-accent-ink);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+}
+
+// ── The honesty band ───────────────────────────────────────────────────────
+// Above the instrument, not below it. A page showing a working transformer is
+// one screenshot away from implying the thing works.
+.model-honesty {
+  display: grid;
+  gap: var(--space-6);
+  margin-top: var(--space-6);
+  padding: var(--space-6) 0;
+  border-top: 1px solid var(--color-divider);
+  border-bottom: 1px solid var(--color-divider);
+
+  @media (min-width: $bp-md) {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: var(--space-8);
+    align-items: center;
+  }
+}
+
+.model-honesty-text {
+  p {
+    max-width: 62ch;
+    margin: var(--space-2) 0 0;
+    color: var(--color-text-muted);
+  }
+
+  b { font-weight: 400; color: var(--color-accent-ink); }
+}
+
+// ── Loss curve ─────────────────────────────────────────────────────────────
+// Two series. Identity never rests on colour alone: both lines carry a direct
+// label at their right-hand end, and validation is dashed as well as paler.
+.model-curve { margin: 0; }
+
+.model-curve-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible; // the direct labels sit outside the plot box
+}
+
+// Recessive, per the rule that grid and axes must never compete with the data.
+// A baseline rather than a grid: two lines and a stated end value do not need
+// gridlines to be read.
+.model-curve-axis {
+  stroke: var(--color-divider);
+  stroke-width: 1;
+}
+
+.model-curve-line {
+  fill: none;
+  stroke-width: 2; // the spec's line weight
+  stroke-linejoin: round;
+  stroke-linecap: round;
+
+  // Figure against ground, not two hues from the domain ramp. Those five mean
+  // something on this site — gold IS Reflections on every other screen — and
+  // measured, they fail anyway: lifted for the dark ground they land within
+  // ΔE 13 of each other in normal vision, under the 15 floor. Accent against
+  // ink measures ΔE 42 in light and 30 in dark.
+  &.is-train { stroke: var(--color-accent); }
+
+  &.is-val {
+    stroke: var(--color-text);
+    // Secondary encoding, so the two are separable in greyscale, in print, and
+    // under forced colours.
+    stroke-dasharray: 4 3;
+    opacity: 0.75;
+  }
+}
+
+.model-curve-label {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.03em;
+
+  // Text wears text tokens, never the series colour — the mark beside it
+  // carries identity.
+  &.is-train,
+  &.is-val { fill: var(--color-text-muted); }
+}
+
+.model-curve-cap {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-faint);
+}
+
+// ── Prompt bar ─────────────────────────────────────────────────────────────
+.model-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+
+  @media (min-width: $bp-sm) {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-4);
+  }
+}
+
+.model-field { flex: 1; min-width: 0; }
+
+.model-input {
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 16px; // iOS zooms the viewport on focus below this
+
+  &:disabled { opacity: 0.55; cursor: progress; }
+}
+
+.model-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: none;
+}
+
+.model-temp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  color: var(--color-text-faint);
+}
+
+.model-temp-input {
+  width: 4.2em;
+  padding: 6px 8px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.model-status {
+  margin: var(--space-3) 0 0;
+  font-family: var(--font-mono);
+  color: var(--color-text-faint);
+}
+
+.model-inert {
+  margin-top: var(--space-3);
+
+  a {
+    color: var(--color-accent-ink);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+}
+
+// ── Token strip ────────────────────────────────────────────────────────────
+.model-strip { margin-top: var(--space-6); }
+
+.model-tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: var(--space-3);
+}
+
+// A token here is a control, not a label. `.tok` gives it its look; this only
+// has to undo the button defaults and mark the selection.
+.model-token {
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+
+  &.is-focus {
+    background: var(--color-accent);
+    color: var(--color-bg);
+  }
+}
+
+// ── Panes ──────────────────────────────────────────────────────────────────
+.model-panes {
+  display: grid;
+  gap: var(--space-8);
+  margin-top: var(--space-8);
+
+  @media (min-width: $bp-md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.model-pane-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-text);
+}
+
+.model-pane-sub {
+  font-family: var(--font-mono);
+  color: var(--color-text-faint);
+}
+
+.model-pane-note {
+  margin: var(--space-4) 0 0;
+  color: var(--color-text-muted);
+}
+
+// ── Residual stream ────────────────────────────────────────────────────────
+.model-stage {
+  position: relative;
+  height: 320px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  overflow: hidden;
+  cursor: grab;
+  // A drag across the scene is otherwise a text selection, and on touch a
+  // scroll. Both load-bearing.
+  user-select: none;
+  touch-action: none;
+
+  &.is-dragging { cursor: grabbing; }
+
+  @media (min-width: $bp-md) { height: 380px; }
+}
+
+.model-paths {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.model-path {
+  fill: none;
+  stroke: var(--color-neutral-400);
+  stroke-width: 1;
+  stroke-linejoin: round;
+
+  &.is-focus {
+    stroke: var(--color-accent);
+    stroke-width: 2;
+  }
+}
+
+.model-node {
+  fill: var(--color-neutral-400);
+
+  &.is-focus { fill: var(--color-accent); }
+}
+
+.model-path-label {
+  fill: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.model-hint {
+  position: absolute;
+  left: var(--space-4);
+  bottom: var(--space-3);
+  margin: 0;
+  font-family: var(--font-mono);
+  color: var(--color-text-faint);
+  pointer-events: none;
+}
+
+// ── Attention ──────────────────────────────────────────────────────────────
+.model-heads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: var(--space-4);
+}
+
+.model-head {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  min-height: 28px;
+}
+
+.model-attn {
+  // Sixty-four rows would otherwise push the neighbouring pane down the page;
+  // the panel scrolls inside itself instead.
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.model-attn-row {
+  display: grid;
+  grid-template-columns: minmax(0, 7em) minmax(0, 1fr) 3.4em;
+  gap: var(--space-2);
+  align-items: center;
+  padding: 2px 0;
+}
+
+.model-attn-tok {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.model-attn-track {
+  position: relative;
+  height: 6px;
+  border-radius: var(--radius-sm);
+  background: var(--wash-ink);
+  overflow: hidden;
+}
+
+.model-attn-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
+}
+
+.model-attn-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-align: right;
+  color: var(--color-text-faint);
+}
+
+// ── Logit lens ─────────────────────────────────────────────────────────────
+.model-lens-section { margin-top: var(--space-8); }
+
+.model-lens-intro {
+  max-width: 64ch;
+  margin: var(--space-3) 0 var(--space-4);
+  color: var(--color-text-muted);
+}
+
+.model-lens {
+  display: grid;
+  gap: var(--space-4);
+  // Five stages on a phone would be five columns of nothing. They stack, and
+  // the left-to-right reading the copy describes becomes top-to-bottom, which
+  // is still a reading order.
+  grid-template-columns: minmax(0, 1fr);
+
+  @media (min-width: $bp-sm) {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}
+
+.model-lens-col {
+  padding: var(--space-3);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+}
+
+.model-lens-head {
+  margin: 0 0 var(--space-2);
+  color: var(--color-text-faint);
+}
+
+.model-lens-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 3.2em;
+  gap: 6px;
+  align-items: center;
+  padding: 2px 0;
+
+  .tok {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.model-lens-bar {
+  height: 4px;
+  border-radius: var(--radius-sm);
+  background: var(--wash-ink);
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--fill, 0%);
+    border-radius: var(--radius-sm);
+    background: var(--color-accent);
+  }
+}
+
+// ── Samples ────────────────────────────────────────────────────────────────
+.model-samples { margin-top: var(--space-8); }
+
+.model-sample {
+  display: grid;
+  grid-template-columns: 4.5em minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: baseline;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.model-sample-t {
+  font-family: var(--font-mono);
+  color: var(--color-accent-ink);
+}
+
+.model-sample-text {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+// ── Method ─────────────────────────────────────────────────────────────────
+.model-method { margin-top: var(--space-8); }
+
+.model-method-body {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  color: var(--color-text-muted);
+
+  @media (min-width: $bp-md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+
+  p { margin: 0; }
+}

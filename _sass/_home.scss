@@ -179,7 +179,10 @@
   }
 
   @media (min-width: $bp-lg) {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    // auto-fit rather than a fixed count: the band started at four cards and is
+    // now five, and a hardcoded column count means every new instrument is also
+    // a stylesheet edit — with a silently cramped row until someone notices.
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   }
 }
 

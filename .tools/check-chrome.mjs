@@ -1295,9 +1295,93 @@ const rest = (page) => page.evaluate(() => new Promise((resolve) => {
   await ctx.close();
 }
 
+// ── The model ──────────────────────────────────────────────────────────────
+// A forward pass is the one thing on this site with real invariants, so these
+// assert arithmetic rather than appearance. A screenshot of this page looks
+// identical whether the causal mask is applied or not.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/model/`);
+  // 489KB of weights plus the merge table, then a forward pass.
+  await page.waitForFunction(() =>
+    document.querySelectorAll('[data-model-tokens] .model-token').length > 0,
+    null, { timeout: 15000 });
+
+  const shape = await page.evaluate(() => ({
+    tokens: document.querySelectorAll('[data-model-tokens] .model-token').length,
+    heads: document.querySelectorAll('[data-model-heads] .model-head').length,
+    lens: document.querySelectorAll('[data-model-lens] .model-lens-col').length,
+    paths: document.querySelectorAll('.model-path').length,
+    status: document.querySelector('[data-model-status]').textContent,
+  }));
+
+  check('the model loads and runs a forward pass', shape.tokens > 0,
+    `${shape.tokens} tokens · ${shape.status.trim()}`);
+  // 2 layers × 4 heads.
+  check('every attention head is selectable', shape.heads === 8, `${shape.heads}`);
+  // embed + (attn, mlp) per layer = 5 stages.
+  check('the logit lens covers every stage', shape.lens === 5, `${shape.lens} columns`);
+  check('one residual path per token', shape.paths === shape.tokens,
+    `${shape.paths} paths for ${shape.tokens} tokens`);
+
+  // Softmax's invariant, and the only assertion here that could catch a broken
+  // normalisation. It is invisible in a screenshot: bars drawn from unnormalised
+  // scores look exactly as convincing.
+  const rows = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('.model-attn-num'))
+      .map((n) => Number(n.textContent)));
+  const total = rows.reduce((a, b) => a + b, 0);
+  check('attention over the visible tokens sums to 1',
+    Math.abs(total - 1) < 0.01, `${total.toFixed(4)} over ${rows.length} rows`);
+
+  // The causal mask, checked by counting rather than by reading the code: the
+  // last token sees every token including itself, and nothing beyond, because
+  // there is nothing beyond it.
+  check('a token attends only backwards', rows.length === shape.tokens,
+    `${rows.length} rows for ${shape.tokens} tokens`);
+
+  // Selecting an earlier token must shorten the list — that IS the mask.
+  await page.locator('.model-token').nth(1).click();
+  await page.waitForTimeout(120);
+  const early = await page.evaluate(() => ({
+    rows: document.querySelectorAll('.model-attn-num').length,
+    sum: Array.from(document.querySelectorAll('.model-attn-num'))
+      .reduce((a, n) => a + Number(n.textContent), 0),
+    focused: document.querySelectorAll('.model-token.is-focus').length,
+  }));
+  check('selecting the second token leaves it two rows', early.rows === 2,
+    `${early.rows} rows`);
+  check('and those two still sum to 1', Math.abs(early.sum - 1) < 0.01,
+    `${early.sum.toFixed(4)}`);
+  check('exactly one token is selected', early.focused === 1, `${early.focused}`);
+
+  // Sampling appends a token and re-runs, so the strip must grow.
+  const before = shape.tokens;
+  await page.click('[data-model-generate]');
+  await page.waitForTimeout(400);
+  const after = await page.evaluate(() =>
+    document.querySelectorAll('[data-model-tokens] .model-token').length);
+  check('sampling extends the sequence', after > before, `${before} -> ${after}`);
+
+  // The build-time half of the page has to stand without any of the above.
+  const built = await page.evaluate(() => ({
+    curve: document.querySelectorAll('.model-curve-line').length,
+    pts: (document.querySelector('.model-curve-line.is-train') || {})
+      .getAttribute ? document.querySelector('.model-curve-line.is-train')
+        .getAttribute('points').trim().split(/\s+/).length : 0,
+    samples: document.querySelectorAll('.model-sample').length,
+  }));
+  check('the loss curve is rendered at build time',
+    built.curve === 2 && built.pts > 5, `${built.curve} lines, ${built.pts} points`);
+  check('the samples are rendered at build time', built.samples === 3,
+    `${built.samples}`);
+  await ctx.close();
+}
+
 // ── Phase 8: whole-site audits ─────────────────────────────────────────────
 const PAGES = ['/', '/about/', '/tags/', '/all-posts/', '/reflections/',
-  '/reflections/philosophy/stoicism/', '/styleguide/', '/constellation/', '/atlas/', '/retrieval/', '/tokenizer/',
+  '/reflections/philosophy/stoicism/', '/styleguide/', '/constellation/', '/atlas/', '/retrieval/', '/tokenizer/', '/model/',
   '/404.html'];
 
 // Keyboard pass. Every focusable control must take a visible ring, and it must

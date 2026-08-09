@@ -1,14 +1,11 @@
 // The tokenizer playground.
 //
-// Byte-pair encoding, applied to whatever you type, in the browser. The whole
-// encoder is the `encode` function below and it is about twenty lines, because
-// BPE genuinely is that small: repeatedly join the adjacent pair that the
-// training run merged earliest, until no pair in the word was ever merged.
-//
-// The merge table was learned from this site's own writing by
-// .tools/tokenizer.mjs, which is the point — the vocabulary has a single token
-// for "Bangladesh" and none at all for "photosynthesis", so the reader can
-// predict the behaviour instead of watching a black box.
+// Byte-pair encoding, applied to whatever you type. The encoder itself lives in
+// assets/js/bpe.js and is shared with /model/, which feeds the same tokens into
+// a transformer — this file is only the screen. That split is deliberate: two
+// copies of the encoder is two encoders that drift, and a drifted tokeniser
+// splits a prompt differently from the way the training corpus was split, which
+// looks like the model misbehaving rather than the tokeniser being wrong.
 
 (function () {
   'use strict';
@@ -22,74 +19,12 @@
   var samples = Array.prototype.slice.call(root.querySelectorAll('[data-sample]'));
   var inert = root.querySelector('[data-tok-inert]');
 
-  var model = null;
-  var rank = null;   // "a b" -> the step at which training merged that pair
-  var ids = null;    // token string -> its index in the vocabulary
-
-  function load() {
-    var base = (document.currentScript && document.currentScript.src) || '';
-    var url = base.replace(/assets\/js\/tokenizer\.js.*$/, 'assets/data/tokenizer.json');
-    return fetch(url || '/assets/data/tokenizer.json')
-      .then(function (r) {
-        if (!r.ok) throw new Error(r.status);
-        return r.json();
-      })
-      .then(function (json) {
-        model = json;
-        rank = new Map(json.merges.map(function (m, i) { return [m[0] + ' ' + m[1], i]; }));
-        ids = new Map(json.vocab.map(function (t, i) { return [t, i]; }));
-        return json;
-      });
-  }
-
-  // ── Pre-tokenisation ──────────────────────────────────────────────────────
-  // Must match .tools/tokenizer.mjs exactly. A different split here would apply
-  // merges across boundaries the training never saw, and the symptom is
-  // plausible-looking tokens that no model was ever trained on.
-  function preTokenise(text) {
-    return text.match(/ ?[A-Za-z]+| ?[0-9]+|[^\sA-Za-z0-9]|\s+/g) || [];
-  }
-
-  // ── Encode ────────────────────────────────────────────────────────────────
-  // The greedy loop. At each step find the pair with the LOWEST rank — the one
-  // training merged earliest, meaning the most frequent in the corpus — and
-  // join it. Order matters: applying merges left-to-right instead would build
-  // different tokens for the same word.
-  function encode(word) {
-    var sym = Array.from(word);
-    for (;;) {
-      var bestRank = Infinity, at = -1;
-      for (var i = 0; i < sym.length - 1; i++) {
-        var r = rank.get(sym[i] + ' ' + sym[i + 1]);
-        if (r !== undefined && r < bestRank) { bestRank = r; at = i; }
-      }
-      if (at < 0) return sym;
-      sym = sym.slice(0, at).concat(sym[at] + sym[at + 1], sym.slice(at + 2));
-    }
-  }
-
-  function tokenise(text) {
-    var tokens = [];
-    preTokenise(text).forEach(function (raw) {
-      if (/^\s+$/.test(raw)) {
-        // Runs of whitespace other than a single leading space are their own
-        // tokens. Newlines especially: they are not free, and a model paying by
-        // the token pays for every blank line in your prompt.
-        if (raw !== ' ') tokens.push({ text: raw, ws: true });
-        return;
-      }
-      var word = raw.charAt(0) === ' ' ? model.mark + raw.slice(1) : raw;
-      encode(word).forEach(function (t) { tokens.push({ text: t }); });
-    });
-    return tokens;
-  }
-
-  // ── Render ────────────────────────────────────────────────────────────────
+  var bpe = null;
 
   function run() {
-    if (!model) return;
+    if (!bpe) return;
     var text = input.value;
-    var tokens = tokenise(text);
+    var tokens = bpe.tokenise(text);
 
     out.innerHTML = '';
     tokens.forEach(function (tok, i) {
@@ -99,25 +34,24 @@
       // one token ENDS and the next begins.
       chip.className = 'tok' + (i % 2 ? ' is-alt' : '');
 
-      var id = ids.get(tok.text);
       if (tok.ws) {
         chip.classList.add('is-space');
         chip.textContent = tok.text === '\n' ? '\\n' : '␣';
       } else {
-        // The marker is a real character in the vocabulary, so it is shown
-        // rather than hidden: " the" and "the" being different tokens is one of
-        // the genuinely surprising things about tokenisation.
+        // The leading-space marker is a real character in the vocabulary, so it
+        // is shown rather than hidden: " the" and "the" being different tokens
+        // is one of the genuinely surprising things about tokenisation.
         chip.textContent = tok.text;
       }
 
-      if (id === undefined) {
+      if (tok.id === undefined) {
         // A character the training corpus never contained. Real tokenizers fall
         // back to raw bytes here so nothing is unencodable; this one has no byte
         // fallback, and saying so is more useful than pretending.
         chip.classList.add('is-unknown');
         chip.title = 'not in this vocabulary';
       } else {
-        chip.title = 'id ' + id;
+        chip.title = 'id ' + tok.id;
       }
 
       out.appendChild(chip);
@@ -154,7 +88,8 @@
     });
   });
 
-  load().then(function () {
+  window.NoemaBPE.load().then(function (encoder) {
+    bpe = encoder;
     input.disabled = false;
     input.placeholder = 'Type anything…';
     if (inert) inert.hidden = true;

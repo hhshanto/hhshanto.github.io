@@ -1,0 +1,308 @@
+---
+layout: default
+title: Model
+permalink: /model/
+description: A real transformer, small enough to ship, running its forward pass in your browser with every intermediate on screen.
+search_body: >
+  Model. Transformer, attention heads, residual stream, logit lens, forward
+  pass, embeddings, GPT, neural network. A 500k-parameter decoder trained on
+  this site and running in the browser.
+---
+
+{%- comment -%}
+Screen: a transformer with the lid off.
+
+WHAT IS REAL HERE. Everything. A decoder-only transformer — token and position
+embeddings, pre-norm blocks, causal multi-head attention, GELU MLP, tied output
+head — trained by .tools/train.py on the twelve posts on this site and shipped as
+489KB of int8 weights. assets/js/model.js reimplements the forward pass in about
+two hundred lines of plain JS, with no library and no WebGPU, because at 64
+tokens by 128 dimensions the arithmetic is trivial. What makes real inference
+need a framework is the size of the matrices, not the difficulty of the maths.
+
+WHAT IS NOT. The output. 14,000 training tokens is nowhere near enough to
+generalise, so the model memorises: training loss 1.4, validation loss 9.5. That
+gap is the most honest thing on the page and it is drawn rather than mentioned.
+A reader who watches attention heads behave correctly while the text stays
+nonsense has learned the thing that no architecture diagram teaches — the
+mechanism is not the hard part.
+
+WHY THE 3D IS ONLY THE RESIDUAL STREAM. Because that is the only part of a
+transformer that wants three dimensions. A token enters as a vector and every
+layer ADDS to it, so its history is a path. Attention is a relation between two
+tokens and reads far better as bars; drawing it in the same scene would add an
+axis carrying nothing and cost the legibility of both. "The whole model in 3D" is
+not a visualisation — at 500,000 parameters it is a fog, and at GPT-2's 124
+million it is a screensaver.
+{%- endcomment -%}
+
+{%- assign m = site.data.tinygpt -%}
+
+<div class="frame model" data-model>
+
+    <header class="model-head">
+        <p class="t-kicker tnum">
+            {{ m.paramsHuman }} parameters
+            <span aria-hidden="true">·</span>
+            {{ m.nLayer }} layers
+            <span aria-hidden="true">·</span>
+            {{ m.nHead }} heads
+            <span aria-hidden="true">·</span>
+            {{ m.dModel }} dimensions
+            <span aria-hidden="true">·</span>
+            {{ m.kb }}KB
+        </p>
+        <h1 class="t-display-xs">Model</h1>
+        <p class="model-desc t-body">
+            A real transformer, trained on the twelve pieces on this site and
+            small enough to ship. It runs its forward pass in your browser —
+            no library, no GPU, no request to anywhere — and keeps every
+            intermediate so you can watch what it does. The tokens are the ones
+            <a href="{{ '/tokenizer/' | relative_url }}">the tokenizer</a>
+            builds; this is the next step in the same pipeline.
+        </p>
+    </header>
+
+    {%- comment -%}
+    The honesty band, above the instrument rather than below it. A page showing a
+    working transformer is one screenshot away from implying the thing works, and
+    it does not — so the loss curve comes first.
+    {%- endcomment -%}
+    <section class="model-honesty">
+        <div class="model-honesty-text">
+            <h2 class="t-label">It memorises. That is the point.</h2>
+            <p class="t-body-sm">
+                Trained on {{ m.tokensTrained }} tokens for {{ m.steps }} steps.
+                Training loss fell to <b class="tnum">{{ m.loss.train }}</b>;
+                validation loss rose to <b class="tnum">{{ m.loss.val }}</b> —
+                a perplexity of {{ m.perplexity }}, which means it has learned
+                this corpus by heart and learned almost nothing about language.
+                Every mechanism below is exactly the mechanism in a frontier
+                model. The only missing ingredient is about eleven orders of
+                magnitude of data.
+            </p>
+        </div>
+
+        {%- comment -%}
+        Loss curve, rendered at build time from _data/tinygpt.json.
+
+        COLOUR. Two series, so identity cannot be carried by colour alone: both
+        lines are direct-labelled at their right-hand end and the validation line
+        is dashed as well. The pair is the site accent against plain ink — figure
+        against ground — rather than two hues from the domain ramp, for two
+        reasons. Those five hues MEAN something on this site (gold is
+        Reflections, on every other screen), and reusing one here would be a
+        semantic collision. And measured, they do not work: lifted for the dark
+        ground they sit within ΔE 13 of each other in normal vision, under the 15
+        floor. Accent against ink measures ΔE 42 in light and 30 in dark.
+
+        The two checks that pair does fail — a categorical lightness band, and a
+        chroma floor that flags ink as "reads gray" — are both checks that assume
+        a categorical ramp. Ink reads gray because it is ink.
+        {%- endcomment -%}
+        <figure class="model-curve">
+            {%- assign W = 320 -%}
+            {%- assign H = 130 -%}
+            {%- assign PAD = 4 -%}
+            {%- comment -%}
+            The first evaluation is at step 0 with random weights, where the loss
+            is ln(vocab) ≈ 85 and every later point would be flattened into the
+            baseline. Dropped from the plot, and said so under it, rather than
+            quietly clipping the axis.
+            {%- endcomment -%}
+            {%- assign points = m.history | slice: 1, 40 -%}
+            {%- assign maxloss = 0 -%}
+            {%- for h in points -%}
+                {%- if h.val > maxloss %}{% assign maxloss = h.val %}{% endif -%}
+            {%- endfor -%}
+            {%- assign last = points | last -%}
+            {%- assign span = points.size | minus: 1 -%}
+
+            <svg class="model-curve-svg" viewBox="0 0 {{ W }} {{ H }}"
+                 role="img"
+                 aria-label="Training loss falls to {{ m.loss.train }} while validation loss rises to {{ m.loss.val }}.">
+                {%- comment -%}Recessive baseline, not a grid — two lines do not need one.{%- endcomment -%}
+                <line class="model-curve-axis" x1="0" y1="{{ H | minus: PAD }}"
+                      x2="{{ W }}" y2="{{ H | minus: PAD }}"></line>
+
+                {%- comment -%}
+                Liquid filters chain strictly left to right and it has no float
+                literals worth trusting, so each coordinate is built in one
+                explicit run: normalise to 0–1, invert (SVG y grows downward),
+                scale to the plot height, then offset by the padding. PLOT is
+                H minus twice PAD; writing it out beats a chain whose last two
+                filters silently cancel, which is what the first version did.
+                {%- endcomment -%}
+                {%- assign PLOT = 122 -%}
+                {%- capture train_pts -%}
+                    {%- for h in points -%}
+                        {%- assign x = forloop.index0 | times: 250.0 | divided_by: span -%}
+                        {%- assign frac = h.train | divided_by: maxloss -%}
+                        {%- assign y = 1.0 | minus: frac | times: PLOT | plus: PAD -%}
+                        {{ x }},{{ y }} {% endfor -%}
+                {%- endcapture -%}
+                {%- capture val_pts -%}
+                    {%- for h in points -%}
+                        {%- assign x = forloop.index0 | times: 250.0 | divided_by: span -%}
+                        {%- assign frac = h.val | divided_by: maxloss -%}
+                        {%- assign y = 1.0 | minus: frac | times: PLOT | plus: PAD -%}
+                        {{ x }},{{ y }} {% endfor -%}
+                {%- endcapture -%}
+
+                <polyline class="model-curve-line is-val" points="{{ val_pts | strip | normalize_whitespace }}"></polyline>
+                <polyline class="model-curve-line is-train" points="{{ train_pts | strip | normalize_whitespace }}"></polyline>
+
+                {%- comment -%}
+                Direct labels, so identity never rests on colour alone — the one
+                thing a legend box cannot guarantee.
+                {%- endcomment -%}
+                {%- assign vfrac = last.val | divided_by: maxloss -%}
+                {%- assign vy = 1.0 | minus: vfrac | times: PLOT | plus: PAD -%}
+                {%- assign tfrac = last.train | divided_by: maxloss -%}
+                {%- assign ty = 1.0 | minus: tfrac | times: PLOT | plus: PAD -%}
+                <text class="model-curve-label is-val" x="256" y="{{ vy | plus: 4 }}">validation {{ last.val }}</text>
+                <text class="model-curve-label is-train" x="256" y="{{ ty | plus: 4 }}">training {{ last.train }}</text>
+            </svg>
+            <figcaption class="model-curve-cap t-meta-sm">
+                Loss against training step, from step {{ points[0].step }}. The
+                random-initialisation point is left off — at ln(vocab) ≈ 85 it
+                would flatten everything else onto the axis.
+            </figcaption>
+        </figure>
+    </section>
+
+    <div class="model-bar">
+        <div class="model-field">
+            <label class="visually-hidden" for="model-in">Prompt</label>
+            <input class="n-input model-input" id="model-in" type="text" disabled
+                   autocomplete="off"
+                   data-model-input
+                   value="The dichotomy of control is"
+                   placeholder="Loading 489KB of weights…">
+        </div>
+        <div class="model-controls">
+            <label class="model-temp t-meta-sm">
+                temp
+                <input type="number" min="0.1" max="2" step="0.1" value="0.8"
+                       class="model-temp-input tnum" data-model-temp>
+            </label>
+            <button type="button" class="n-btn n-btn-secondary" disabled
+                    data-model-generate>Sample next token</button>
+        </div>
+    </div>
+
+    <p class="model-status t-meta-sm tnum" role="status" aria-live="polite" data-model-status></p>
+
+    <p class="model-inert t-body-sm t-muted" data-model-inert>
+        This one is a live forward pass and needs JavaScript — there is nothing
+        to render ahead of time. The loss curve above and the samples below are
+        build-time, and
+        <a href="{{ '/tokenizer/' | relative_url }}">the tokenizer</a> works the
+        same way with a far smaller download.
+    </p>
+
+    {%- comment -%}
+    The tokens are the spine of the page: clicking one changes what the attention
+    panel and the 3D view are about. Rendered by JS because they depend on input.
+    {%- endcomment -%}
+    <section class="model-strip">
+        <h2 class="t-label rule-head">Tokens · click one to follow it</h2>
+        <div class="model-tokens" data-model-tokens></div>
+    </section>
+
+    <div class="model-panes">
+        <section class="model-pane">
+            <h2 class="model-pane-head">
+                <span class="t-h3">Residual stream</span>
+                <span class="model-pane-sub t-meta-sm">3 of {{ m.dModel }} dimensions · drag to spin</span>
+            </h2>
+            <div class="model-stage" data-model-stage>
+                <svg class="model-paths" data-model-paths preserveAspectRatio="none"
+                     aria-hidden="true" focusable="false"></svg>
+                <p class="model-hint t-meta-sm" data-model-hint>Loading…</p>
+            </div>
+            <p class="model-pane-note t-body-sm">
+                Every token enters as a vector and each layer <em>adds</em> to it,
+                so its history is a path, not a point. Dots grow along the path in
+                the direction of travel: embedding, after attention, after the
+                MLP, once per layer. The three axes are fixed — computed once over
+                the whole corpus — and carry
+                {{ m.basisExplained | times: 1000 | round | divided_by: 10.0 }}%
+                of the variation, so this is a shadow of the real thing and not
+                the thing.
+            </p>
+        </section>
+
+        <section class="model-pane">
+            <h2 class="model-pane-head">
+                <span class="t-h3">Attention</span>
+                <span class="model-pane-sub t-meta-sm">where the selected token looks</span>
+            </h2>
+            <div class="model-heads" role="group" aria-label="Layer and head" data-model-heads></div>
+            <div class="model-attn" data-model-attn></div>
+            <p class="model-pane-note t-body-sm">
+                One row per token the selected token can see, and it can only see
+                backwards — that triangle is the whole of "the model cannot read
+                ahead", one mask on one matrix. The rows sum to 1: attention is a
+                budget, and every head spends all of it every time.
+            </p>
+        </section>
+    </div>
+
+    <section class="model-lens-section">
+        <h2 class="t-label rule-head">Logit lens · what it would say if it stopped here</h2>
+        <p class="model-lens-intro t-body-sm">
+            The output head is tied to the embedding matrix, so any intermediate
+            can be decoded as though the model had stopped at that point. Read
+            left to right and you can watch it make up its mind.
+        </p>
+        <div class="model-lens" data-model-lens></div>
+    </section>
+
+    {%- comment -%}
+    Build-time samples. Temperature is the axis worth showing: the same weights
+    recite at 0.5 and come apart at 1.2, and seeing that is worth more than any
+    amount of describing it.
+    {%- endcomment -%}
+    <section class="model-samples">
+        <h2 class="t-label rule-head">What it writes, unprompted</h2>
+        {%- for s in m.samples %}
+        <div class="model-sample">
+            <span class="model-sample-t t-meta-sm tnum">T {{ s.temp }}</span>
+            <p class="model-sample-text">{{ s.text }}</p>
+        </div>
+        {%- endfor %}
+    </section>
+
+    <section class="model-method">
+        <h2 class="t-label rule-head">Why it is this size</h2>
+        <div class="model-method-body">
+            <p class="t-body-sm">
+                GPT-2 small is 124 million parameters — 500MB in float32, 124MB
+                even quantised to 8 bits, past GitHub's per-file limit and far
+                past what anyone should download to read a page. This is
+                {{ m.paramsHuman }} parameters at {{ m.kb }}KB, using the same int8
+                quantisation that puts a 70-billion-parameter model on a laptop:
+                one scale per tensor, weights stored as single bytes.
+            </p>
+            <p class="t-body-sm">
+                The second constraint was drawing it. A twelve-layer model would
+                not be meaningfully slower in the browser and would be unreadable
+                on screen — {{ m.nLayer }} layers and {{ m.nHead }} heads is what
+                fits in a panel you can actually follow. That is also why the
+                only 3D here is the residual stream. Attention is a relation
+                between two tokens and belongs in bars; a scene containing every
+                weight would be a fog, which is what "the whole model in 3D"
+                always turns out to mean.
+            </p>
+        </div>
+    </section>
+
+</div>
+
+{%- comment -%}
+bpe.js first — model.js reads window.NoemaBPE at load, and deferred scripts run
+in document order, so this ordering is a guarantee rather than a race.
+{%- endcomment -%}
+<script src="{{ '/assets/js/bpe.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/model.js' | relative_url }}" defer></script>

@@ -80,20 +80,29 @@ across two files.
     where it read as boilerplate and went unfound — four of them there would be
     worse. They are also all in ⌘K.
 
-    Hardcoded rather than driven off a data file: there are four, they each need
-    their own sentence, and a _data/instruments.yml holding four entries used
-    exactly once would be indirection for its own sake. If a fifth appears, that
-    calculation changes.
+    Hardcoded rather than driven off a data file: they each need their own
+    sentence, and a _data/instruments.yml holding five entries used exactly once
+    would be indirection for its own sake.
     {%- endcomment -%}
     <section class="home-instruments">
         <h2 class="t-label rule-head">Instruments</h2>
         <p class="home-instruments-intro t-body-sm">
-            Four ways of looking at the same writing. Everything they show is
-            computed from the corpus itself, offline, and the site ships only
-            the numbers.
+            Five ways of looking at the same writing, ending in a language model
+            trained on it. Everything they show is computed from the corpus
+            itself, offline; the site ships only the numbers.
         </p>
 
         <div class="home-instrument-grid">
+            <a class="n-card pcard home-instrument" href="{{ '/model/' | relative_url }}">
+                <p class="n-card-kicker">Transformer</p>
+                <h3 class="n-card-title">Model</h3>
+                <p class="n-card-body">
+                    A real 500k-parameter transformer trained on these posts,
+                    running its forward pass in your browser with every
+                    intermediate on screen.
+                </p>
+            </a>
+
             <a class="n-card pcard home-instrument" href="{{ '/constellation/' | relative_url }}">
                 <p class="n-card-kicker">Map</p>
                 <h3 class="n-card-title">Constellation</h3>

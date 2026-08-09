@@ -1,0 +1,139 @@
+{
+ "params": 501120,
+ "paramsHuman": "501,120",
+ "nLayer": 2,
+ "nHead": 4,
+ "dModel": 128,
+ "block": 64,
+ "vocab": 1281,
+ "tokensTrained": 16080,
+ "steps": 4000,
+ "kb": 489,
+ "loss": {
+  "train": 1.463,
+  "val": 9.546
+ },
+ "perplexity": 13991.3,
+ "basisExplained": 0.3715,
+ "history": [
+  {
+   "step": 0,
+   "train": 85.215,
+   "val": 84.871
+  },
+  {
+   "step": 200,
+   "train": 6.259,
+   "val": 6.802
+  },
+  {
+   "step": 400,
+   "train": 6.011,
+   "val": 6.615
+  },
+  {
+   "step": 600,
+   "train": 5.819,
+   "val": 6.574
+  },
+  {
+   "step": 800,
+   "train": 5.429,
+   "val": 6.535
+  },
+  {
+   "step": 1000,
+   "train": 4.867,
+   "val": 6.682
+  },
+  {
+   "step": 1200,
+   "train": 4.276,
+   "val": 6.711
+  },
+  {
+   "step": 1400,
+   "train": 3.815,
+   "val": 6.808
+  },
+  {
+   "step": 1600,
+   "train": 3.347,
+   "val": 7.278
+  },
+  {
+   "step": 1800,
+   "train": 2.992,
+   "val": 7.594
+  },
+  {
+   "step": 2000,
+   "train": 2.62,
+   "val": 8.042
+  },
+  {
+   "step": 2200,
+   "train": 2.306,
+   "val": 8.394
+  },
+  {
+   "step": 2400,
+   "train": 2.078,
+   "val": 8.688
+  },
+  {
+   "step": 2600,
+   "train": 1.863,
+   "val": 8.953
+  },
+  {
+   "step": 2800,
+   "train": 1.706,
+   "val": 9.226
+  },
+  {
+   "step": 3000,
+   "train": 1.612,
+   "val": 9.385
+  },
+  {
+   "step": 3200,
+   "train": 1.538,
+   "val": 9.437
+  },
+  {
+   "step": 3400,
+   "train": 1.497,
+   "val": 9.541
+  },
+  {
+   "step": 3600,
+   "train": 1.476,
+   "val": 9.534
+  },
+  {
+   "step": 3800,
+   "train": 1.468,
+   "val": 9.527
+  },
+  {
+   "step": 3999,
+   "train": 1.434,
+   "val": 9.608
+  }
+ ],
+ "samples": [
+  {
+   "temp": 0.5,
+   "text": "Bangladesh, which is the turred that's exp quietly wrong ine share into reasons. Aplements to be honest answer is real about it. The cent to do"
+  },
+  {
+   "temp": 0.8,
+   "text": "Bangladesh's. Has, and wants failures, most thoughts and the time. That's exradition rather than cooling to the sure Citique to a pessimism that"
+  },
+  {
+   "temp": 1.2,
+   "text": "Bangladeshures, which is decoration. Wisknowledging both leadelLoving your anything. Aure centalysis, and we aren'ter particle working part what"
+  }
+ ]
+}

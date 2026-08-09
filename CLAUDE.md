@@ -93,8 +93,8 @@ README.md    LICENSE  CLAUDE.md     .gitignore
 _content/    the five collections (via `collections_dir`)
 assets/data/ generated indexes, fetched at runtime — never hand-edited
 pages/       every standalone page — about, all-posts, create-post, tags,
-             constellation, atlas, retrieval, tokenizer, 404, search.json,
-             and the five section indexes
+             constellation, atlas, retrieval, tokenizer, model, 404,
+             search.json, and the five section indexes
 _layouts/ _includes/ _sass/ _data/                  # Jekyll conventions
 assets/      css, js, images, files
 design/      redesign handoff + IMPLEMENTATION.md   # excluded from build
@@ -126,22 +126,35 @@ node .tools/check-chrome.mjs      # behavioural checks: theme, nav, a11y
 node .tools/contrast.mjs          # measured WCAG contrast, both themes
 ```
 
-**The data scripts.** Three instruments — `/atlas/`, `/retrieval/`,
-`/tokenizer/` — are computed offline and the site ships only the numbers. Re-run
-them when the corpus changes; nothing rebuilds them automatically:
+**The data scripts.** Four instruments — `/atlas/`, `/retrieval/`,
+`/tokenizer/`, `/model/` — are computed offline and the site ships only the
+numbers. Re-run them when the corpus changes; nothing rebuilds them
+automatically, and they run in this order because each reads the last one's
+output:
 
 ```
 node .tools/embed.mjs             # -> _data/atlas.json         (TF-IDF + PCA)
 node .tools/embed.mjs --azure     #    ...with real embeddings, needs .env
 node .tools/retrieval.mjs         # -> assets/data/retrieval.json (BM25 + LSA)
 node .tools/tokenizer.mjs         # -> assets/data/tokenizer.json + _data/bpe.json
+python .tools/train.py            # -> assets/data/model.bin + model.json
+                                  #    + _data/tinygpt.json   (~3 min, CPU)
 ```
 
-They share `.tools/lib/corpus.mjs`, which owns the markdown reader, the
-stopword list, the tokeniser and the eigensolver. **`retrieval.js` and
-`tokenizer.js` re-implement that tokeniser client-side and cannot import it** —
-if the two ever drift, a query silently looks up words the index does not have,
-and the symptom is a search returning nothing for a word plainly on the page.
+`train.py` needs torch and numpy and reads the tokenizer's own merge table, so
+re-running `tokenizer.mjs` invalidates the model — the vocabulary changes and
+the weights are indexed by it.
+
+The Node scripts share `.tools/lib/corpus.mjs`, which owns the markdown reader,
+the stopword list, the tokeniser and the eigensolver.
+
+**The tokeniser exists three times and cannot be reduced to one.**
+`.tools/lib/corpus.mjs` (Node, never ships), `.tools/train.py` (Python), and
+`assets/js/bpe.js` (the browser, shared by `/tokenizer/` and `/model/`). A change
+to the pre-tokenisation regex has to land in all three. If they drift, a query
+looks up words the index does not have and a prompt is split differently from the
+training corpus — the symptoms are a search returning nothing for a word plainly
+on the page, and a model that looks bad when the tokeniser is what is wrong.
 Check that first.
 
 **Never pick a text colour by eye — measure it with `contrast.mjs`.** The
@@ -158,7 +171,7 @@ footer read 4.88:1 in dark for two phases while actually sitting at 4.17:1,
 because it was being measured against a colour it was not on. A translucent
 ground is composited over the body before the ratio is taken.
 
-`check-chrome.mjs` is 165 assertions covering the things a screenshot cannot
+`check-chrome.mjs` is 177 assertions covering the things a screenshot cannot
 show: the theme applied before first paint, the mobile menu, the post ToC and
 progress bar, the archive filter, the ⌘K palette's focus trap and restore, the
 compose tool's target path and token handling, the constellation map's layout

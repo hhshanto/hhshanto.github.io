@@ -149,6 +149,19 @@ const TARGETS = [
   { sel: '.constellation-inert', name: 'inert-map note', url: '/constellation/' },
   { sel: '.constellation-inert a', name: 'inert-map link', url: '/constellation/' },
 
+  // The model. The loss curve's two series are graphical marks, not text, and
+  // are held to 3:1 like the domain dots; what is measured here is the prose,
+  // the direct labels on the curve, and the sample transcript.
+  { sel: '.model-desc', name: 'model description', url: '/model/' },
+  { sel: '.model-honesty-text p', name: 'model honesty note', url: '/model/' },
+  { sel: '.model-curve-cap', name: 'loss curve caption', url: '/model/' },
+  { sel: '.model-pane-sub', name: 'model pane sub', url: '/model/' },
+  { sel: '.model-pane-note', name: 'model pane note', url: '/model/' },
+  { sel: '.model-lens-intro', name: 'logit lens intro', url: '/model/' },
+  { sel: '.model-sample-text', name: 'model sample text', url: '/model/' },
+  { sel: '.model-sample-t', name: 'model sample temperature', url: '/model/' },
+  { sel: '.model-method-body p', name: 'model method note', url: '/model/' },
+
   // Search palette (screen 1f). `open` types a query first — the palette does
   // not exist in the DOM's rendered state until it is opened, and measuring a
   // hidden element measures nothing.

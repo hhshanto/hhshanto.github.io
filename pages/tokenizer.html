@@ -156,4 +156,10 @@ itself is fetched, because it is only useful once someone types.
 
 </div>
 
+{%- comment -%}
+bpe.js first: tokenizer.js reads window.NoemaBPE at load. Both are `defer`, and
+deferred scripts run in document order, so the ordering here is the guarantee —
+not a race that happens to work.
+{%- endcomment -%}
+<script src="{{ '/assets/js/bpe.js' | relative_url }}" defer></script>
 <script src="{{ '/assets/js/tokenizer.js' | relative_url }}" defer></script>

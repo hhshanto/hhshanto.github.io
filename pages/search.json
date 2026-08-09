@@ -44,7 +44,7 @@ another ("ai" inside "aid").
 Pages worth finding. Listed rather than looped over site.pages: that would
 sweep in the styleguide, the compose tool, 404 and search.json itself.
 {%- endcomment -%}
-{%- assign findable = "/about/|/all-posts/|/tags/|/constellation/|/atlas/|/retrieval/|/tokenizer/" | split: "|" -%}
+{%- assign findable = "/about/|/all-posts/|/tags/|/constellation/|/atlas/|/retrieval/|/tokenizer/|/model/" | split: "|" -%}
 [
 {%- assign first = true -%}
 {%- for post in posts -%}
