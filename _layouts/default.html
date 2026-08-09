@@ -12,6 +12,22 @@
     {% seo %}
     {% feed_meta %}
 
+    {%- comment -%}
+    Opt a page out of indexing with `robots: noindex, nofollow` in its front
+    matter. jekyll-seo-tag does not read that key — it has no robots support at
+    all — so without this line the front matter is inert, which is exactly what
+    happened to the background lab: it declared a noindex and shipped without
+    one. /create-post/ appeared to work only because its layout is `null` and
+    writes its own head.
+
+    `sitemap: false` is a different lever and not a substitute. It keeps a page
+    out of sitemap.xml; it does not stop a crawler that finds the URL any other
+    way.
+    {%- endcomment -%}
+    {%- if page.robots %}
+    <meta name="robots" content="{{ page.robots }}">
+    {%- endif %}
+
     <link rel="icon" href="{{ '/assets/images/favicon.ico' | relative_url }}" sizes="any">
     <link rel="apple-touch-icon" href="{{ '/assets/images/apple-touch-icon.png' | relative_url }}">
 

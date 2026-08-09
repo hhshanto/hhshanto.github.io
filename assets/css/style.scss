@@ -45,6 +45,10 @@
 
 @import "styleguide";
 
+// Throwaway, with pages/lab.html. Last on purpose: nothing depends on it, so
+// deleting both when the background experiment is settled leaves no trace.
+@import "lab";
+
 // Webfonts are requested from the head of the default layout, not with a CSS
 // @import: an @import here is not discoverable until this stylesheet has
 // already downloaded and parsed, which serialises the two requests.

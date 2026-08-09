@@ -1,0 +1,190 @@
+---
+layout: default
+title: Lab
+permalink: /lab/
+sitemap: false
+robots: noindex, nofollow
+description: Three ways to put a rendered background on the site, side by side.
+search_body: >
+  Lab. Background experiments, not part of the site.
+---
+
+{%- comment -%}
+Three background techniques in three identical boxes, so they can be compared
+rather than described. Not part of the site: `sitemap: false` and a noindex
+keep it out of both indexes the way /styleguide/ and /create-post/ do, and it is
+not linked from anywhere.
+
+Each panel carries the same specimen text at the same size, because the question
+is never "does it look good empty" — it is whether the site's own type survives
+on top of it. All three run at panel size rather than full bleed for the same
+reason the constellation does: a bounded box cannot break the contrast
+measurement of anything outside it, and if a technique cannot hold up here it
+will not hold up behind the whole page.
+
+Delete this page, its partial and the three scripts when the choice is made.
+{%- endcomment -%}
+
+<div class="frame lab">
+
+    <header class="lab-head">
+        <p class="t-kicker">EXPERIMENT · NOT PART OF THE SITE</p>
+        <h1 class="t-display-xs">Background lab</h1>
+        <p class="lab-desc t-body">
+            Three ways to render depth behind the page, at the same size and
+            with the same words on top of each. Check both themes. The question
+            for all three is the same: does Cormorant at 15px stay readable, and
+            what does it cost.
+        </p>
+    </header>
+
+    {%- comment -%}
+    ── 1. WebGL ───────────────────────────────────────────────────────────────
+    A fullscreen quad and a fragment shader. The canvas takes its palette from
+    the theme tokens at runtime — see the note in lab-shader.js — so this is the
+    only one of the three where colour lives somewhere other than _tokens.scss,
+    and it is worth watching for that reason alone.
+    {%- endcomment -%}
+    <section class="lab-panel">
+        <div class="lab-panel-head">
+            <h2 class="t-h3">1 · Raw WebGL</h2>
+            <p class="lab-cost t-meta-sm">
+                ~4KB vanilla JS · no library · GPU · reads tokens at runtime
+            </p>
+        </div>
+
+        <div class="lab-stage" data-shader>
+            <canvas class="lab-canvas" data-shader-canvas aria-hidden="true"></canvas>
+            <div class="lab-specimen">
+                <p class="t-kicker">SPECIMEN</p>
+                <h3 class="lab-specimen-title">A digital knowledge garden</h3>
+                <p class="lab-specimen-body">
+                    Stoicism survived two thousand years by being useful rather
+                    than clever. The dichotomy of control, memento mori, amor
+                    fati, and four virtues.
+                </p>
+            </div>
+            {%- comment -%}
+            Shown only if the context fails to create. A WebGL background has to
+            degrade to a flat ground, not to a white rectangle — old Androids,
+            locked-down enterprise browsers and headless environments all return
+            null from getContext.
+            {%- endcomment -%}
+            <p class="lab-fallback t-meta-sm" data-shader-fallback hidden>
+                No WebGL context — the panel falls back to the flat page ground.
+            </p>
+        </div>
+
+        <p class="lab-note t-body-sm">
+            Cheapest per pixel and the most flexible: anything expressible as a
+            function of position and time. The catch is that the palette has to
+            be handed to it in numbers, so this is a second place colour is
+            defined — it re-reads the tokens on a theme switch rather than
+            keeping its own copy, which is the least bad version of that.
+        </p>
+    </section>
+
+    {%- comment -%}
+    ── 2. CSS 3D ──────────────────────────────────────────────────────────────
+    Real perspective, no canvas and no shader: four translucent planes at
+    different Z, rotated by the pointer. Everything here except the pointer
+    listener is CSS, so it composites on the GPU without a frame loop.
+    {%- endcomment -%}
+    <section class="lab-panel">
+        <div class="lab-panel-head">
+            <h2 class="t-h3">2 · CSS 3D transforms</h2>
+            <p class="lab-cost t-meta-sm">
+                ~0.5KB JS · no canvas · tokens work directly · flat geometry only
+            </p>
+        </div>
+
+        <div class="lab-stage" data-planes>
+            <div class="lab-scene" data-planes-scene aria-hidden="true">
+                {%- comment -%}
+                Four planes rather than one, because the whole effect is
+                parallax: without a depth difference between layers a rotation
+                reads as a single sheet tilting.
+                {%- endcomment -%}
+                <div class="lab-plane" style="--depth: -220px"></div>
+                <div class="lab-plane" style="--depth: -140px"></div>
+                <div class="lab-plane" style="--depth: -70px"></div>
+                <div class="lab-plane" style="--depth: 0px"></div>
+            </div>
+            <div class="lab-specimen">
+                <p class="t-kicker">SPECIMEN</p>
+                <h3 class="lab-specimen-title">A digital knowledge garden</h3>
+                <p class="lab-specimen-body">
+                    Stoicism survived two thousand years by being useful rather
+                    than clever. The dichotomy of control, memento mori, amor
+                    fati, and four virtues.
+                </p>
+            </div>
+        </div>
+
+        <p class="lab-note t-body-sm">
+            The only one of the three where the background is made of real
+            elements, so it reads tokens directly and needs no theme plumbing at
+            all. It cannot do lighting, particles or anything curved — this is
+            the ceiling, not a simplified version of one.
+        </p>
+    </section>
+
+    {%- comment -%}
+    ── 3. 3D constellation ────────────────────────────────────────────────────
+    The real map, given a third axis. Nodes come from the same collections and
+    carry the same data-* attributes as /constellation/, but the id is
+    data-node3d and the container is data-orbit, so constellation.js does not
+    pick this up and try to lay it out in two dimensions at the same time.
+    {%- endcomment -%}
+    <section class="lab-panel">
+        <div class="lab-panel-head">
+            <h2 class="t-h3">3 · The constellation in 3D</h2>
+            <p class="lab-cost t-meta-sm">
+                ~3KB JS · no library · drag to spin · the depth means something
+            </p>
+        </div>
+
+        <div class="lab-stage lab-stage-orbit" data-orbit>
+            <svg class="lab-orbit-edges" aria-hidden="true" focusable="false"
+                 preserveAspectRatio="none" data-orbit-edges></svg>
+            <ul class="lab-orbit-nodes" data-orbit-nodes>
+                <li>
+                    <span class="lab-orbit-node is-root"
+                          data-node3d="root" data-kind="root" data-label="Noema"></span>
+                </li>
+                {%- for domain in site.data.domains -%}
+                    {%- assign docs = site[domain.collection] | sort: 'date' | reverse %}
+                <li>
+                    <span class="lab-orbit-node is-domain is-{{ domain.collection }}"
+                          data-node3d="d:{{ domain.collection }}"
+                          data-kind="domain"
+                          data-parent="root"
+                          data-label="{{ domain.title }}"></span>
+                </li>
+                    {%- for doc in docs %}
+                <li>
+                    <span class="lab-orbit-node is-post is-{{ domain.collection }}"
+                          data-node3d="{{ doc.url }}"
+                          data-kind="post"
+                          data-parent="d:{{ domain.collection }}"
+                          data-label="{{ doc.title | escape }}"></span>
+                </li>
+                    {%- endfor -%}
+                {%- endfor %}
+            </ul>
+            <p class="lab-orbit-readout t-meta-sm" data-orbit-readout>Drag to spin</p>
+        </div>
+
+        <p class="lab-note t-body-sm">
+            Sub-topics are left out here — at this size the extra ring only adds
+            clutter, and the point of the demo is the depth cue, not the full
+            graph. Watch what near and far do to the dots: size and opacity
+            carry Z, because on a flat ground nothing else can.
+        </p>
+    </section>
+
+</div>
+
+<script src="{{ '/assets/js/lab-shader.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/lab-planes.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/lab-orbit.js' | relative_url }}" defer></script>

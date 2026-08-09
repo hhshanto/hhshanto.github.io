@@ -1,0 +1,241 @@
+// The background lab — three techniques in three identical boxes.
+//
+// Throwaway, like the page it styles. It is imported last in style.scss and
+// nothing else depends on it, so deleting this file and pages/lab.html when the
+// choice is made leaves no trace.
+//
+// Everything obeys the three rules anyway, and demo 2 is the reason to care:
+// the whole argument for CSS 3D over a canvas is that its background is made of
+// real elements, which means it reads --color-accent and friends directly. If
+// this file had to hardcode a colour to make the planes work, that argument
+// would be gone.
+
+.lab {
+  padding-block: var(--space-6) var(--space-8);
+
+  @media (min-width: $bp-md) {
+    padding-block: 40px 50px;
+  }
+}
+
+.lab-desc {
+  max-width: 62ch;
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-muted);
+}
+
+.lab-panel {
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-divider);
+}
+
+.lab-panel-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: var(--space-4);
+
+  @media (min-width: $bp-sm) {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+}
+
+.lab-cost {
+  font-family: var(--font-mono);
+  color: var(--color-text-faint);
+}
+
+.lab-note {
+  max-width: 68ch;
+  margin: var(--space-4) 0 0;
+  color: var(--color-text-muted);
+}
+
+// ── The stage, shared by all three ─────────────────────────────────────────
+// Identical box for each technique. The comparison is worthless if one of them
+// gets more room or a different aspect than the others.
+.lab-stage {
+  position: relative;
+  height: 340px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg);
+  // Every one of the three paints past its own edges — the shader's quad, the
+  // planes at their tilt limit, a node swung toward the camera. Clipping here
+  // is also what keeps the page from scrolling sideways.
+  overflow: hidden;
+  background: var(--color-bg);
+
+  @media (min-width: $bp-md) { height: 400px; }
+}
+
+// The specimen sits above the background and is the actual test. If the site's
+// own type cannot hold here, the technique has failed regardless of how the
+// background looks on its own.
+.lab-specimen {
+  position: absolute;
+  inset: auto var(--space-6) var(--space-6) var(--space-6);
+  max-width: 46ch;
+}
+
+.lab-specimen-title {
+  font-family: var(--font-heading);
+  font-size: 34px;
+  line-height: 1.1;
+  margin: var(--space-2) 0 var(--space-3);
+}
+
+.lab-specimen-body {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.lab-fallback {
+  position: absolute;
+  inset: auto 0 50% 0;
+  text-align: center;
+  color: var(--color-text-faint);
+}
+
+// ── 1. WebGL ───────────────────────────────────────────────────────────────
+.lab-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+// ── 2. CSS 3D ──────────────────────────────────────────────────────────────
+// The entire effect, in about twenty lines and no JS beyond a pointer listener.
+[data-planes] {
+  // Perspective on the container, not on the transformed element: on the
+  // element it gives every plane its own vanishing point and they stop looking
+  // like one scene.
+  perspective: 900px;
+  perspective-origin: 50% 45%;
+}
+
+.lab-scene {
+  position: absolute;
+  inset: -12%; // oversized, so a tilt never exposes the scene's own edge
+  // Without this the browser flattens the children into the parent's plane
+  // before compositing and every plane lands at the same depth. It is the one
+  // declaration the whole technique depends on.
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg);
+  animation: lab-drift 24s ease-in-out infinite alternate;
+
+  // While the pointer is driving, the idle animation would fight it for the
+  // same property. JS adds this class on the first move.
+  &.is-tracking { animation: none; }
+}
+
+.lab-plane {
+  position: absolute;
+  // Each plane is inset further than the one behind it. Without this they are
+  // perfectly concentric and a rotation slides them over one another with no
+  // visible edges — the first version read as a single soft gradient, not as a
+  // stack. The receding edges ARE the depth cue here; there is no lighting to
+  // do the job.
+  inset: var(--inset);
+  transform: translateZ(var(--depth));
+  border-radius: var(--radius-lg);
+  // Tokens, directly — no palette transported anywhere. A theme switch repaints
+  // these for free, which is the argument for this technique in one line.
+  background:
+    radial-gradient(60% 55% at 30% 30%, var(--wash-accent), transparent 70%),
+    radial-gradient(50% 60% at 75% 65%, var(--wash-ink), transparent 72%);
+  border: 1px solid var(--color-divider);
+
+  // The nearest plane is the strongest; the ones behind it recede. Written as
+  // sibling order rather than as more custom properties because the depth, the
+  // inset and the weight always move together.
+  &:nth-child(1) { --inset: 0%; opacity: 0.4; }
+  &:nth-child(2) { --inset: 6%; opacity: 0.55; }
+  &:nth-child(3) { --inset: 12%; opacity: 0.7; }
+  &:nth-child(4) { --inset: 18%; opacity: 0.85; }
+}
+
+@keyframes lab-drift {
+  from { transform: rotateX(-5deg) rotateY(-7deg); }
+  to { transform: rotateX(5deg) rotateY(7deg); }
+}
+
+// _reset.scss already reduces every animation to 0.01ms under
+// prefers-reduced-motion, which would leave the scene stuck at the `from`
+// keyframe. Stopping it outright leaves the planes where the base transform
+// puts them, which is square on and correct.
+@media (prefers-reduced-motion: reduce) {
+  .lab-scene { animation: none; }
+}
+
+// ── 3. The constellation in 3D ─────────────────────────────────────────────
+.lab-stage-orbit {
+  background: var(--color-surface);
+  cursor: grab;
+  // A drag across a field of dots otherwise selects the text of the page
+  // around it, and the cursor turns into an I-beam mid-spin.
+  user-select: none;
+  touch-action: none;
+
+  &.is-dragging { cursor: grabbing; }
+}
+
+.lab-orbit-edges {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.lab-orbit-edge {
+  stroke: var(--color-divider);
+  stroke-width: 1;
+}
+
+.lab-orbit-nodes {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li { display: contents; }
+}
+
+.lab-orbit-node {
+  position: absolute;
+  border-radius: 50%;
+  // Width, height, left, top, opacity and z-index all come from the projection
+  // each frame. Nothing here may set them, or the perspective divide silently
+  // stops doing anything.
+  transform: translate(-50%, -50%);
+  background: var(--node-colour, var(--color-text));
+
+  &.is-root { background: var(--color-text); }
+}
+
+// The same five tokens the constellation spends, scoped to this page so the
+// generic `.is-<domain>` names cannot leak into another component.
+.lab {
+  @each $domain in natural-sciences, social-sciences, arts-literature,
+                   reflections, contemporary {
+    .is-#{$domain} { --node-colour: var(--color-domain-#{$domain}); }
+  }
+}
+
+.lab-orbit-readout {
+  position: absolute;
+  left: var(--space-4);
+  bottom: var(--space-3);
+  margin: 0;
+  font-family: var(--font-mono);
+  color: var(--color-text-faint);
+  pointer-events: none;
+}
