@@ -479,6 +479,13 @@ Format: `date — decision — why`.
   who wrote it; inventing a personal slogan is not the redesign's job. Every
   other word on the page is lifted from the old home page and about section.
   Two lines in `_data/profile.yml` change it to lead with a name instead.
+- **2026-08-09 — The home page has no domain tile grid.** 1a's five-tile band
+  restated the masthead, which carries all five domains on every page, one
+  screen below it. Removed at the owner's call, and `domain-tile.html` /
+  `_domain-tile.scss` deleted with it rather than left as dead files.
+  `_data/domains.yml` still drives the masthead and will drive Phase 5.
+  `.hgrid-domains` stays in `_primitives.scss` — it is a handoff primitive, and
+  1d may want it.
 - **2026-08-09 — The curriculum is its own band under the hero, not a column
   at the foot.** Requested after the first build, and a departure from 1a,
   which puts the CV in a 1fr column beside recent writing. In that column it

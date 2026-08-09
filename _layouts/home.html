@@ -4,13 +4,15 @@ layout: default
 {%- comment -%}
 Screen 1a — the masthead home.
 
-Four bands: hero, curriculum, the five domains, recent writing — then the
-footer from the default layout.
+Three bands: hero, curriculum, recent writing — then the footer from the
+default layout.
 
-The curriculum sits second, directly under the hero, rather than in a column at
-the foot of the page. That was a deliberate change after the first build: in a
-1fr column at the bottom it was the last thing anyone reached and half of each
-entry was a wrapped degree title.
+Two departures from 1a, both deliberate and both requested after seeing it
+built. The curriculum sits second, directly under the hero, rather than in a
+column at the foot: down there it was the last thing anyone reached and every
+entry wrapped. And the five-domain tile grid is gone — the masthead already
+carries all five on every page, so the tiles restated the navigation a screen
+below it.
 
 This layout owns the page-level grid and nothing else; every band is an include
 and every style lives in its own partial.
@@ -25,24 +27,6 @@ across two files.
     {% include home-hero.html %}
 
     {% include cv-band.html %}
-
-    <section class="home-domains">
-        <h2 class="t-label rule-head">The Domains</h2>
-        <div class="hgrid hgrid-domains">
-            {%- for domain in site.data.domains %}
-            {% include domain-tile.html domain=domain index=forloop.index %}
-            {%- endfor %}
-
-            {%- comment -%}
-            Five domains do not divide into three columns, and the hairline
-            grid shows its divider colour wherever a tile is missing. Both
-            column counts the grid can take need their own fillers.
-            {%- endcomment -%}
-            {%- assign domain_count = site.data.domains | size -%}
-            {% include hgrid-fill.html count=domain_count cols=3 %}
-            {% include hgrid-fill.html count=domain_count cols=5 %}
-        </div>
-    </section>
 
     <section class="home-latest">
         <h2 class="t-label rule-head">Recent Writing</h2>

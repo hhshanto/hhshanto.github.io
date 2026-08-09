@@ -1,10 +1,14 @@
 {%- comment -%}
 The curriculum band, directly under the hero.
 
-Three cells in a hairline grid — experience, education, what the work is made
-of — then a foot row with the "currently" note and the full PDF. Experience and
-education are separate lists rather than one merged timeline: blended, a degree
+Two cells in a hairline grid — experience and education, half the page each —
+then the technical chips and a foot row with the "currently" note and the full
+PDF. They are separate lists rather than one merged timeline: blended, a degree
 and a job read as the same kind of row and neither stands out.
+
+"Working with" started as a third cell in the grid. Moving it below gives the
+two lists half the width instead of a third, which is what lets the roles be
+set at 19px rather than 16px.
 
 All of it comes from _data/profile.yml.
 {%- endcomment -%}
@@ -45,16 +49,17 @@ All of it comes from _data/profile.yml.
             </dl>
         </div>
 
-        <div class="cv-cell">
-            <h3 class="cv-cell-head t-meta-sm">Working with</h3>
-            <div class="cv-chips">
-                {%- for chip in me.focus_accent %}
-                <span class="n-tag n-tag-accent">{{ chip }}</span>
-                {%- endfor %}
-                {%- for chip in me.focus %}
-                <span class="n-tag n-tag-neutral">{{ chip }}</span>
-                {%- endfor %}
-            </div>
+    </div>
+
+    <div class="cv-tools">
+        <h3 class="cv-tools-head t-meta-sm">Working with</h3>
+        <div class="cv-chips">
+            {%- for chip in me.focus_accent %}
+            <span class="n-tag n-tag-accent">{{ chip }}</span>
+            {%- endfor %}
+            {%- for chip in me.focus %}
+            <span class="n-tag n-tag-neutral">{{ chip }}</span>
+            {%- endfor %}
         </div>
     </div>
 

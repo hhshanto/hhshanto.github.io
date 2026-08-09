@@ -9,22 +9,26 @@
   color: var(--color-text-muted);
 }
 
-// Three cells, but only from $bp-md. At $bp-sm three columns leave about 200px
-// each, and "BSc Computer Science & Engineering" wraps to four lines in that.
+// Two cells, half the page each. It was three, with the chips beside them, and
+// three columns left every role wrapping in about 200px.
 .cv-grid {
   --cols: 1;
 
-  @media (min-width: $bp-md) {
-    --cols: 3;
+  @media (min-width: $bp-sm) {
+    --cols: 2;
   }
 }
 
 .cv-cell {
   padding: var(--space-4);
+
+  @media (min-width: $bp-md) {
+    padding: var(--space-6);
+  }
 }
 
 .cv-cell-head {
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-4);
   color: var(--color-accent-ink);
 }
 
@@ -34,11 +38,10 @@
 
 .cv-entry {
   display: grid;
-  // The period is mono and fixed-width; 54px holds "16–20" without wrapping and
-  // leaves the rest of a narrow cell to the role.
-  grid-template-columns: 54px minmax(0, 1fr);
-  gap: var(--space-2);
-  padding: var(--space-2) 0;
+  // The period is mono and fixed-width; 62px holds "16–20" without wrapping.
+  grid-template-columns: 62px minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
 
   + .cv-entry {
     border-top: 1px solid var(--color-divider);
@@ -50,7 +53,7 @@
 
 .cv-period {
   // Sits on the first line of the role beside it rather than above it.
-  padding-top: 3px;
+  padding-top: 6px;
 }
 
 .cv-detail {
@@ -61,17 +64,37 @@
   display: block;
   font-family: var(--font-heading);
   font-weight: 500;
-  font-size: 16px;
+  font-size: 19px;
   line-height: 1.25;
 }
 
 .cv-place {
   display: block;
-  margin-top: 2px;
+  margin-top: 3px;
   font-family: var(--font-body);
-  font-size: 12.5px;
-  line-height: 1.45;
+  font-size: 13.5px;
+  line-height: 1.5;
   color: var(--color-text-muted);
+}
+
+// ── Working with ───────────────────────────────────────────────────────────
+.cv-tools {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+
+  @media (min-width: $bp-sm) {
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--space-4);
+  }
+}
+
+.cv-tools-head {
+  flex: none;
+  margin: 0;
+  color: var(--color-accent-ink);
 }
 
 .cv-chips {

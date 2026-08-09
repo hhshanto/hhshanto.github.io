@@ -214,7 +214,7 @@ for (const width of [375, 700, 1160, 1440]) {
   // column counts it was told about, so the arithmetic is checked at every
   // width rather than assumed.
   const grids = await page.evaluate(() =>
-    ['.hgrid-domains', '.home-briefs', '.cv-grid'].map((sel) => {
+    ['.home-briefs', '.cv-grid'].map((sel) => {
       const el = document.querySelector(sel);
       return {
         sel,
@@ -229,27 +229,23 @@ for (const width of [375, 700, 1160, 1440]) {
       g.cells % g.cols === 0, `${g.cells} cells in ${g.cols} columns`);
   }
 
-  const tiles = await page.locator('.domain-tile').count();
-
   if (width === 1440) {
-    check('one tile per domain in _data/domains.yml', tiles === 5, `${tiles} tiles`);
-
     // The curriculum was moved out of the foot column and up under the hero.
     // Its position is the point of the change, so it is asserted rather than
     // left to a screenshot nobody re-reads.
     const order = await page.evaluate(() => {
       const y = (s) => document.querySelector(s).getBoundingClientRect().top;
-      return {
-        cv: y('.cv-band'),
-        domains: y('.home-domains'),
-        latest: y('.home-latest'),
-        hero: y('.home-hero'),
-      };
+      return { hero: y('.home-hero'), cv: y('.cv-band'), latest: y('.home-latest') };
     });
-    check('the curriculum sits between the hero and the domains',
-      order.cv > order.hero && order.cv < order.domains && order.domains < order.latest);
+    check('the curriculum sits between the hero and recent writing',
+      order.cv > order.hero && order.cv < order.latest);
     check('experience and education are separate lists',
       (await page.locator('.cv-cell .cv-list').count()) === 2);
+
+    // The masthead already carries all five domains on every page; the tile
+    // grid restated them a screen below it and was removed.
+    check('the domain tile grid is gone',
+      (await page.locator('.domain-tile, .hgrid-domains').count()) === 0);
 
     const portrait = await page.evaluate(() => {
       const img = document.querySelector('.home-hero-portrait');

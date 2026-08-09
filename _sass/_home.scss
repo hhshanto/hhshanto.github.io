@@ -35,6 +35,12 @@
   @media (min-width: $bp-md) {
     grid-template-columns: minmax(0, 1fr) 300px;
     gap: 56px;
+    // `start`, and it was worth trying the alternative to be sure. The portrait
+    // and its links run past the end of the introduction, so stretching the
+    // text column and pushing the buttons to its foot makes them line up with
+    // the last social link — and opens a 330px hole between the introduction
+    // and the buttons instead. Whitespace under a block of text reads as air;
+    // whitespace inside one reads as a mistake.
     align-items: start;
   }
 }
@@ -65,6 +71,7 @@
 .home-hero-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-3);
   margin-top: var(--space-6);
 }
@@ -108,8 +115,6 @@
   letter-spacing: 0.04em;
 }
 
-// ── Domains ────────────────────────────────────────────────────────────────
-.home-domains .rule-head,
 .home-latest .rule-head {
   margin-bottom: var(--space-4);
   color: var(--color-text-muted);
