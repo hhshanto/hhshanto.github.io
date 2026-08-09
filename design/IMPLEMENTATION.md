@@ -7,11 +7,12 @@ Working plan for rebuilding hhshanto.github.io against
 
 ## STATUS — update this as the last step of every session
 
-**Next action:** Phase 7 — the compose page (1g). Redesign of
-`pages/create-post.md` + `assets/js/post-creator.js`: a toolbar and three panes
-above `$bp-md`, and a "compose on a larger screen" notice below it rather than
-an attempt to reflow. Read the security note in that section first — the page
-needs a GitHub token held client-side and must stay out of the sitemap and feed.
+**Next action:** Phase 8 — cleanup. Delete `_shell.scss`, `_dark-mode.scss`,
+`_variables.scss` and the superseded `_hero / _about / _latest-posts /
+_section-index / post / _search / _forms` partials; drop the Google fonts
+`<link>` from `_layouts/default.html`; then the hex grep, the contrast audit and
+a keyboard pass. Check what `pages/tags.html` and `pages/404.html` still depend
+on before deleting — they are the last two pages never rebuilt.
 
 | Phase | | |
 | --- | --- | --- |
@@ -22,7 +23,7 @@ needs a GitHub token held client-side and must stay out of the sitemap and feed.
 | 4 | Home — **1a confirmed** | ✅ 2026-08-09 |
 | 5 | Category index 1d + archive 1e | ✅ 2026-08-09 |
 | 6 | Search palette 1f | ✅ 2026-08-09 |
-| 7 | Compose 1g | ☐ |
+| 7 | Compose 1g | ✅ 2026-08-09 |
 | 8 | Cleanup | ☐ |
 
 Never end a session on a failing build. A half-finished phase gets committed
@@ -480,6 +481,37 @@ Format: `date — decision — why`.
   who wrote it; inventing a personal slogan is not the redesign's job. Every
   other word on the page is lifted from the old home page and about section.
   Two lines in `_data/profile.yml` change it to lead with a name instead.
+- **2026-08-09 — The compose tool was committing to a path Jekyll cannot
+  see.** `post-creator.js` still wrote to `_<domain>/<sub>/<file>.md` at the
+  repo root; the collections moved under `_content/` in the reorg before Phase
+  1. The commit would have succeeded and published nothing. Found by asserting
+  the target path rather than by trying it — which would have meant a real
+  commit to `main`.
+- **2026-08-09 — Compose uses `layout: null` and its own document.** It is the
+  one page that is not the site: its own toolbar instead of the masthead, full
+  viewport height instead of the content frame, no footer. Wearing the site
+  chrome would cost it the vertical space three panes need.
+- **2026-08-09 — "Keep as draft" writes `published: false`, not a `_drafts/`
+  move.** Collections have no drafts directory, and Jekyll's `_drafts`
+  convention is a `_posts` feature this site does not use. `published: false`
+  is the key it actually honours.
+- **2026-08-09 — The mock's DIFF tab is a FILE tab.** A diff needs the previous
+  version of a file that does not exist yet. It shows exactly what will be
+  committed, front matter and all, which is what the tab was for.
+- **2026-08-09 — `marked` 12.0.2 is vendored for the live preview** (MIT,
+  35 KB, loaded only on this page). kramdown is not available client-side, so
+  the preview is a close approximation rather than the real renderer — good
+  enough to write against, and the FILE tab shows the literal bytes for
+  anything the preview might disagree about.
+- **2026-08-09 — Import order in `style.scss` matters in exactly one place.**
+  `_compose.scss` restyles `.article-body` for its preview pane, so it must
+  come after `_article.scss`. It did not, and the preview silently kept the
+  article's own sizes. The imports are now grouped by screen with that
+  dependency called out.
+- **2026-08-09 — The compose word counter strips markdown before counting.**
+  Splitting on whitespace counts `#` and `**bold**` as words and inflates a
+  heading-heavy draft, and it charges reading time for code nobody reads at 200
+  words a minute.
 - **2026-08-09 — `--color-text-faint` is tuned against `--color-surface`, not
   the page ground.** Surface is the lighter of the two in dark, so text that
   clears 4.5:1 on the page can fail on a painted band. The site footer sits on

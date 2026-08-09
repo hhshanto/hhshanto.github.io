@@ -1,0 +1,209 @@
+---
+layout: null
+---
+{%- comment -%}
+Screen 1g — the compose tool.
+
+`layout: null`, not `default`: this is the one page that is not the site. It
+has its own toolbar instead of the masthead, fills the viewport rather than
+sitting in the content frame, and has no footer. Wearing the site chrome would
+cost it the vertical space the three panes need.
+
+It is still a public URL on a public site. `sitemap: false` and a noindex
+robots tag keep it out of the index; jekyll-feed only carries collection
+documents, so the feed was never a risk. Nothing here is a secret — the secret
+is the token, and that never leaves localStorage and the GitHub API call.
+{%- endcomment -%}
+<!DOCTYPE html>
+<html lang="en"
+      data-repo="{{ site.repository }}"
+      data-branch="{{ site.edit_branch | default: 'main' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="{{ page.robots }}">
+    <title>{{ page.title }} · {{ site.title }}</title>
+
+    <link rel="icon" href="{{ '/assets/images/favicon.ico' | relative_url }}" sizes="any">
+
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var theme = stored || (window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+          href="{{ '/assets/fonts/cormorant-garamond-normal-latin.woff2' | relative_url }}">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+          href="{{ '/assets/fonts/lora-normal-latin.woff2' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+</head>
+<body class="compose-body">
+
+<div class="compose">
+
+    {%- comment -%}
+    Below $bp-md the three panes cannot be honestly reflowed — a markdown
+    editor and its live preview side by side is the tool. Say so rather than
+    stacking them into something unusable.
+    {%- endcomment -%}
+    <div class="compose-narrow">
+        <p class="t-kicker">Noema · Compose</p>
+        <h1 class="t-h2">Compose on a larger screen</h1>
+        <p class="t-body t-muted">
+            This tool is three panes wide — front matter, the markdown, and a
+            live preview. It needs at least 900px. Everything else on the site
+            works here.
+        </p>
+        <a class="n-btn n-btn-secondary" href="{{ '/' | relative_url }}">Back to Noema</a>
+    </div>
+
+    <header class="compose-bar">
+        <a class="compose-brand" href="{{ '/' | relative_url }}">Noema</a>
+        <span class="compose-mode t-meta-sm">/ Compose</span>
+
+        <span class="compose-path t-meta-sm" data-path>_content/…</span>
+
+        <button type="button" class="n-btn n-btn-secondary compose-action" data-preview-toggle>
+            Preview
+        </button>
+        <button type="button" class="n-btn n-btn-primary compose-action" data-commit>
+            Commit to {{ site.edit_branch | default: 'main' }}
+        </button>
+    </header>
+
+    <div class="compose-panes">
+
+        {%- comment -%} 1 — front matter {%- endcomment -%}
+        <section class="compose-pane compose-front">
+            <h2 class="t-label">Front matter</h2>
+
+            <div class="n-field">
+                <label for="c-title">Title</label>
+                <input class="n-input" id="c-title" type="text" data-field="title" autocomplete="off">
+            </div>
+
+            <div class="n-field">
+                <label for="c-domain">Domain</label>
+                <select class="n-input" id="c-domain" data-field="domain">
+                    {%- for domain in site.data.domains %}
+                    <option value="{{ domain.collection }}">{{ domain.title }}</option>
+                    {%- endfor %}
+                </select>
+            </div>
+
+            <div class="n-field">
+                <label for="c-subtopic">Sub-topic folder</label>
+                <input class="n-input" id="c-subtopic" type="text" data-field="subtopic"
+                       autocomplete="off" placeholder="philosophy">
+            </div>
+
+            <div class="n-field">
+                <label for="c-date">Date</label>
+                <input class="n-input compose-mono" id="c-date" type="date" data-field="date">
+            </div>
+
+            <div class="n-field">
+                <label for="c-tags">Tags</label>
+                <input class="n-input" id="c-tags" type="text" data-field="tags"
+                       autocomplete="off" placeholder="add…">
+                <p class="compose-hint t-meta-sm">Comma separated</p>
+            </div>
+
+            <div class="n-field">
+                <label for="c-abstract">Abstract</label>
+                <textarea class="n-input" id="c-abstract" rows="3" data-field="abstract"></textarea>
+            </div>
+
+            <hr class="hr">
+
+            <div class="compose-radios">
+                <label class="n-radio">
+                    <input type="radio" name="c-status" value="published" checked data-field="status">
+                    <span class="dot" aria-hidden="true"></span>
+                    Publish immediately
+                </label>
+                <label class="n-radio">
+                    <input type="radio" name="c-status" value="draft" data-field="status">
+                    <span class="dot" aria-hidden="true"></span>
+                    Keep as draft
+                </label>
+            </div>
+
+            <hr class="hr">
+
+            <div class="n-field">
+                <label for="c-token">GitHub token</label>
+                <input class="n-input compose-mono" id="c-token" type="password"
+                       autocomplete="off" data-token>
+                <p class="compose-hint t-meta-sm" data-token-state>Not stored</p>
+                <p class="compose-note t-body-xs t-muted">
+                    Kept in this browser's localStorage, never in the repo. Use a
+                    fine-grained token scoped to
+                    <span class="compose-mono">{{ site.repository }}</span> alone,
+                    contents read and write, with a short expiry — you are typing
+                    it into a page served from a public site.
+                    <a href="https://github.com/settings/tokens?type=beta"
+                       target="_blank" rel="noopener">Create one</a>.
+                </p>
+                <button type="button" class="n-btn n-btn-ghost compose-forget" data-forget>
+                    Forget token
+                </button>
+            </div>
+
+            {%- comment -%}
+            Read from the build rather than written down: `jekyll.version` is
+            real, and the other two are whatever _config.yml actually selects.
+            A hardcoded "KRAMDOWN 2.4" would be a lie the first time the gem
+            moves.
+            {%- endcomment -%}
+            <p class="compose-build t-meta-sm">
+                Build: Jekyll {{ jekyll.version }}<br>
+                Markdown: {{ site.markdown }}<br>
+                Highlighter: {{ site.highlighter }}
+            </p>
+        </section>
+
+        {%- comment -%} 2 — markdown {%- endcomment -%}
+        <section class="compose-pane compose-editor">
+            <div class="compose-tabs" role="tablist">
+                <button type="button" class="compose-tab is-on" role="tab"
+                        aria-selected="true" data-tab="markdown">Markdown</button>
+                <button type="button" class="compose-tab" role="tab"
+                        aria-selected="false" data-tab="file">File</button>
+            </div>
+
+            <label class="visually-hidden" for="c-body">Post body in markdown</label>
+            <textarea class="compose-textarea" id="c-body" data-field="body"
+                      spellcheck="true"
+                      placeholder="Write the post here. Markdown."></textarea>
+
+            <pre class="compose-file" data-file hidden></pre>
+        </section>
+
+        {%- comment -%} 3 — live preview {%- endcomment -%}
+        <section class="compose-pane compose-preview">
+            <div class="compose-strip">
+                <span class="t-meta-sm">Live preview</span>
+                <span class="t-meta-sm tnum" data-count>0 words · 1 min</span>
+            </div>
+
+            <div class="compose-rendered article-body t-prose" data-rendered></div>
+        </section>
+
+    </div>
+
+    <div class="compose-status" role="status" aria-live="polite" data-status hidden></div>
+</div>
+
+<script src="{{ '/assets/js/marked.min.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/post-creator.js' | relative_url }}" defer></script>
+</body>
+</html>

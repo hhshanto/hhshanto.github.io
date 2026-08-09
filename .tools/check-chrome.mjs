@@ -842,6 +842,130 @@ for (const width of [375, 1440]) {
   await ctx.close();
 }
 
+// ── Compose (screen 1g) ────────────────────────────────────────────────────
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/create-post/`);
+
+  await page.fill('#c-title', 'A Test Post: Draft & Others');
+  await page.selectOption('#c-domain', 'reflections');
+  await page.fill('#c-subtopic', 'Philosophy');
+  await page.fill('#c-tags', 'one, two');
+  await page.fill('#c-abstract', 'A summary.');
+  await page.fill('#c-body', '# Body\n\nSome **markdown**.');
+  await page.waitForTimeout(300);
+
+  const composed = await page.evaluate(() => ({
+    path: document.querySelector('[data-path]').textContent.trim(),
+    file: document.querySelector('[data-file]').textContent,
+    rendered: document.querySelector('[data-rendered]').innerHTML,
+    count: document.querySelector('[data-count]').textContent.trim(),
+  }));
+
+  // The reorg before Phase 1 moved the collections under _content/. The old
+  // script still wrote to `_<domain>/…` at the repo root, which would have
+  // committed successfully and published nothing.
+  check('the target path is under _content/',
+    composed.path.startsWith('_content/_reflections/philosophy/'), composed.path);
+  check('the filename is dated and slugged',
+    /\/\d{4}-\d{2}-\d{2}-a-test-post-draft-others\.md$/.test(composed.path), composed.path);
+  check('a colon in the title is escaped, not left to break the YAML',
+    composed.file.includes('title: "A Test Post: Draft & Others"'));
+  check('tags become a YAML list', composed.file.includes('tags: ["one", "two"]'));
+  check('the preview renders markdown, not raw text',
+    composed.rendered.includes('<strong>') && composed.rendered.includes('<h1'),
+    composed.rendered.slice(0, 60));
+  // "# Body\n\nSome **markdown**." is three words of prose. Counting raw
+  // tokens gives four — the "#" — which is why the counter strips syntax.
+  check('the word count counts prose, not markup',
+    /^3 words/.test(composed.count), composed.count);
+
+  // Draft must produce a key Jekyll actually honours.
+  // The radio input itself is visually hidden — .n-radio draws its own dot —
+  // so the label is what a reader clicks and what the test must click too.
+  await page.click('.n-radio:has(input[value="draft"])');
+  await page.waitForTimeout(200);
+  const draft = await page.textContent('[data-file]');
+  check('draft writes published: false', draft.includes('published: false'));
+
+  // The token lives in localStorage and nowhere else.
+  await page.fill('#c-token', 'ghp_fake_token_for_testing');
+  await page.waitForTimeout(200);
+  const stored = await page.evaluate(() => ({
+    ls: localStorage.getItem('noema-gh-token'),
+    state: document.querySelector('[data-token-state]').textContent.trim(),
+    inFile: document.querySelector('[data-file]').textContent.includes('ghp_fake'),
+    type: document.querySelector('#c-token').type,
+  }));
+  check('the token is stored in localStorage', stored.ls === 'ghp_fake_token_for_testing');
+  check('the token field is a password field', stored.type === 'password');
+  check('the token never reaches the file', !stored.inFile);
+  check('the token state is reported', stored.state.includes('Stored'), stored.state);
+
+  await page.click('[data-forget]');
+  await page.waitForTimeout(200);
+  const forgotten = await page.evaluate(() => ({
+    ls: localStorage.getItem('noema-gh-token'),
+    state: document.querySelector('[data-token-state]').textContent.trim(),
+  }));
+  check('the token can be forgotten',
+    !forgotten.ls && forgotten.state.includes('Not stored'), forgotten.state);
+
+  // Committing without a token must not fire a request.
+  const calls = [];
+  page.on('request', (r) => {
+    if (r.url().includes('api.github.com')) calls.push(r.url());
+  });
+  await page.click('[data-commit]');
+  await page.waitForTimeout(400);
+  const guarded = await page.textContent('[data-status]');
+  check('commit without a token is refused before any request',
+    calls.length === 0 && /token/i.test(guarded), guarded.trim().slice(0, 40));
+
+  await ctx.close();
+}
+
+// The page is a private tool on a public site.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/create-post/`);
+  const robots = await page.getAttribute('meta[name="robots"]', 'content');
+  check('compose is noindex', /noindex/.test(robots ?? ''), robots ?? 'none');
+
+  const sitemap = await page.goto(`http://localhost:${PORT}/sitemap.xml`);
+  const xml = await sitemap.text();
+  check('compose is out of the sitemap', !xml.includes('/create-post/'));
+  check('the styleguide is out of the sitemap', !xml.includes('/styleguide/'));
+
+  const feed = await page.goto(`http://localhost:${PORT}/feed.xml`);
+  const rss = await feed.text();
+  check('compose is out of the feed', !rss.includes('/create-post/'));
+  await ctx.close();
+}
+
+// Below $bp-md the tool is replaced by a notice rather than reflowed into
+// something unusable.
+{
+  const ctx = await browser.newContext({ viewport: { width: 375, height: 800 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/create-post/`);
+  const narrow = await page.evaluate(() => ({
+    notice: getComputedStyle(document.querySelector('.compose-narrow')).display,
+    panes: getComputedStyle(document.querySelector('.compose-panes')).display,
+    bar: getComputedStyle(document.querySelector('.compose-bar')).display,
+    doc: document.documentElement.scrollWidth,
+    vw: window.innerWidth,
+  }));
+  check('the narrow notice replaces the tool', narrow.notice !== 'none');
+  check('the panes are not rendered on a phone',
+    narrow.panes === 'none' && narrow.bar === 'none');
+  check('compose does not scroll sideways on a phone',
+    narrow.doc <= narrow.vw + 1, `${narrow.doc} vs ${narrow.vw}`);
+  await ctx.close();
+}
+
 await browser.close();
 server.close();
 

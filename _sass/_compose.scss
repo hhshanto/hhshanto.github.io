@@ -1,0 +1,282 @@
+// Screen 1g — the compose tool.
+//
+// The only page that is not the site: its own toolbar instead of the masthead,
+// full viewport height instead of the content frame, no footer. Everything is
+// scoped under .compose so none of it can reach another page.
+
+.compose-body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.compose {
+  display: flex;
+  flex-direction: column;
+  // The panes scroll inside themselves; the page itself does not.
+  height: 100vh;
+  height: 100dvh;
+}
+
+// ── The narrow-screen notice ───────────────────────────────────────────────
+// Below $bp-md the three panes cannot be honestly reflowed, so the tool is
+// replaced rather than squeezed.
+.compose-narrow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--page-pad);
+
+  @media (min-width: $bp-md) {
+    display: none;
+  }
+}
+
+.compose-bar,
+.compose-panes,
+.compose-status {
+  display: none;
+
+  @media (min-width: $bp-md) {
+    display: flex;
+  }
+}
+
+// ── Toolbar ────────────────────────────────────────────────────────────────
+.compose-bar {
+  align-items: center;
+  gap: var(--space-3);
+  flex: none;
+  padding: 14px 40px;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.compose-brand {
+  font-family: var(--font-heading);
+  font-size: 19px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-text);
+
+  &:hover { color: var(--color-accent); }
+}
+
+.compose-mode {
+  color: var(--color-accent-ink);
+}
+
+.compose-path {
+  // Pushed right, and given the room to grow: the path is the one piece of
+  // feedback that says where the commit is actually going.
+  margin-left: auto;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compose-action {
+  flex: none;
+  min-height: 34px;
+  padding: 6px 12px;
+  font-size: 12.5px;
+
+  &:disabled { cursor: progress; }
+}
+
+// ── Panes ──────────────────────────────────────────────────────────────────
+.compose-panes {
+  flex: 1;
+  min-height: 0;
+
+  @media (min-width: $bp-md) {
+    display: grid;
+    grid-template-columns: 290px minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.compose-pane {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+
+  + .compose-pane {
+    border-left: 1px solid var(--color-divider);
+  }
+}
+
+// ── 1: front matter ────────────────────────────────────────────────────────
+.compose-front {
+  gap: 18px;
+  padding: 26px 24px;
+
+  > .t-label {
+    color: var(--color-text-muted);
+  }
+
+  // The column's own gap already spaces these; .hr's default block margin
+  // would add a second helping and open a hole either side of every rule.
+  .hr {
+    margin: 0;
+  }
+}
+
+.compose-hint {
+  margin: 5px 0 0;
+}
+
+.compose-note {
+  margin: var(--space-2) 0 0;
+
+  a { color: var(--color-accent-ink); }
+}
+
+.compose-mono {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+
+.compose-radios {
+  display: flex;
+  flex-direction: column;
+}
+
+.compose-forget {
+  align-self: flex-start;
+  margin-top: var(--space-2);
+  font-size: 12px;
+}
+
+.compose-build {
+  // Pinned to the bottom of the pane, as in the mock — it is reference, not a
+  // control, and it should not sit in the middle of the form.
+  margin-top: auto;
+  padding-top: var(--space-4);
+  color: var(--color-text-faint);
+  line-height: 1.9;
+}
+
+// ── 2: markdown ────────────────────────────────────────────────────────────
+.compose-editor {
+  padding: 0;
+}
+
+.compose-tabs {
+  display: flex;
+  gap: var(--space-4);
+  flex: none;
+  padding: 0 20px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.compose-tab {
+  padding: 10px 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: none;
+  color: var(--color-text-faint);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  &.is-on {
+    color: var(--color-accent-ink);
+    border-bottom-color: var(--color-accent);
+  }
+}
+
+.compose-textarea {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  padding: 20px;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  caret-color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.85;
+  resize: none;
+
+  &::placeholder { color: var(--color-text-faint); }
+  // The pane's own border already frames it; a ring inside would draw a second
+  // box around the same edge.
+  &:focus-visible { outline: none; }
+}
+
+// The assembled file, front matter and all. The mock calls this tab DIFF; a
+// diff needs the previous version of a file that does not exist yet, so it
+// shows what will actually be committed instead.
+.compose-file {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 20px;
+  overflow: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--color-text-muted);
+  white-space: pre-wrap;
+  word-break: break-word;
+
+  &[hidden] { display: none; }
+}
+
+// ── 3: live preview ────────────────────────────────────────────────────────
+.compose-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex: none;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--color-divider);
+  color: var(--color-text-muted);
+}
+
+// The article styles at reduced scale, per the handoff. Only the sizes change;
+// the rules themselves are _article.scss's, so the preview cannot drift from
+// the real post.
+.compose-rendered {
+  padding: 20px;
+  font-size: 14.5px;
+
+  h2 { font-size: 26px; }
+  h3 { font-size: 20px; }
+  blockquote { font-size: 20px; }
+
+  // The drop cap stays. It was reset here at first, on the theory that it would
+  // be distracting while typing; seeing it is the point — the published post
+  // will have one, and a preview that quietly differs from the real page is
+  // worse than no preview.
+}
+
+// ── Status ─────────────────────────────────────────────────────────────────
+.compose-status {
+  align-items: center;
+  gap: var(--space-3);
+  flex: none;
+  padding: 10px 40px;
+  border-top: 1px solid var(--color-divider);
+  background: var(--color-surface);
+  font-family: var(--font-body);
+  font-size: 13px;
+
+  &[hidden] { display: none; }
+
+  a { color: var(--color-accent-ink); }
+}
+
+.compose-status-bad {
+  color: var(--color-text);
+  border-top-color: var(--color-accent);
+}
