@@ -7,7 +7,10 @@ tagline: A Digital Knowledge Garden
 description: A personal knowledge repository exploring various domains of knowledge
 baseurl: "" # Leave empty if your site is at root level
 url: "https://hhshanto.github.io"
-author: Hasan
+# Also the byline on every post, via _includes/article-head.html, and the
+# author jekyll-seo-tag puts in the page metadata. It said "Hasan"; the home
+# page names him in full, and the two should not disagree.
+author: Mohammad Hasan
 
 # Used to build the "Edit on GitHub" link in a post's rail. jekyll-github-metadata
 # would supply site.github.repository_url, but it is not in the plugin list, so

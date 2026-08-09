@@ -239,6 +239,20 @@ for (const width of [375, 700, 1160, 1440]) {
     });
     check('the curriculum sits between the hero and recent writing',
       order.cv > order.hero && order.cv < order.latest);
+    // The page went a whole phase without naming its author anywhere.
+    const named = await page.evaluate(() => {
+      const name = document.querySelector('.home-hero-name');
+      return {
+        text: name?.textContent.trim() ?? '',
+        alt: document.querySelector('.home-hero-portrait')?.alt ?? '',
+        // innerText is the *rendered* text in Chrome, so the kicker's
+        // text-transform: uppercase comes back applied. Compare case-insensitively.
+        byline: document.body.innerText.toLowerCase().includes('mohammad hasan'),
+      };
+    });
+    check('the author is named on the home page', named.byline, `"${named.text}"`);
+    check('the portrait alt is the name', named.alt === named.text, `"${named.alt}"`);
+
     check('experience and education are separate lists',
       (await page.locator('.cv-cell .cv-list').count()) === 2);
 

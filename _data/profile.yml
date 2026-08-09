@@ -5,8 +5,12 @@
 # section — none of it is new copy. The handoff's own hero text is placeholder
 # and is not used.
 
-# Mono line above the headline.
-kicker: Data Scientist · Potsdam, DE
+# The mono line above the headline, in three parts rather than one string: the
+# name is set apart from the other two, at full contrast and a step larger, so
+# it reads as a name rather than as another label.
+name: Mohammad Hasan
+role: Data Scientist
+location: Potsdam, DE
 
 # The headline runs over two lines, the second in italic. This is the site's
 # tagline rather than a name: the masthead already says NOEMA, the portrait and
@@ -19,8 +23,6 @@ intro: >
   Insights from data science to philosophy, technology to arts. Based in
   Potsdam, Germany, exploring the intersection of technology and knowledge
   sharing — and writing it down as it goes.
-
-portrait_alt: Hasan
 
 socials:
   - label: LinkedIn

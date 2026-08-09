@@ -7,7 +7,19 @@ the right. Everything it says comes from _data/profile.yml.
 
 <section class="home-hero">
     <div class="home-hero-text">
-        <p class="t-kicker">{{ me.kicker }}</p>
+        {%- comment -%}
+        The name leads the page. It is in the kicker rather than the headline
+        because the headline is the site's tagline and reads better as one — but
+        it is set at full contrast and a step larger than the two labels beside
+        it, so it does not disappear into them.
+        {%- endcomment -%}
+        <p class="home-hero-kicker t-kicker">
+            <span class="home-hero-name">{{ me.name }}</span>
+            <span aria-hidden="true">·</span>
+            <span>{{ me.role }}</span>
+            <span aria-hidden="true">·</span>
+            <span>{{ me.location }}</span>
+        </p>
 
         <h1 class="home-hero-title t-display-lg">
             {{ me.headline }}<br>
@@ -39,7 +51,7 @@ the right. Everything it says comes from _data/profile.yml.
                  srcset="{{ '/assets/images/portrait-300.jpg' | relative_url }} 1x,
                          {{ '/assets/images/portrait-600.jpg' | relative_url }} 2x"
                  width="300" height="375"
-                 alt="{{ me.portrait_alt }}">
+                 alt="{{ me.name }}">
         </picture>
 
         <ul class="home-socials">

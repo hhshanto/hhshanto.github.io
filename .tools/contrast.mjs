@@ -57,6 +57,8 @@ const TARGETS = [
   { sel: '.site-foot-links a', name: 'footer link' },
 
   // Home (screen 1a).
+  { sel: '.home-hero-name', name: 'hero name', url: '/' },
+  { sel: '.home-hero-kicker span:nth-child(3)', name: 'hero role/location', url: '/' },
   { sel: '.home-hero-title em', name: 'hero second line', url: '/' },
   { sel: '.home-hero-intro', name: 'hero intro', url: '/' },
   { sel: '.home-social', name: 'social link', url: '/' },

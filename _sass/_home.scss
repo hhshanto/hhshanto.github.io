@@ -45,6 +45,23 @@
   }
 }
 
+.home-hero-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+}
+
+// The name, not another label: full text contrast against the accent of the
+// role and location beside it, and one step up in size. Anything more and it
+// competes with the headline directly under it.
+.home-hero-name {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--color-text);
+}
+
 .home-hero-title {
   margin-top: var(--space-3);
 
