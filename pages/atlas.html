@@ -1,0 +1,199 @@
+---
+layout: default
+title: Atlas
+permalink: /atlas/
+description: Every piece on the site as a point in embedding space, projected to three dimensions.
+search_body: >
+  Atlas. Embedding space, vector space, semantic similarity, PCA projection,
+  cosine distance. Every piece on the site placed by what it is about rather
+  than by where it is filed.
+---
+
+{%- comment -%}
+The embedding atlas — the site's writing as points in a vector space.
+
+WHY THIS EXISTS ALONGSIDE THE CONSTELLATION. They answer different questions and
+disagreeing is the point. /constellation/ draws how the writing is FILED: a
+hierarchy the author chose, plus tags the author wrote down. This draws what the
+writing is ABOUT, measured from the text and nothing else. Where the two
+disagree — a psychology piece sitting among the politics, two posts in one
+folder landing at opposite ends — is information neither map gives on its own.
+
+NOTHING IS COMPUTED HERE. `.tools/embed.mjs` vectorises the corpus, runs PCA and
+writes _data/atlas.json; Jekyll reads that at build time and Liquid puts the
+coordinates on the nodes below. No model, no key and no request reaches a
+reader. The page is as static as every other page on the site — which is the
+whole reason the pipeline is offline.
+
+HONESTY ABOUT THE PROJECTION. The vectors have hundreds of dimensions and the
+screen has two. The three components kept here carry only part of the variance,
+and the figure is printed at the top rather than buried, because a scatter plot
+that has thrown away most of its information while looking authoritative is the
+most common way a visualisation lies. The neighbour lists are computed in the
+FULL space, not from the picture, so they stay true even where the projection
+flattens something.
+{%- endcomment -%}
+
+{%- assign atlas = site.data.atlas -%}
+
+<div class="frame atlas">
+
+    <header class="atlas-head">
+        <p class="t-kicker tnum">
+            {{ atlas.count }} pieces
+            <span aria-hidden="true">·</span>
+            {{ atlas.dims }} dimensions
+            <span aria-hidden="true">·</span>
+            projected to 3
+        </p>
+        <h1 class="t-display-xs">Atlas</h1>
+        <p class="atlas-desc t-body">
+            Every piece on the site placed by what it is about rather than by
+            where it is filed. Distance is semantic: two points are close
+            because their text is close, whatever folder they live in.
+            <a href="{{ '/constellation/' | relative_url }}">The constellation</a>
+            draws the other thing — the filing structure — and the two maps
+            disagreeing is the interesting part.
+        </p>
+    </header>
+
+    {%- comment -%}
+    The provenance line. Which vectoriser produced the file changes what the
+    picture means — lexical proximity is not semantic proximity — so it is
+    stated on the page rather than left in a commit message.
+    {%- endcomment -%}
+    <dl class="atlas-meta">
+        <div>
+            <dt class="t-label">Vectors</dt>
+            <dd class="tnum">{{ atlas.backend }}</dd>
+        </div>
+        <div>
+            <dt class="t-label">Projection</dt>
+            <dd class="tnum">PCA · deterministic</dd>
+        </div>
+        <div>
+            <dt class="t-label">Variance kept</dt>
+            {%- assign kept = 0 -%}
+            {%- for e in atlas.explained -%}
+                {%- assign kept = kept | plus: e -%}
+            {%- endfor -%}
+            {%- assign pct = kept | times: 1000 | round | divided_by: 10.0 -%}
+            <dd class="tnum">{{ pct }}%
+                <span class="atlas-axes">
+                    ({%- for e in atlas.explained -%}
+                    {{ e | times: 1000 | round | divided_by: 10.0 }}%{% unless forloop.last %} · {% endunless %}
+                    {%- endfor -%})
+                </span>
+            </dd>
+        </div>
+        <div>
+            <dt class="t-label">Built</dt>
+            <dd class="tnum">{{ atlas.generated }}</dd>
+        </div>
+    </dl>
+
+    <div class="atlas-panes">
+
+        <div class="atlas-stage" data-atlas>
+            <svg class="atlas-axes-svg" aria-hidden="true" focusable="false"
+                 preserveAspectRatio="none" data-atlas-axes></svg>
+
+            {%- comment -%}
+            One node per piece, carrying its own coordinates. Same principle as
+            the constellation: Liquid already knows every number, so JS reads
+            them off the DOM rather than fetching a second copy.
+            {%- endcomment -%}
+            <ul class="atlas-points" data-atlas-points>
+                {%- for doc in atlas.docs %}
+                <li>
+                    <a class="atlas-point is-{{ doc.domain }}"
+                       href="{{ doc.url | relative_url }}"
+                       data-point="{{ doc.url }}"
+                       data-x="{{ doc.xyz[0] }}"
+                       data-y="{{ doc.xyz[1] }}"
+                       data-z="{{ doc.xyz[2] }}"
+                       data-domain="{{ doc.domain }}"
+                       data-title="{{ doc.title | escape }}"
+                       data-words="{{ doc.words }}">
+                        <span class="visually-hidden">{{ doc.title }}</span>
+                    </a>
+                </li>
+                {%- endfor %}
+            </ul>
+
+            <p class="atlas-hint t-meta-sm" data-atlas-hint>Drag to spin</p>
+        </div>
+
+        <aside class="atlas-readout" data-atlas-readout>
+            <p class="atlas-readout-kicker t-kicker" data-atlas-kicker>Nearest pairs</p>
+            <p class="atlas-readout-title t-h3" data-atlas-title>
+                {{ atlas.count }} points in {{ atlas.dims }}D
+            </p>
+            <p class="atlas-readout-body t-body-sm" data-atlas-body>
+                Hover a point to read it and see what sits closest to it in the
+                full vector space — not in the projection, which has thrown most
+                of it away.
+            </p>
+            <ol class="atlas-near" data-atlas-near hidden></ol>
+        </aside>
+
+    </div>
+
+    {%- comment -%}
+    The neighbour table. This is not a fallback bolted on for the no-JS case —
+    it is the part of the page with the actual numbers in it, and the scatter
+    plot above is the part that is hard to read precisely. It works with
+    scripting off because it is only links and text.
+    {%- endcomment -%}
+    <section class="atlas-table">
+        <h2 class="t-label rule-head">Every piece and its three nearest</h2>
+
+        <div class="atlas-rows">
+            {%- for doc in atlas.docs %}
+            {%- comment -%}
+            data-row is what the readout looks up on hover. The neighbour lists
+            are already here as real links; copying them into the aside would be
+            a second copy of the same three numbers, so JS moves the markup
+            instead of re-rendering it.
+            {%- endcomment -%}
+            <article class="atlas-row" data-row="{{ doc.url }}">
+                <h3 class="atlas-row-title">
+                    <a class="ttl" href="{{ doc.url | relative_url }}">{{ doc.title }}</a>
+                </h3>
+                <p class="atlas-row-meta t-meta-sm tnum">
+                    {{ doc.domain | replace: '-', ' ' }}
+                    {%- if doc.sub != '' %} <span aria-hidden="true">·</span> {{ doc.sub | replace: '-', ' ' }}{% endif %}
+                    <span aria-hidden="true">·</span> {{ doc.words }} words
+                </p>
+                <ol class="atlas-row-near">
+                    {%- for n in doc.near %}
+                    <li>
+                        {%- comment -%}
+                        The score is the point of the row, so it is set in the
+                        mono face and given its own column rather than trailing
+                        the title as prose.
+                        {%- endcomment -%}
+                        <span class="atlas-score tnum">{{ n.score }}</span>
+                        <a class="nvl" href="{{ n.url | relative_url }}">{{ n.title }}</a>
+                    </li>
+                    {%- endfor %}
+                </ol>
+            </article>
+            {%- endfor %}
+        </div>
+    </section>
+
+    <p class="atlas-method t-body-sm">
+        Built by <code>.tools/embed.mjs</code>, which reads the markdown,
+        vectorises it, runs PCA and writes <code>_data/atlas.json</code>. It has
+        two backends and the line above says which one produced this file.
+        TF-IDF is lexical — pieces are close when they share words — and runs
+        with no key and no network. The other calls an embeddings model and is
+        semantic: it puts <em>elections</em> and <em>ballots</em> together
+        because the model learned they belong together. Cosine similarity runs
+        on the full vectors either way; only the picture is three-dimensional.
+    </p>
+
+</div>
+
+<script src="{{ '/assets/js/atlas.js' | relative_url }}" defer></script>

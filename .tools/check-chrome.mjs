@@ -9,13 +9,26 @@ const SITE = 'c:/Users/hasan/hhshanto.github.io/.tools/.site';
 const PORT = 4997;
 const MIME = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.woff2': 'font/woff2', '.json': 'application/json', '.xml': 'application/xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.ico': 'image/x-icon', '.pdf': 'application/pdf' };
 
+// Read the file BEFORE writing the status line. The original wrote the 200
+// first and read after it, so a missing file threw inside the catch — headers
+// were already sent — and that second throw is outside any try, which takes the
+// whole process down. The symptom is the run dying with ERR_HTTP_HEADERS_SENT
+// instead of the link audit calmly reporting a 404, which is the one job it
+// has. The atlas shipped ten dead links and this is how it announced them.
 const server = createServer(async (req, res) => {
+  let body;
+  let type = 'application/octet-stream';
   try {
     let f = join(SITE, decodeURIComponent(new URL(req.url, 'http://x').pathname));
     if (!extname(f)) f = join(f, 'index.html');
-    res.writeHead(200, { 'content-type': MIME[extname(f)] ?? 'application/octet-stream' });
-    res.end(await readFile(f));
-  } catch { res.writeHead(404).end(); }
+    body = await readFile(f);
+    type = MIME[extname(f)] ?? type;
+  } catch {
+    res.writeHead(404).end();
+    return;
+  }
+  res.writeHead(200, { 'content-type': type });
+  res.end(body);
 });
 await new Promise((r) => server.listen(PORT, r));
 
@@ -1109,9 +1122,76 @@ const rest = (page) => page.evaluate(() => new Promise((resolve) => {
   await ctx.close();
 }
 
+// ── The embedding atlas ────────────────────────────────────────────────────
+// Runs with reducedMotion, which is not a compromise but the only way to
+// measure it: the cloud never stops spinning otherwise, and Playwright gives up
+// with "element is not stable" rather than eventually catching a point.
+// atlas.js honours the preference by never starting its loop, so this is both
+// the way in and a check that the accommodation works.
+{
+  const ctx = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    reducedMotion: 'reduce',
+  });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/atlas/`);
+  await page.waitForTimeout(200);
+
+  const base = await page.evaluate(() => {
+    const b = document.querySelector('.atlas-stage').getBoundingClientRect();
+    const pts = Array.from(document.querySelectorAll('.atlas-point'));
+    return {
+      count: pts.length,
+      placed: pts.filter((p) => p.style.left !== '').length,
+      // A radius picked by eye rather than solved put two points outside the
+      // box at 375px, and only at some rotations. Assert the containment, not
+      // the constant.
+      outside: pts.filter((p) => {
+        const r = p.getBoundingClientRect();
+        return r.left < b.left - 1 || r.right > b.right + 1 ||
+               r.top < b.top - 1 || r.bottom > b.bottom + 1;
+      }).map((p) => p.getAttribute('data-title').slice(0, 24)),
+      rows: document.querySelectorAll('.atlas-row').length,
+      scores: document.querySelectorAll('.atlas-row .atlas-score').length,
+    };
+  });
+
+  check('every piece is a point on the atlas',
+    base.count > 0 && base.placed === base.count, `${base.placed} of ${base.count}`);
+  check('no point escapes the stage', base.outside.length === 0, base.outside.join(' | '));
+  check('the neighbour table renders for every piece',
+    base.rows === base.count && base.scores === base.rows * 3,
+    `${base.rows} rows, ${base.scores} scores`);
+
+  const point = page.locator('.atlas-point').nth(2);
+  const label = await point.getAttribute('data-title');
+  await point.hover();
+  await page.waitForTimeout(120);
+
+  const hovered = await page.evaluate(() => ({
+    title: document.querySelector('[data-atlas-title]').textContent.trim(),
+    near: document.querySelectorAll('[data-atlas-near] li').length,
+    lit: document.querySelectorAll('.atlas-point.is-lit').length,
+    dim: document.querySelectorAll('.atlas-point.is-dim').length,
+    both: document.querySelectorAll('.atlas-point.is-lit.is-dim').length,
+  }));
+
+  check('hovering a point names it', hovered.title === label,
+    `"${hovered.title}" vs "${label}"`);
+  check('the readout lists three neighbours', hovered.near === 3, `${hovered.near}`);
+  // The one that actually caught a bug. classList.toggle with an `undefined`
+  // second argument FLIPS the class instead of removing it, so every unrelated
+  // point came out lit and dimmed at once — which looks nearly right on screen.
+  // Counting is what found it, so counting is what guards it.
+  check('lit and dim partition the cloud',
+    hovered.both === 0 && hovered.lit + hovered.dim === base.count,
+    `${hovered.lit} lit, ${hovered.dim} dim, ${hovered.both} both`);
+  await ctx.close();
+}
+
 // ── Phase 8: whole-site audits ─────────────────────────────────────────────
 const PAGES = ['/', '/about/', '/tags/', '/all-posts/', '/reflections/',
-  '/reflections/philosophy/stoicism/', '/styleguide/', '/constellation/',
+  '/reflections/philosophy/stoicism/', '/styleguide/', '/constellation/', '/atlas/',
   '/404.html'];
 
 // Keyboard pass. Every focusable control must take a visible ring, and it must

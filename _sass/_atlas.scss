@@ -1,0 +1,253 @@
+// The embedding atlas.
+//
+// Two halves that carry the same information at different precisions: a point
+// cloud you can turn, and a table of the actual numbers. The cloud is the part
+// that shows shape; the table is the part you can read exactly. Neither is a
+// fallback for the other, and the table works with no scripting because it is
+// only links and text.
+
+.atlas {
+  padding-block: var(--space-6) var(--space-8);
+
+  @media (min-width: $bp-md) {
+    padding-block: 40px 50px;
+  }
+}
+
+.atlas-desc {
+  max-width: 64ch;
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-muted);
+
+  a {
+    color: var(--color-accent-ink);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+}
+
+// ── Provenance ─────────────────────────────────────────────────────────────
+// Which vectoriser produced the file changes what the picture means, so it is
+// on the page in the open rather than in a commit message.
+.atlas-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: var(--space-6) 0 0;
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-divider);
+
+  @media (min-width: $bp-md) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  dt {
+    margin-bottom: 4px;
+    color: var(--color-text-faint);
+  }
+
+  dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.4;
+  }
+}
+
+.atlas-axes {
+  display: block;
+  margin-top: 2px;
+  color: var(--color-text-faint);
+}
+
+// ── Stage ──────────────────────────────────────────────────────────────────
+.atlas-panes {
+  margin-top: var(--space-6);
+  display: grid;
+  gap: var(--space-6);
+
+  @media (min-width: $bp-lg) {
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: var(--space-8);
+    align-items: start;
+  }
+}
+
+.atlas-stage {
+  position: relative;
+  height: 420px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  overflow: hidden;
+  cursor: grab;
+  // A drag across a field of points is also a text selection, and on touch it
+  // is a scroll. Both of these are load-bearing, not polish.
+  user-select: none;
+  touch-action: none;
+
+  &.is-dragging { cursor: grabbing; }
+
+  @media (min-width: $bp-md) { height: 520px; }
+}
+
+.atlas-axes-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.atlas-axis {
+  stroke: var(--color-divider);
+  stroke-width: 1;
+  stroke-dasharray: 2 5;
+}
+
+.atlas-axis-label {
+  fill: var(--color-text-faint);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.atlas-points {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li { display: contents; }
+}
+
+.atlas-point {
+  position: absolute;
+  // Width, height, left, top, opacity and z-index are all written by the
+  // projection every frame. Nothing here may set them.
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--node-colour, var(--color-text));
+  transition: box-shadow var(--t-fast);
+
+  &.is-lit {
+    // Not a size change: the projection owns size, and fighting it here would
+    // make a lit point read as nearer than it is. A ring adds emphasis without
+    // touching the depth cue.
+    box-shadow: 0 0 0 3px var(--wash-accent-strong);
+  }
+
+  &.is-dim { filter: saturate(0.25); }
+}
+
+.atlas {
+  @each $domain in natural-sciences, social-sciences, arts-literature,
+                   reflections, contemporary {
+    .is-#{$domain} { --node-colour: var(--color-domain-#{$domain}); }
+  }
+}
+
+.atlas-hint {
+  position: absolute;
+  left: var(--space-4);
+  bottom: var(--space-3);
+  margin: 0;
+  font-family: var(--font-mono);
+  color: var(--color-text-faint);
+  pointer-events: none;
+}
+
+// ── Readout ────────────────────────────────────────────────────────────────
+.atlas-readout {
+  border-top: 1px solid var(--color-divider);
+  padding-top: var(--space-4);
+
+  @media (min-width: $bp-lg) {
+    position: sticky;
+    top: calc(var(--masthead-h) + var(--space-6));
+    border-top: 0;
+    border-left: 1px solid var(--color-divider);
+    padding: 0 0 0 var(--space-4);
+  }
+}
+
+.atlas-readout-title {
+  margin: var(--space-2) 0 var(--space-3);
+  overflow-wrap: anywhere;
+}
+
+.atlas-readout-body {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+// ── Neighbour lists, in the aside and in the table ─────────────────────────
+// One rule for both, because the aside's markup is literally the table's,
+// cloned by atlas.js. Styling them separately would guarantee they drift.
+.atlas-near,
+.atlas-row-near {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+
+  li {
+    display: flex;
+    gap: var(--space-2);
+    align-items: baseline;
+    padding: 3px 0;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+}
+
+.atlas-score {
+  flex: none;
+  // A fixed column, so the scores line up as a column of numbers rather than
+  // ragging with the titles. The whole value of the table is being able to
+  // compare them down the page.
+  width: 3.4em;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-accent-ink);
+}
+
+// ── The table ──────────────────────────────────────────────────────────────
+.atlas-table {
+  margin-top: var(--space-8);
+}
+
+.atlas-rows {
+  display: grid;
+  gap: var(--space-6);
+  margin-top: var(--space-4);
+
+  @media (min-width: $bp-sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6) var(--space-8);
+  }
+
+  @media (min-width: $bp-lg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.atlas-row-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 19px;
+  line-height: 1.2;
+}
+
+.atlas-row-meta {
+  margin: 6px 0 0;
+  color: var(--color-text-faint);
+  text-transform: lowercase;
+}
+
+.atlas-method {
+  max-width: 68ch;
+  margin: var(--space-8) 0 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-divider);
+  color: var(--color-text-muted);
+}
