@@ -31,14 +31,42 @@ const ratio = (a, b) => {
   return (x + 0.05) / (y + 0.05);
 };
 
+// `url` defaults to the domain index; `ground` names an element whose own
+// background the text sits on, for anything not painted straight onto the body.
+// The code block is the whole reason that option exists: it keeps a dark ground
+// in both themes, so measuring its tokens against the page would pass in dark
+// and fail in light while the real thing is identical in both.
+const POST = '/reflections/philosophy/stoicism/';
+const GUIDE = '/styleguide/';
+
 const TARGETS = [
-  ['.masthead-brand', 'brand'],
-  ['.masthead-link', 'nav link'],
-  ['.masthead-link[aria-current="page"]', 'nav link (current)'],
-  ['.masthead-search', 'search trigger'],
-  ['.masthead-theme', 'theme toggle'],
-  ['.site-foot-copy', 'footer copyright'],
-  ['.site-foot-links a', 'footer link'],
+  { sel: '.masthead-brand', name: 'brand' },
+  { sel: '.masthead-link', name: 'nav link' },
+  { sel: '.masthead-link[aria-current="page"]', name: 'nav link (current)' },
+  { sel: '.masthead-search', name: 'search trigger' },
+  { sel: '.masthead-theme', name: 'theme toggle' },
+  { sel: '.site-foot-copy', name: 'footer copyright' },
+  { sel: '.site-foot-links a', name: 'footer link' },
+
+  // Post (screen 1c).
+  { sel: '.article-breadcrumb a', name: 'breadcrumb', url: POST },
+  { sel: '.article-standfirst', name: 'standfirst', url: POST },
+  { sel: '.article-author', name: 'byline name', url: POST },
+  { sel: '.article-date', name: 'byline date', url: POST },
+  { sel: '.article-body p', name: 'body prose', url: POST },
+  { sel: '.post-toc-link', name: 'contents link', url: POST },
+  { sel: '.is-current .post-toc-link', name: 'contents link (current)', url: POST },
+  { sel: '.post-rail-stat dd', name: 'rail stats', url: POST },
+  { sel: '.post-nav-dir', name: 'prev/next direction', url: POST },
+  { sel: '.related-meta', name: 'related meta', url: POST },
+
+  // Code block — its own dark ground, identical in both themes.
+  { sel: '.code-label', name: 'code language label', url: GUIDE, ground: 'div.highlighter-rouge' },
+  { sel: '.highlight .k', name: 'code keyword', url: GUIDE, ground: 'div.highlighter-rouge' },
+  { sel: '.highlight .nf', name: 'code function', url: GUIDE, ground: 'div.highlighter-rouge' },
+  { sel: '.highlight .nb', name: 'code builtin', url: GUIDE, ground: 'div.highlighter-rouge' },
+  { sel: '.highlight .c1', name: 'code comment', url: GUIDE, ground: 'div.highlighter-rouge' },
+  { sel: '.highlight .n', name: 'code plain', url: GUIDE, ground: 'div.highlighter-rouge' },
 ];
 
 const browser = await chromium.launch();
@@ -47,15 +75,30 @@ for (const theme of ['light', 'dark']) {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   await ctx.addInitScript((t) => { try { localStorage.setItem('theme', t); } catch {} }, theme);
   const page = await ctx.newPage();
-  await page.goto(`http://localhost:${PORT}/reflections/`);
 
-  const bg = parse(await page.evaluate(() =>
-    getComputedStyle(document.body).backgroundColor));
+  let loaded = null;
+  let body = null;
 
-  console.log(`\n=== ${theme.toUpperCase()}  (ground rgb(${bg.join(',')})) ===`);
-  for (const [sel, name] of TARGETS) {
+  console.log(`\n=== ${theme.toUpperCase()} ===`);
+  for (const { sel, name, url = '/reflections/', ground } of TARGETS) {
+    if (url !== loaded) {
+      await page.goto(`http://localhost:${PORT}${url}`);
+      loaded = url;
+      body = parse(await page.evaluate(() =>
+        getComputedStyle(document.body).backgroundColor));
+    }
+
     const el = page.locator(sel).first();
-    if (!(await el.count())) { console.log(`  ${name.padEnd(20)} not found`); continue; }
+    if (!(await el.count())) { console.log(`  ---- ${name.padEnd(22)} not found`); continue; }
+
+    let bg = body;
+    if (ground) {
+      const g = page.locator(ground).first();
+      if (await g.count()) {
+        bg = parse(await g.evaluate((n) => getComputedStyle(n).backgroundColor));
+      }
+    }
+
     const info = await el.evaluate((n) => {
       const cs = getComputedStyle(n);
       return { color: cs.color, size: parseFloat(cs.fontSize), weight: cs.fontWeight };
@@ -67,7 +110,7 @@ for (const theme of ['light', 'dark']) {
     const need = large ? 3 : 4.5;
     const verdict = r >= need ? 'ok  ' : 'FAIL';
     console.log(
-      `  ${verdict} ${name.padEnd(20)} ${r.toFixed(2)}:1  (needs ${need})  ${info.size}px  rgb(${fg.join(',')})`,
+      `  ${verdict} ${name.padEnd(22)} ${r.toFixed(2)}:1  (needs ${need})  ${info.size}px  on rgb(${bg.join(',')})`,
     );
   }
   await ctx.close();

@@ -150,6 +150,12 @@ needs its own capture — `.tools/shoot-menu.mjs` opens the mobile nav and
 screenshots it, `.tools/widths.mjs` prints layout box geometry at several
 viewport widths.
 
+**Wait for scrolling to settle.** `_base.scss` still sets
+`html { scroll-behavior: smooth }`, so `scrollTo()` starts an animation. Reading
+a scroll-driven value after a fixed `waitForTimeout` catches it mid-flight and
+reports a failure against correct code. `check-chrome.mjs` has a `settle(page)`
+helper that polls `pageYOffset` until it stops moving — use it.
+
 **Assert geometry, not just visibility.** Playwright's `isVisible()` returns
 true for an element that is painted but scrolled off screen. The mobile nav
 panel shipped rendering at `top: -125px`, entirely above the viewport, and

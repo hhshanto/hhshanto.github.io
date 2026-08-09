@@ -1,0 +1,291 @@
+// Screen 1c — the reading view.
+//
+// This partial owns the article column and the page grid it sits in. The rail
+// beside it is its own component (_post-rail.scss), as are prev/next
+// (_post-nav.scss), related posts (_related-posts.scss) and the code theme
+// (_rouge.scss).
+//
+// Everything inside .article-body is styled by element rather than by class,
+// because that markup is kramdown's output from a markdown file — there are no
+// classes to hook. This is the one place in the stylesheet where that is true,
+// and it is scoped to .article-body so it cannot leak.
+
+// ── Reading progress ───────────────────────────────────────────────────────
+// A 2px strip pinned to the bottom edge of the masthead. It reads --masthead-h
+// rather than measuring, which is safe because check-chrome.mjs asserts that
+// token against the bar's real height at both widths.
+//
+// z-index sits below the masthead's 50 so the bar tucks under it rather than
+// drawing over the hairline.
+.reading-progress {
+  position: fixed;
+  top: var(--masthead-h);
+  left: 0;
+  right: 0;
+  z-index: 40;
+  height: 2px;
+  background: var(--color-divider);
+}
+
+.reading-progress-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--color-accent);
+}
+
+// The bar is a live scroll indicator and nothing else; under reduced motion it
+// is noise, so it goes away entirely and article.js skips its scroll listener.
+@media (prefers-reduced-motion: reduce) {
+  .reading-progress { display: none; }
+}
+
+// ── Page grid ──────────────────────────────────────────────────────────────
+// One column on a phone with the rail above the piece; 200px + article from
+// $bp-md, the width at which a 200px rail still leaves a usable measure.
+.article-layout {
+  padding-block: var(--space-6) var(--space-8);
+
+  @media (min-width: $bp-md) {
+    display: grid;
+    // minmax(0, 1fr) rather than 1fr: a wide code block or table in the
+    // article would otherwise force the column past its share and push the
+    // whole grid sideways.
+    grid-template-columns: 200px minmax(0, 1fr);
+    gap: 52px;
+    align-items: start;
+    padding-block: 48px 56px;
+  }
+}
+
+.article {
+  min-width: 0;
+  max-width: 70ch;
+}
+
+// ── Head ───────────────────────────────────────────────────────────────────
+.article-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 var(--space-3);
+}
+
+.article-title {
+  margin: 0;
+}
+
+.article-standfirst {
+  margin: var(--space-3) 0 0;
+  max-width: 60ch;
+}
+
+// Ruled above and below, the way a newspaper sets a byline.
+.article-byline {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-4) 0 var(--space-6);
+  padding: 12px 0;
+  border-top: 1px solid var(--color-divider);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.article-avatar {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--color-neutral-300);
+}
+
+.article-author {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+}
+
+.article-date {
+  margin-left: auto;
+}
+
+// ── Body ───────────────────────────────────────────────────────────────────
+// .t-prose on the element supplies the 70ch measure and turns justification on
+// from $bp-sm. Everything here is the prose itself.
+.article-body {
+  font-family: var(--font-body);
+  font-size: 16.5px;
+  line-height: 1.85;
+
+  > * + * {
+    margin-top: var(--space-4);
+  }
+
+  // The drop cap belongs to the opening paragraph only, and only when the post
+  // actually opens with prose — a piece starting on a heading or an image gets
+  // none, which is correct rather than a missing feature.
+  > p:first-child::first-letter {
+    float: left;
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: 66px;
+    line-height: 0.82;
+    padding: 4px 10px 0 0;
+    // The spec says accent-800, which is right on paper and all but invisible
+    // on the dark ground — the accent ramp does not invert. --color-accent-ink
+    // is the step that stays readable on whichever ground is current.
+    color: var(--color-accent-ink);
+  }
+
+  h2 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    // Headings are the one place the prose stops being justified: a short
+    // justified line stretches into gaps.
+    text-align: left;
+    margin-top: var(--space-8);
+  }
+
+  h3 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 1.2;
+    text-align: left;
+    margin-top: var(--space-6);
+  }
+
+  h4 {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 19px;
+    text-align: left;
+    margin-top: var(--space-6);
+  }
+
+  // Anchors land under the sticky masthead without this; _reset.scss sets
+  // scroll-padding-top globally, and this is the matching offset for the
+  // scroll-spy's notion of "at the top".
+  h2,
+  h3 {
+    scroll-margin-top: calc(var(--masthead-h) + var(--space-4));
+  }
+
+  a {
+    color: var(--color-accent-ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+    text-decoration-color: var(--color-divider);
+    transition: text-decoration-color var(--t-fast);
+
+    &:hover { text-decoration-color: var(--color-accent); }
+  }
+
+  ul,
+  ol {
+    padding-left: var(--space-4);
+    text-align: left;
+  }
+
+  li + li {
+    margin-top: var(--space-2);
+  }
+
+  // Pull quote. A markdown blockquote is the only thing an author can type, so
+  // it is what the pull quote is mapped onto.
+  blockquote {
+    margin: var(--space-6) 0;
+    padding-left: 24px;
+    border-left: 2px solid var(--color-accent);
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 26px;
+    line-height: 1.35;
+    text-align: left;
+    color: var(--color-text);
+
+    p { margin: 0; }
+    p + p { margin-top: var(--space-3); }
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  figcaption {
+    margin-top: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.5;
+    text-align: left;
+    color: var(--color-text-muted);
+  }
+
+  hr {
+    height: 1px;
+    border: 0;
+    margin: var(--space-8) 0;
+    background: var(--color-divider);
+  }
+
+  // Inline code follows the page, unlike a code block — a word set on a dark
+  // chip mid-sentence would punch a hole in a light page.
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    padding: 0.15em 0.4em;
+    border-radius: var(--radius-sm);
+    background: var(--wash-ink);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  // A table wider than the measure must scroll inside itself rather than make
+  // the whole page scroll sideways. article.js wraps each one in
+  // .article-table to do that — at which point the table stops being a direct
+  // child here and this rule stops matching. It is the no-JS fallback: the
+  // table scrolls, at the cost of sizing to its content instead of the column.
+  > table {
+    display: block;
+    overflow-x: auto;
+    width: max-content;
+    max-width: 100%;
+  }
+
+  th,
+  td {
+    padding: var(--space-2);
+    border-bottom: 1px solid var(--color-divider);
+  }
+
+  th {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+}
+
+// The wrapper article.js puts around each table.
+.article-table {
+  overflow-x: auto;
+}
+
+// ── Tag row ────────────────────────────────────────────────────────────────
+.article-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

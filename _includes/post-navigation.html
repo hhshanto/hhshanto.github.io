@@ -1,15 +1,28 @@
-<nav class="post-navigation">
-    {% if page.previous.url %}
-    <a class="prev" href="{{page.previous.url}}">
-        <span>← Previous</span>
-        <p>{{page.previous.title}}</p>
-    </a>
-    {% endif %}
+{%- comment -%}
+Prev / next, as the two-column hairline grid from 1c.
 
-    {% if page.next.url %}
-    <a class="next" href="{{page.next.url}}">
-        <span>Next →</span>
-        <p>{{page.next.title}}</p>
+`page.previous` and `page.next` walk the document's own collection in date
+order, so a reader moving through Reflections stays in Reflections.
+
+When only one of the two exists the grid would otherwise put a lone tile in
+the left column and leave a hole; the single tile is given both columns and
+keeps its own alignment instead.
+{%- endcomment -%}
+
+{%- if page.previous.url or page.next.url -%}
+<nav class="post-nav hgrid" aria-label="More in this domain">
+    {%- if page.previous.url %}
+    <a class="post-nav-tile post-nav-prev" href="{{ page.previous.url | relative_url }}">
+        <span class="post-nav-dir t-meta-sm">← Previous</span>
+        <span class="post-nav-title t-title-sm">{{ page.previous.title }}</span>
     </a>
-    {% endif %}
+    {%- endif %}
+
+    {%- if page.next.url %}
+    <a class="post-nav-tile post-nav-next" href="{{ page.next.url | relative_url }}">
+        <span class="post-nav-dir t-meta-sm">Next →</span>
+        <span class="post-nav-title t-title-sm">{{ page.next.title }}</span>
+    </a>
+    {%- endif %}
 </nav>
+{%- endif -%}

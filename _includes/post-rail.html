@@ -1,0 +1,63 @@
+{%- comment -%}
+The left rail of screen 1c: contents, stats, actions.
+
+It is a <details> at every width, and ships with `open` set. That is the
+degradation that matters — without JS the rail is fully expanded on both
+phone and desktop, which is readable. article.js then collapses it below
+$bp-md, where the spec wants it out of the way above the article, and the
+summary is hidden by CSS from $bp-md up so the disclosure never appears on
+desktop.
+{%- endcomment -%}
+
+{%- assign words = page.content | strip_html | number_of_words -%}
+{%- assign minutes = words | divided_by: 200 -%}
+{%- if minutes < 1 -%}{%- assign minutes = 1 -%}{%- endif -%}
+
+<aside class="post-rail">
+    <details class="post-rail-panel" data-post-rail open>
+        <summary class="post-rail-summary t-label">Contents</summary>
+
+        <div class="post-rail-inner">
+            {% include toc.html html=include.html %}
+
+            <hr class="hr">
+
+            <dl class="post-rail-stats t-meta-sm">
+                <div class="post-rail-stat">
+                    <dt>Read</dt>
+                    <dd>{{ minutes }} min</dd>
+                </div>
+                <div class="post-rail-stat">
+                    <dt>Words</dt>
+                    <dd>{{ words }}</dd>
+                </div>
+                <div class="post-rail-stat">
+                    <dt>{% if page.last_updated %}Upd.{% else %}Pub.{% endif %}</dt>
+                    <dd>{{ page.last_updated | default: page.date | date: "%d %b %Y" }}</dd>
+                </div>
+            </dl>
+
+            <div class="post-rail-actions">
+                {%- comment -%}
+                The citation is assembled here rather than in JS so it is
+                correct whether or not the script runs, and so the string
+                lives next to the front matter it is built from.
+                {%- endcomment -%}
+                {%- capture citation -%}
+{{ page.author | default: site.author }}. ({{ page.date | date: "%Y, %B %-d" }}). {{ page.title }}. {{ site.title }}. {{ page.url | absolute_url }}
+                {%- endcapture -%}
+                <button type="button" class="n-btn n-btn-secondary post-rail-action"
+                        data-cite data-citation="{{ citation | strip | escape }}">
+                    <span data-cite-label>Cite this</span>
+                </button>
+
+                {%- if site.repository %}
+                <a class="n-btn n-btn-ghost post-rail-action"
+                   href="https://github.com/{{ site.repository }}/edit/{{ site.edit_branch | default: 'main' }}/_content/{{ page.path }}">
+                    Edit on GitHub
+                </a>
+                {%- endif %}
+            </div>
+        </div>
+    </details>
+</aside>

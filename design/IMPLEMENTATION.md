@@ -7,16 +7,16 @@ Working plan for rebuilding hhshanto.github.io against
 
 ## STATUS — update this as the last step of every session
 
-**Next action:** Phase 3 — the post layout (1c). `_layouts/post.html`, the
-article styles, `_rouge.scss`, the ToC rail and `article.js` for the reading
-progress bar and scroll-spy.
+**Next action:** Phase 4 — the home page (1a). Split hero, the five-tile domain
+grid from `_data/domains.yml`, recent posts beside a CV column. Decide there
+whether `$content-max` should rise above 1160px; it has been deferred twice.
 
 | Phase | | |
 | --- | --- | --- |
 | 0 | Prep | ✅ 2026-08-09 |
 | 1 | Foundation (tokens, type, primitives, styleguide) | ✅ 2026-08-09 |
 | 2 | Chrome (nav, footer, theme toggle, default layout) | ✅ 2026-08-09 |
-| 3 | Post layout 1c | ☐ |
+| 3 | Post layout 1c | ✅ 2026-08-09 |
 | 4 | Home — **1a confirmed** | ☐ |
 | 5 | Category index 1d + archive 1e | ☐ |
 | 6 | Search palette 1f | ☐ |
@@ -467,6 +467,49 @@ Format: `date — decision — why`.
   fill and glared on the dark ground. Fixed with `--tag-accent-bg` /
   `--tag-accent-ink` rather than a dark-mode rule — when a component seems to
   need a `[data-theme]` rule, that is the signal it is missing a token.
+- **2026-08-09 — The contents list is built by Liquid at build time, not by
+  JS.** The old `toc.html` assembled it in a `DOMContentLoaded` handler, so it
+  did not exist for a reader with scripting off, did not exist in the HTML for
+  a crawler, and appeared a frame late for everyone else. It is now split out
+  of the rendered body with a Liquid string split — crude, but the input is
+  kramdown's own output, where every heading is exactly `<h2 id="…">`, not
+  arbitrary markup. `article.js` is reduced to adding `.is-current`.
+- **2026-08-09 — The code block does not invert with the theme, and needed one
+  token that does.** `--codeblock-*` and `--tok-*` are declared once on `:root`
+  and never re-declared under `[data-theme="dark"]`; they are the only tokens
+  in the file that behave that way, which is what the handoff asks for. The
+  exception is `--codeblock-edge`: on the dark ground `#2d2b2b` against
+  `#201f1d` is a 1.3:1 difference and the block dissolves into the page, so it
+  takes a hairline there and none in light. The drop cap went the other way —
+  the spec's accent-800 is right on paper and invisible on the dark ground, so
+  it uses `--color-accent-ink`.
+- **2026-08-09 — Inline code must be excluded by element, not by class.**
+  kramdown puts `.highlighter-rouge` on inline `<code>` as well as on the block
+  wrapper, so `_rouge.scss` selects `div.highlighter-rouge`. Without the `div`
+  every inline snippet becomes a dark padded block in the middle of a sentence.
+  `check-chrome.mjs` asserts the two grounds differ.
+- **2026-08-09 — The rail ships `open` and JS closes it on a phone**, rather
+  than shipping closed and JS opening it on desktop. Both give the same result
+  with scripting on; the difference is what a reader without JS gets, and an
+  expanded rail is readable at every width while a permanently collapsed one is
+  not.
+- **2026-08-09 — Tables are wrapped by `article.js` so they can scroll.**
+  kramdown emits a bare `<table>` with nothing to scroll inside. `display:
+  block; overflow-x: auto` on the table itself works but makes it size to its
+  content instead of the column, so that is kept only as the no-JS fallback on
+  `.article-body > table` — a selector that stops matching the moment the
+  wrapper is inserted.
+- **2026-08-09 — Related posts are kept, though 1c does not mock them**, and
+  rebuilt on `.n-card`. The Liquid that picks them (shared tags, then same
+  subfolder) already worked; deleting working navigation to match a mock that
+  never considered it would be a loss. The share-button footer was **dropped**
+  from the post layout — say so if you want it back.
+- **2026-08-09 — `check-chrome.mjs` waits for scrolling to settle rather than
+  for a fixed timeout.** The outgoing `_base.scss` sets `html { scroll-behavior:
+  smooth }`, so `scrollTo()` is an animation. Two new assertions failed against
+  entirely correct code because they read a scroll-driven value mid-flight — the
+  progress bar measured 9% at the bottom of the page. The `settle()` helper
+  polls `pageYOffset` until it stops changing. Use it for anything scroll-driven.
 - **2026-08-09 — Buttons and inputs are min 44px tall; inputs are 16px.**
   Taller than the mocks draw them. A control too small to hit on a phone is a
   worse failure than one a few pixels off-spec, and iOS Safari zooms the

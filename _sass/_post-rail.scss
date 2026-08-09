@@ -1,0 +1,143 @@
+// The left rail on a post — contents, stats, actions.
+//
+// Below $bp-md it is a closed <details> above the article. From $bp-md it is a
+// sticky 200px column and the disclosure disappears: the summary is hidden and
+// article.js forces the panel open, so the contents are always showing.
+
+.post-rail {
+  margin-bottom: var(--space-6);
+
+  @media (min-width: $bp-md) {
+    position: sticky;
+    // Clear the sticky masthead. 16px past it is the spec's `top: 16px`,
+    // measured from under the browser chrome the mock assumes.
+    top: calc(var(--masthead-h) + 16px);
+    margin-bottom: 0;
+  }
+}
+
+.post-rail-panel {
+  border-top: 1px solid var(--color-divider);
+  border-bottom: 1px solid var(--color-divider);
+
+  @media (min-width: $bp-md) {
+    border: 0;
+  }
+}
+
+.post-rail-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: var(--space-2) 0;
+  cursor: pointer;
+  // The default disclosure triangle is replaced below with a glyph that can be
+  // positioned; -webkit- is still needed for Safari.
+  list-style: none;
+
+  &::-webkit-details-marker { display: none; }
+
+  &::after {
+    content: "+";
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: $bp-md) {
+    display: none;
+  }
+}
+
+[open] > .post-rail-summary::after {
+  content: "–";
+}
+
+.post-rail-inner {
+  padding-bottom: var(--space-3);
+
+  @media (min-width: $bp-md) {
+    padding-bottom: 0;
+    // The rail can outgrow the viewport on a long post; it scrolls inside
+    // itself rather than trailing off the bottom of a sticky column.
+    max-height: calc(100vh - var(--masthead-h) - 40px);
+    overflow-y: auto;
+  }
+}
+
+// ── Contents ───────────────────────────────────────────────────────────────
+.post-toc-heading {
+  // Redundant with the summary on a phone, where the panel is already labelled
+  // "Contents"; it is the rail's only heading from $bp-md up.
+  display: none;
+
+  @media (min-width: $bp-md) {
+    display: block;
+    margin-bottom: var(--space-3);
+  }
+}
+
+.post-toc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 0;
+  padding-left: 14px;
+  list-style: none;
+  border-left: 1px solid var(--color-divider);
+}
+
+.post-toc-link {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color var(--t-fast);
+
+  &:hover { color: var(--color-accent); }
+}
+
+// The active entry pulls itself out of the column and re-draws the rule beside
+// itself in accent, so the reader's position in the piece is legible at a
+// glance rather than needing to read the list.
+.post-toc-item.is-current .post-toc-link {
+  margin-left: -15px;
+  padding-left: 14px;
+  border-left: 1px solid var(--color-accent);
+  color: var(--color-accent-ink);
+}
+
+// ── Stats ──────────────────────────────────────────────────────────────────
+.post-rail-stats {
+  margin: 0;
+}
+
+.post-rail-stat {
+  display: flex;
+  gap: 6px;
+  line-height: 1.9;
+
+  dt::after { content: ":"; }
+
+  dd {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+}
+
+// ── Actions ────────────────────────────────────────────────────────────────
+.post-rail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.post-rail-action {
+  font-size: 12px;
+  // .n-btn centres its label; in the rail these are a left-aligned stack.
+  justify-content: flex-start;
+}

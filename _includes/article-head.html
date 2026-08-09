@@ -1,0 +1,49 @@
+{%- comment -%}
+The head of a post: breadcrumb kicker, title, standfirst, byline strip.
+
+The breadcrumb is derived, not written down. The domain comes from matching
+the document's collection against _data/domains.yml — the same list that
+feeds the masthead — and the second term is the subdirectory the file sits
+in, which is how this site has always organised subtopics
+(_reflections/philosophy/stoicism.md → PHILOSOPHY).
+{%- endcomment -%}
+
+{%- assign domain = site.data.domains | where: 'collection', page.collection | first -%}
+{%- assign segments = page.path | split: '/' -%}
+{%- assign group = '' -%}
+{%- if segments.size > 2 -%}
+    {%- assign group = segments[1] | replace: '-', ' ' -%}
+{%- endif -%}
+
+<header class="article-head">
+    {%- if domain %}
+    <p class="article-breadcrumb t-kicker">
+        <a class="nvl" href="{{ domain.url | relative_url }}">{{ domain.title }}</a>
+        {%- if group != '' %}
+        <span aria-hidden="true">→</span>
+        <span>{{ group }}</span>
+        {%- endif %}
+    </p>
+    {%- endif %}
+
+    <h1 class="article-title t-display-sm">{{ page.title }}</h1>
+
+    {%- comment -%}
+    `abstract` is the summary these posts actually carry; `description` is
+    written for search engines and is often the same sentence. Prefer the
+    former, fall back to the latter, and render nothing if neither exists
+    rather than leaving an empty italic line under the title.
+    {%- endcomment -%}
+    {%- assign standfirst = page.abstract | default: page.description -%}
+    {%- if standfirst and standfirst != '' %}
+    <p class="article-standfirst t-standfirst">{{ standfirst | strip_html | strip }}</p>
+    {%- endif %}
+
+    <div class="article-byline">
+        <span class="article-avatar" aria-hidden="true"></span>
+        <span class="article-author">{{ page.author | default: site.author }}</span>
+        <time class="article-date t-meta-sm" datetime="{{ page.date | date_to_xmlschema }}">
+            {{ page.date | date: "%d %b %Y" }}
+        </time>
+    </div>
+</header>

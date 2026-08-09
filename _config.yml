@@ -9,6 +9,13 @@ baseurl: "" # Leave empty if your site is at root level
 url: "https://hhshanto.github.io"
 author: Hasan
 
+# Used to build the "Edit on GitHub" link in a post's rail. jekyll-github-metadata
+# would supply site.github.repository_url, but it is not in the plugin list, so
+# the two values are written down here. `edit_branch` is where an edit should
+# land, which is main — not whatever branch happens to be building.
+repository: hhshanto/hhshanto.github.io
+edit_branch: main
+
 # Publisher logo for the structured-data block. The link-preview image is
 # set per page further down under `defaults`, because jekyll-seo-tag reads
 # og:image from `page.image` and ignores a site-level `image`.

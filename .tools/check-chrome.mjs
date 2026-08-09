@@ -20,6 +20,26 @@ const server = createServer(async (req, res) => {
 await new Promise((r) => server.listen(PORT, r));
 
 const browser = await chromium.launch();
+
+// The outgoing _base.scss still sets `html { scroll-behavior: smooth }`, so a
+// scrollTo() is an animation, not a jump. Reading a scroll-driven value on a
+// fixed timeout catches it mid-flight — that is how the reading-progress and
+// scroll-spy checks first "failed" against correct code. Wait for the offset to
+// stop changing instead.
+const settle = (page) => page.evaluate(() => new Promise((resolve) => {
+  let last = -1;
+  let still = 0;
+  (function tick() {
+    if (window.pageYOffset === last) {
+      if (++still > 4) return resolve(window.pageYOffset);
+    } else {
+      still = 0;
+      last = window.pageYOffset;
+    }
+    requestAnimationFrame(tick);
+  })();
+}));
+
 const results = [];
 const check = (name, pass, detail = '') =>
   results.push({ name, pass, detail });
@@ -197,6 +217,177 @@ for (const [label, width] of [['mobile', 375], ['desktop', 1440]]) {
   });
   check('home hero starts below the masthead, not under it',
     gap === null || gap >= 0, gap === null ? 'no hero' : `gap ${gap.toFixed(1)}px`);
+  await ctx.close();
+}
+
+// ── Post layout (screen 1c) ────────────────────────────────────────────────
+const POST = `http://localhost:${PORT}/reflections/philosophy/stoicism/`;
+
+// Contents are built by Liquid, not by JS, so they must be in the HTML for a
+// reader with scripting off and for a crawler. The old include built them in a
+// DOMContentLoaded handler, which satisfied neither.
+{
+  const ctx = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    javaScriptEnabled: false,
+  });
+  const page = await ctx.newPage();
+  await page.goto(POST);
+
+  const counts = await page.evaluate(() => ({
+    links: document.querySelectorAll('.post-toc-link').length,
+    headings: document.querySelectorAll('.article-body h2').length,
+    broken: Array.from(document.querySelectorAll('.post-toc-link'))
+      .filter((a) => !document.getElementById(decodeURIComponent(a.hash.slice(1))))
+      .length,
+    railOpen: !!document.querySelector('[data-post-rail]')?.open,
+  }));
+
+  check('contents are in the HTML without JS', counts.links > 0, `${counts.links} entries`);
+  check('one contents entry per h2',
+    counts.links === counts.headings, `${counts.links} entries vs ${counts.headings} headings`);
+  check('every contents link resolves to a heading', counts.broken === 0, `${counts.broken} broken`);
+  check('rail is expanded without JS', counts.railOpen);
+  await ctx.close();
+}
+
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(POST);
+
+  // The progress track is pinned to --masthead-h; if that token and the bar
+  // ever disagree the strip floats in the middle of the page or hides behind
+  // the header.
+  const seam = await page.evaluate(() => {
+    const bar = document.querySelector('.masthead').getBoundingClientRect();
+    const track = document.querySelector('.reading-progress').getBoundingClientRect();
+    return track.top - bar.bottom;
+  });
+  check('progress track sits on the masthead seam', Math.abs(seam) <= 1,
+    `${seam.toFixed(1)}px off`);
+
+  const atTop = await page.evaluate(() =>
+    document.querySelector('[data-reading-progress]').getBoundingClientRect().width);
+  check('progress is empty at the top of the page', atTop <= 1, `${atTop.toFixed(0)}px`);
+
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await settle(page);
+  const atEnd = await page.evaluate(() => {
+    const fill = document.querySelector('[data-reading-progress]');
+    return fill.getBoundingClientRect().width / window.innerWidth;
+  });
+  check('progress is full at the bottom', atEnd > 0.98, `${(atEnd * 100).toFixed(0)}%`);
+
+  // Scroll-spy. Land on the third heading and expect that entry, and only that
+  // entry, to be marked.
+  await page.evaluate(() => {
+    const heading = document.querySelectorAll('.article-body h2')[2];
+    const bar = document.querySelector('.masthead').getBoundingClientRect().height;
+    window.scrollTo(0, heading.getBoundingClientRect().top + window.pageYOffset - bar - 4);
+  });
+  await settle(page);
+  const spy = await page.evaluate(() => {
+    const heading = document.querySelectorAll('.article-body h2')[2];
+    const marked = document.querySelectorAll('.post-toc-item.is-current');
+    return {
+      count: marked.length,
+      href: marked[0]?.querySelector('a')?.hash,
+      want: '#' + heading.id,
+    };
+  });
+  check('scroll-spy marks exactly one entry', spy.count === 1, `${spy.count} marked`);
+  check('scroll-spy marks the heading being read', spy.href === spy.want,
+    `${spy.href} vs ${spy.want}`);
+
+  // An in-page anchor must not land its heading underneath the sticky bar.
+  await page.evaluate(() => document.querySelector('.post-toc-link').click());
+  await settle(page);
+  const anchored = await page.evaluate(() => {
+    const id = decodeURIComponent(
+      document.querySelector('.post-toc-link').hash.slice(1));
+    const bar = document.querySelector('.masthead').getBoundingClientRect();
+    return document.getElementById(id).getBoundingClientRect().top - bar.bottom;
+  });
+  check('a contents link lands its heading below the masthead', anchored >= -1,
+    `${anchored.toFixed(0)}px below the bar`);
+
+  // The rail is sticky, so it must still be on screen deep into a long post.
+  await page.evaluate(() => window.scrollTo(0, 1600));
+  await settle(page);
+  const railTop = await page.evaluate(() => {
+    const bar = document.querySelector('.masthead').getBoundingClientRect();
+    const rail = document.querySelector('.post-rail').getBoundingClientRect();
+    return { gap: rail.top - bar.bottom, height: rail.height };
+  });
+  check('rail stays visible when scrolled', railTop.gap >= 0 && railTop.gap < 60,
+    `${railTop.gap.toFixed(0)}px below the bar`);
+
+  check('rail disclosure is hidden on desktop',
+    !(await page.isVisible('.post-rail-summary')));
+
+  // The article column must not spill out of the grid, whatever is in it.
+  const fits = await page.evaluate(() => {
+    const layout = document.querySelector('.article-layout').getBoundingClientRect();
+    const article = document.querySelector('.article').getBoundingClientRect();
+    return { overflow: article.right - layout.right, doc: document.documentElement.scrollWidth, vw: window.innerWidth };
+  });
+  check('article stays inside the grid', fits.overflow <= 1, `${fits.overflow.toFixed(0)}px over`);
+  check('post does not scroll sideways (desktop)', fits.doc <= fits.vw + 1,
+    `${fits.doc} vs ${fits.vw}`);
+  await ctx.close();
+}
+
+// Phone: the rail collapses out of the way, and nothing overflows.
+{
+  const ctx = await browser.newContext({ viewport: { width: 375, height: 800 } });
+  const page = await ctx.newPage();
+  await page.goto(POST);
+
+  check('rail is collapsed on a phone',
+    !(await page.evaluate(() => document.querySelector('[data-post-rail]').open)));
+  check('rail disclosure is a 44px tap target',
+    await page.locator('.post-rail-summary').boundingBox()
+      .then((b) => b.height >= 44), '');
+
+  await page.click('.post-rail-summary');
+  const opened = await page.evaluate(() => {
+    const rail = document.querySelector('[data-post-rail]');
+    const links = document.querySelectorAll('.post-toc-link');
+    return { open: rail.open, visible: links[0].getBoundingClientRect().height > 0 };
+  });
+  check('rail opens on tap', opened.open && opened.visible);
+
+  const doc = await page.evaluate(() => ({
+    w: document.documentElement.scrollWidth, vw: window.innerWidth }));
+  check('post does not scroll sideways (phone)', doc.w <= doc.vw + 1, `${doc.w} vs ${doc.vw}`);
+  await ctx.close();
+}
+
+// The code theme has no real content to sit on yet, so it is checked where the
+// specimen lives.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}/styleguide/`);
+
+  const code = await page.evaluate(() => {
+    const block = document.querySelector('.article-body div.highlighter-rouge');
+    const inline = document.querySelector('.article-body p code');
+    const label = block?.querySelector('.code-label');
+    return {
+      label: label?.textContent ?? null,
+      blockBg: block && getComputedStyle(block).backgroundColor,
+      inlineBg: inline && getComputedStyle(inline).backgroundColor,
+      wrapped: !!document.querySelector('.article-table > table'),
+    };
+  });
+  check('code block carries a language label', code.label === 'python', `"${code.label}"`);
+  // kramdown puts .highlighter-rouge on inline code too; without the `div`
+  // qualifier in _rouge.scss every inline snippet became a dark block.
+  check('inline code did not take the block treatment',
+    code.inlineBg !== code.blockBg, `${code.inlineBg} vs ${code.blockBg}`);
+  check('tables are wrapped so they can scroll', code.wrapped);
   await ctx.close();
 }
 

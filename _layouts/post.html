@@ -2,30 +2,43 @@
 layout: default
 ---
 {%- comment -%}
-The webfont <link> that used to sit here loaded from inside the body and
-only on post pages; it now lives in the head of the default layout.
+Screen 1c — the reading view.
+
+Two columns above $bp-md: a 200px sticky rail carrying the contents, the
+stats and the two actions, then the article itself at a 70ch measure. Below
+that width it is one column and the rail becomes a <details> above the piece.
+
+The rail needs the *rendered* body to build its contents list from, so
+`content` is passed down explicitly — an include cannot see a layout's
+`content` variable on its own.
 {%- endcomment -%}
-<article class="post">
-    <!-- Post Header -->
-    {% include post-header.html %}
 
-    <!-- Table of Contents -->
-    {% if page.toc %}
-        {% include toc.html %}
-    {% endif %}
+<div class="reading-progress" aria-hidden="true">
+    <span class="reading-progress-fill" data-reading-progress></span>
+</div>
 
-    <!-- Main Content -->
-    <div class="post-content">
-        {{ content }}
-    </div>
+<div class="frame article-layout">
+    {% include post-rail.html html=content %}
 
-    <!-- Post Footer -->
-    {% include post-footer.html %}
+    <article class="article">
+        {% include article-head.html %}
 
-    <!-- Related Posts (renders nothing when there are no matches) -->
-    {% include related-posts.html %}
+        <div class="article-body t-prose" data-article-body>
+            {{ content }}
+        </div>
 
-    <!-- Post Navigation -->
-    {% include post-navigation.html %}
+        {% if page.tags.size > 0 %}
+        <hr class="hr">
+        <div class="article-tags">
+            {% for tag in page.tags %}
+            <a class="n-tag n-tag-outline" href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
 
-</article>
+        {% include post-navigation.html %}
+        {% include related-posts.html %}
+    </article>
+</div>
+
+<script src="{{ '/assets/js/article.js' | relative_url }}" defer></script>

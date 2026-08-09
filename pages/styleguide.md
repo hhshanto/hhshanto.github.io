@@ -290,6 +290,53 @@ description: Every design token and component in the Noema system, on one page.
 </section>
 
 <section class="sg-section">
+  <div class="rule-head"><h2 class="t-label">Article body</h2></div>
+  <p class="t-body-sm t-muted" style="max-width: 60ch; margin-bottom: var(--space-6);">
+    What kramdown emits from a markdown file, styled by <code>_article.scss</code>
+    and <code>_rouge.scss</code>. No post on the site currently contains a code
+    block, a table or a pull quote, so this is the only place the code theme can
+    be checked &mdash; the block keeps a dark ground in <em>both</em> themes,
+    deliberately.
+  </p>
+
+  <div class="article-body t-prose" markdown="1">
+
+A paragraph of body prose at 16.5px on a 1.85 line, justified from 700px up
+and ragged-right below it. Inline `code` follows the page rather than the
+code block, and [a link](#) takes a hairline underline that goes accent on
+hover.
+
+> A pull quote is a markdown blockquote. It is the only thing an author can
+> actually type, so it is what the treatment is mapped onto.
+
+## A heading at h2
+
+Headings are the one place the prose stops being justified: a short justified
+line stretches into gaps.
+
+```python
+def entropy(counts):
+    total = sum(counts)          # 2411
+    return -sum((n / total) * log2(n / total) for n in counts if n)
+```
+
+| Domain | Notes | Words |
+| --- | --- | --- |
+| Reflections | 3 | 4 210 |
+| Natural Sciences | 2 | 3 980 |
+
+  </div>
+
+  <!--
+    article.js is normally loaded only by the post layout. It is pulled in here
+    so the mono language label above the code block — which JS inserts, because
+    CSS cannot read a class name into `content` — can be checked on this page
+    too. Its other three jobs find no elements here and do nothing.
+  -->
+  <script src="{{ '/assets/js/article.js' | relative_url }}" defer></script>
+</section>
+
+<section class="sg-section">
   <div class="rule-head"><h2 class="t-label">Focus</h2></div>
   <p class="t-body-sm t-muted" style="max-width: 60ch;">
     Tab through this page. Every focusable element takes a 2px accent ring at a

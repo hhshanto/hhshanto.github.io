@@ -1,0 +1,47 @@
+// Prev / next at the foot of a post — the two-column hairline grid from 1c.
+
+.post-nav {
+  --cols: 1;
+  margin-top: var(--space-8);
+
+  @media (min-width: $bp-sm) {
+    --cols: 2;
+  }
+}
+
+.post-nav-tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  color: inherit;
+  text-decoration: none;
+
+  // .pcard tints the border on hover, but a hairline-grid cell has no border
+  // of its own — the rule is the container showing through the gap. A wash is
+  // the equivalent gesture here.
+  &:hover { background: var(--wash-ink); }
+
+  // With only one neighbour the tile takes the full width rather than leaving
+  // an empty cell beside itself.
+  &:only-child {
+    grid-column: 1 / -1;
+  }
+}
+
+.post-nav-next {
+  text-align: right;
+
+  // Only meaningful once the two sit side by side; stacked, both read left.
+  @media (max-width: $bp-sm - 1px) {
+    text-align: left;
+  }
+}
+
+.post-nav-dir {
+  color: var(--color-accent-ink);
+}
+
+.post-nav-title {
+  color: var(--color-text);
+}

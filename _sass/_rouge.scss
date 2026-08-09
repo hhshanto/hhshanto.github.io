@@ -1,0 +1,98 @@
+// Code blocks, and Rouge's token classes mapped onto the four colours the
+// mockup uses.
+//
+// This is the one component that does NOT invert with the theme: the block
+// keeps a dark ground in light mode and in dark mode alike. Its tokens are
+// therefore declared once on :root in _tokens.scss and never re-declared under
+// [data-theme="dark"] — see the note there.
+//
+// kramdown + Rouge emit:
+//   <div class="language-python highlighter-rouge">
+//     <div class="highlight"><pre class="highlight"><code>…</code></pre></div>
+//   </div>
+// article.js inserts the mono language label as a first child of the outer div.
+
+// The element selector is load-bearing. kramdown puts .highlighter-rouge on
+// *inline* code too — `x` in a sentence comes out as
+// <code class="language-plaintext highlighter-rouge">, and without `div` here
+// every inline snippet would become a dark padded block mid-paragraph.
+.article-body div.highlighter-rouge {
+  margin: var(--space-6) 0;
+  padding: 14px 20px 18px;
+  border: 1px solid var(--codeblock-edge);
+  border-radius: var(--radius-md);
+  background: var(--codeblock-bg);
+  color: var(--codeblock-ink);
+  text-align: left;
+}
+
+.code-label {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--codeblock-label);
+}
+
+.article-body .highlight {
+  background: none;
+}
+
+.article-body pre.highlight,
+.article-body div.highlighter-rouge pre {
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  background: none;
+}
+
+.article-body div.highlighter-rouge code {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.75;
+}
+
+// ── Token colours ──────────────────────────────────────────────────────────
+// Rouge emits a lot of classes; these are the groups that actually carry
+// meaning at this level of detail. Anything unlisted inherits --codeblock-ink,
+// which is the intended default rather than an omission.
+.article-body .highlight {
+  // Keywords, operators-as-words, declarations.
+  .k, .kc, .kd, .kn, .kp, .kr, .kt, .kv,
+  .ow, .cp {
+    color: var(--tok-keyword);
+  }
+
+  // Function and class names.
+  .nf, .nc, .nd, .fm {
+    color: var(--tok-fn);
+  }
+
+  // Numbers, and strings — both are literals, and the mock gives literals the
+  // green. Rouge has no separate colour for them in the handoff's palette.
+  .m, .mi, .mf, .mh, .mo, .mb, .il,
+  .s, .s1, .s2, .sb, .sc, .sd, .se, .sh, .si, .sr, .ss, .sx, .sa, .dl {
+    color: var(--tok-num);
+  }
+
+  // Builtins, constants and variable-ish names.
+  .nb, .bp, .no, .nv, .vc, .vg, .vi, .nl, .py {
+    color: var(--tok-builtin);
+  }
+
+  .c, .c1, .cm, .cs, .cd {
+    color: var(--tok-comment);
+    font-style: italic;
+  }
+
+  // Diff and error markers keep Rouge's semantics rather than a palette colour.
+  .gd { color: var(--tok-keyword); }
+  .gi { color: var(--tok-num); }
+  .err { color: var(--tok-keyword); }
+}

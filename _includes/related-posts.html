@@ -68,28 +68,27 @@ never match as a prefix of another.
 {%- endif -%}
 
 {%- if picked_count > 0 -%}
-<div class="related-posts">
-    <h3>Related Posts</h3>
-    <div class="related-posts-grid">
+<section class="related">
+    <h2 class="related-heading t-label rule-head">Related</h2>
+    <div class="related-grid">
         {%- for doc in pool -%}
             {%- assign key = doc.url | prepend: '|' | append: '|' -%}
             {%- if picked contains key %}
-                <div class="related-post-card">
-                    <h4><a href="{{ doc.url | relative_url }}">{{ doc.title }}</a></h4>
-                    <p class="excerpt">
-                        {%- if doc.abstract -%}
-                            {{ doc.abstract | strip_html | truncatewords: 30 }}
-                        {%- else -%}
-                            {{ doc.content | strip_html | truncatewords: 30 }}
-                        {%- endif -%}
-                    </p>
-                    <div class="post-meta">
-                        <span class="date">{{ doc.date | date: "%B %-d, %Y" }}</span>
-                        {% include reading-time.html document=doc %}
-                    </div>
-                </div>
+        <a class="related-card n-card pcard" href="{{ doc.url | relative_url }}">
+            <h3 class="n-card-title">{{ doc.title }}</h3>
+            <p class="n-card-body">
+                {%- if doc.abstract -%}
+                    {{ doc.abstract | strip_html | truncatewords: 24 }}
+                {%- else -%}
+                    {{ doc.content | strip_html | truncatewords: 24 }}
+                {%- endif -%}
+            </p>
+            <span class="related-meta t-meta-sm">
+                {{ doc.date | date: "%d %b %Y" }} · {% include reading-time.html document=doc %}
+            </span>
+        </a>
             {%- endif -%}
         {%- endfor -%}
     </div>
-</div>
+</section>
 {%- endif -%}

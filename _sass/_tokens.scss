@@ -87,6 +87,29 @@ $content-max: 1160px;
   --tag-accent-bg: var(--color-accent-100);
   --tag-accent-ink: var(--color-accent-800);
 
+  // ── Code ─────────────────────────────────────────────────────────────────
+  // Deliberately outside the light/dark inversion. The handoff draws the code
+  // block on a dark ground in both themes, and that is right: a code listing
+  // is a quotation from an editor, not part of the page's paper. These are
+  // therefore declared once here and NOT re-declared under [data-theme="dark"]
+  // — the only tokens in this file that behave that way.
+  //
+  // The four token colours are the mockup's, mapped onto Rouge's class names
+  // in _rouge.scss. Names are `--tok-*` rather than `--code-*` to stay clear of
+  // the outgoing _variables.scss, which still defines its own --code-bg.
+  --codeblock-bg: #2d2b2b;
+  --codeblock-ink: #e6e2dc;
+  // The one code token that IS theme-aware. On paper the dark block has all
+  // the edge it needs; on the dark ground #2d2b2b against #201f1d is a 1.3:1
+  // difference and the block dissolves into the page, so it gets a hairline.
+  --codeblock-edge: transparent;
+  --codeblock-label: #b0aaa4;
+  --tok-keyword: #c98a5a;
+  --tok-fn: #e1ad66;
+  --tok-num: #9ab87c;
+  --tok-builtin: #7fa8c9;
+  --tok-comment: #9b938c;
+
   // ── Type ─────────────────────────────────────────────────────────────────
   --font-heading: "Cormorant Garamond", Georgia, serif;
   --font-body: "Lora", Georgia, serif;
@@ -185,6 +208,10 @@ $content-max: 1160px;
 
   --tag-accent-bg: #{rgba(#e1ad66, 0.16)};
   --tag-accent-ink: var(--color-accent-300);
+
+  // See the note beside --codeblock-edge on :root. Everything else under
+  // --codeblock-* / --tok-* stays as declared there, deliberately.
+  --codeblock-edge: #{rgba(#f3f2f2, 0.14)};
 
   // A dark ground swallows an ink shadow, so elevation leans on a longer,
   // deeper cast rather than a tint that would simply disappear.

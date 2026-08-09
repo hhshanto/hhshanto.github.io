@@ -1,35 +1,35 @@
-<div class="table-of-contents">
-    <h2>Table of Contents</h2>
-    <div id="toc">
-        <!-- JavaScript will populate this -->
-    </div>
-</div>
+{%- comment -%}
+Contents, built from the rendered body's <h2> elements at build time.
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const headings = document.querySelectorAll('.post-content h2, .post-content h3');
-    const toc = document.getElementById('toc');
-    const tocList = document.createElement('ul');
+The previous version built this in the browser from a DOMContentLoaded
+script, which meant the list did not exist for anyone reading without JS,
+did not exist in the HTML for a crawler, and appeared a frame late for
+everyone else. kramdown already gives every heading an id, so the list can
+be derived here instead and the JS reduced to highlighting the current entry.
 
-    headings.forEach((heading, index) => {
-        // Create ID for heading if it doesn't exist
-        if (!heading.id) {
-            heading.id = `heading-${index}`;
-        }
+Pass the rendered body in as the `html` parameter; see post-rail.html.
 
-        const listItem = document.createElement('li');
-        const link = document.createElement('a');
-        
-        link.textContent = heading.textContent;
-        link.href = `#${heading.id}`;
-        
-        // Add class based on heading level
-        listItem.className = heading.tagName.toLowerCase();
-        
-        listItem.appendChild(link);
-        tocList.appendChild(listItem);
-    });
+Parsing HTML by splitting strings is crude, but Liquid has no other option
+and the input is kramdown's own output, not arbitrary markup: every heading
+is exactly `<h2 id="…">…</h2>`. A heading with no id is skipped rather than
+producing a broken anchor.
+{%- endcomment -%}
 
-    toc.appendChild(tocList);
-});
-</script>
+{%- assign chunks = include.html | split: '<h2 id="' -%}
+{%- if chunks.size > 1 -%}
+<nav class="post-toc" aria-labelledby="post-toc-heading">
+    <h2 class="post-toc-heading t-label" id="post-toc-heading">Contents</h2>
+    <ul class="post-toc-list">
+        {%- for chunk in chunks offset: 1 -%}
+            {%- assign id = chunk | split: '"' | first -%}
+            {%- assign heading = chunk | split: '</h2>' | first -%}
+            {%- assign label = heading | remove_first: id | remove_first: '">' | strip_html | strip -%}
+            {%- if id != '' and label != '' %}
+        <li class="post-toc-item">
+            <a class="post-toc-link" href="#{{ id }}">{{ label }}</a>
+        </li>
+            {%- endif -%}
+        {%- endfor %}
+    </ul>
+</nav>
+{%- endif -%}

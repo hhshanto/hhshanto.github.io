@@ -1,0 +1,43 @@
+// Related posts at the foot of an article.
+//
+// Not in the handoff — 1c ends at prev/next — but the site already computes
+// related documents from shared tags and subfolder, and dropping working
+// navigation to match a mock that never considered it would be a loss. Built
+// on the design system's .n-card so it belongs to the same page.
+
+.related {
+  margin-top: var(--space-8);
+}
+
+.related-heading {
+  margin-bottom: var(--space-4);
+  color: var(--color-text-muted);
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+
+  // Two across only from $bp-lg. The article column is 70ch wide; below that
+  // width two cards leave each title breaking after two words.
+  @media (min-width: $bp-lg) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.related-card {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover .n-card-title {
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+}
+
+.related-meta {
+  display: block;
+}
