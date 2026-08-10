@@ -1,74 +1,14 @@
 {
  "backend": "tf-idf (lexical, offline)",
- "generated": "2026-08-09",
- "count": 12,
- "dims": 642,
+ "generated": "2026-08-12",
+ "count": 11,
+ "dims": 605,
  "explained": [
-  0.1573,
-  0.1246,
-  0.1034
+  0.1758,
+  0.1392,
+  0.1081
  ],
  "docs": [
-  {
-   "url": "/arts-literature/poetry/2026-08-08-banalata-sen-does-not-survive-the-crossing/",
-   "title": "Banalata Sen Does Not Survive the Crossing",
-   "domain": "arts-literature",
-   "sub": "poetry",
-   "date": "2026-08-08",
-   "words": 605,
-   "xyz": [
-    0.1563,
-    -0.3456,
-    0.8198
-   ],
-   "near": [
-    {
-     "url": "/reflections/about/2025-03-08-noema-digital-garden/",
-     "title": "Noema: The Digital Garden of Thoughts and Reflections",
-     "score": 0.2094
-    },
-    {
-     "url": "/social-sciences/political-science/2025-03-15-patriotic-ambivalence/",
-     "title": "Hope and Hopelessness: A Love-Hate Relationship with My Country",
-     "score": 0.1712
-    },
-    {
-     "url": "/social-sciences/psychology/2025-03-19-obedience-to-authority-an-experimental-view/",
-     "title": "Obedience to Authority: Milgram's Experiments Through a Bangladeshi Lens",
-     "score": 0.1454
-    }
-   ]
-  },
-  {
-   "url": "/contemporary/politics/2026-08-08-the-reform-has-to-pass-through-the-party-it-was-written-against/",
-   "title": "The Reform Has to Pass Through the Party It Was Written Against",
-   "domain": "contemporary",
-   "sub": "politics",
-   "date": "2026-08-08",
-   "words": 871,
-   "xyz": [
-    0.1216,
-    -0.2608,
-    -0.6285
-   ],
-   "near": [
-    {
-     "url": "/social-sciences/psychology/2025-03-19-obedience-to-authority-an-experimental-view/",
-     "title": "Obedience to Authority: Milgram's Experiments Through a Bangladeshi Lens",
-     "score": 0.2449
-    },
-    {
-     "url": "/social-sciences/political-science/2025-03-19-hopeful-pessimism/",
-     "title": "Hopeful Pessimism and Tempered Optimism: Finding Balance in My View of Bangladesh",
-     "score": 0.1765
-    },
-    {
-     "url": "/reflections/philosophy/2025-01-26-artificial-intelligence-ethics/",
-     "title": "The Ethical Imperatives of Artificial Intelligence Development",
-     "score": 0.1715
-    }
-   ]
-  },
   {
    "url": "/natural-sciences/physics/2025-03-08-higgs-boson-discovery-implications/",
    "title": "The Higgs Boson: Understanding the 'God Particle' and Why It Matters",
@@ -77,25 +17,25 @@
    "date": "2025-03-08",
    "words": 930,
    "xyz": [
-    -1,
-    0.4259,
-    0.1352
+    0.9917,
+    -0.6727,
+    -0.2026
    ],
    "near": [
     {
      "url": "/natural-sciences/physics/2025-03-08-large-hadron-collider-engineering-physics/",
      "title": "The Large Hadron Collider: Engineering Marvel and Gateway to New Physics",
-     "score": 0.5976
-    },
-    {
-     "url": "/reflections/philosophy/2025-01-26-artificial-intelligence-ethics/",
-     "title": "The Ethical Imperatives of Artificial Intelligence Development",
-     "score": 0.1497
+     "score": 0.5639
     },
     {
      "url": "/social-sciences/psychology/2025-03-19-obedience-to-authority-an-experimental-view/",
      "title": "Obedience to Authority: Milgram's Experiments Through a Bangladeshi Lens",
-     "score": 0.1446
+     "score": 0.1484
+    },
+    {
+     "url": "/reflections/philosophy/2025-01-26-artificial-intelligence-ethics/",
+     "title": "The Ethical Imperatives of Artificial Intelligence Development",
+     "score": 0.1413
     }
    ]
   },
@@ -107,25 +47,55 @@
    "date": "2025-03-08",
    "words": 997,
    "xyz": [
-    -0.9881,
-    0.4654,
-    0.056
+    1,
+    -0.628,
+    -0.0742
    ],
    "near": [
     {
      "url": "/natural-sciences/physics/2025-03-08-higgs-boson-discovery-implications/",
      "title": "The Higgs Boson: Understanding the 'God Particle' and Why It Matters",
-     "score": 0.5976
+     "score": 0.5639
+    },
+    {
+     "url": "/natural-sciences/statistics/2026-08-12-bayes-tells-you-what-you-want-mcmc-gets-it/",
+     "title": "Bayes' Theorem Tells You What You Want. MCMC Gets It For You",
+     "score": 0.1907
     },
     {
      "url": "/reflections/philosophy/2025-01-26-artificial-intelligence-ethics/",
      "title": "The Ethical Imperatives of Artificial Intelligence Development",
-     "score": 0.2103
+     "score": 0.1899
+    }
+   ]
+  },
+  {
+   "url": "/natural-sciences/statistics/2026-08-12-bayes-tells-you-what-you-want-mcmc-gets-it/",
+   "title": "Bayes' Theorem Tells You What You Want. MCMC Gets It For You",
+   "domain": "natural-sciences",
+   "sub": "statistics",
+   "date": "2026-08-12",
+   "words": 1151,
+   "xyz": [
+    0.2586,
+    0.4916,
+    0.4122
+   ],
+   "near": [
+    {
+     "url": "/reflections/philosophy/2025-01-26-artificial-intelligence-ethics/",
+     "title": "The Ethical Imperatives of Artificial Intelligence Development",
+     "score": 0.2416
     },
     {
-     "url": "/reflections/philosophy/stoicism/",
-     "title": "What is Stoicism? The Basics of the World’s Greatest Practical Philosophy",
-     "score": 0.1356
+     "url": "/natural-sciences/physics/2025-03-08-large-hadron-collider-engineering-physics/",
+     "title": "The Large Hadron Collider: Engineering Marvel and Gateway to New Physics",
+     "score": 0.1907
+    },
+    {
+     "url": "/social-sciences/psychology/2025-03-19-obedience-to-authority-an-experimental-view/",
+     "title": "Obedience to Authority: Milgram's Experiments Through a Bangladeshi Lens",
+     "score": 0.181
     }
    ]
   },
@@ -137,25 +107,25 @@
    "date": "2025-03-08",
    "words": 508,
    "xyz": [
-    0.0358,
-    -0.7192,
-    0.6195
+    0.0127,
+    0.7982,
+    -0.6692
    ],
    "near": [
     {
-     "url": "/arts-literature/poetry/2026-08-08-banalata-sen-does-not-survive-the-crossing/",
-     "title": "Banalata Sen Does Not Survive the Crossing",
-     "score": 0.2094
-    },
-    {
      "url": "/reflections/philosophy/2025-01-26-artificial-intelligence-ethics/",
      "title": "The Ethical Imperatives of Artificial Intelligence Development",
-     "score": 0.2053
+     "score": 0.216
     },
     {
      "url": "/reflections/philosophy/stoicism/",
      "title": "What is Stoicism? The Basics of the World’s Greatest Practical Philosophy",
-     "score": 0.1685
+     "score": 0.1738
+    },
+    {
+     "url": "/natural-sciences/statistics/2026-08-12-bayes-tells-you-what-you-want-mcmc-gets-it/",
+     "title": "Bayes' Theorem Tells You What You Want. MCMC Gets It For You",
+     "score": 0.1674
     }
    ]
   },
@@ -167,25 +137,25 @@
    "date": "2025-01-26",
    "words": 1080,
    "xyz": [
-    -0.1574,
-    -0.3868,
-    -0.1131
+    0.1791,
+    0.5527,
+    -0.1182
    ],
    "near": [
     {
-     "url": "/reflections/philosophy/stoicism/",
-     "title": "What is Stoicism? The Basics of the World’s Greatest Practical Philosophy",
-     "score": 0.2421
+     "url": "/natural-sciences/statistics/2026-08-12-bayes-tells-you-what-you-want-mcmc-gets-it/",
+     "title": "Bayes' Theorem Tells You What You Want. MCMC Gets It For You",
+     "score": 0.2416
     },
     {
-     "url": "/natural-sciences/physics/2025-03-08-large-hadron-collider-engineering-physics/",
-     "title": "The Large Hadron Collider: Engineering Marvel and Gateway to New Physics",
-     "score": 0.2103
+     "url": "/reflections/philosophy/stoicism/",
+     "title": "What is Stoicism? The Basics of the World’s Greatest Practical Philosophy",
+     "score": 0.2253
     },
     {
      "url": "/reflections/about/2025-03-08-noema-digital-garden/",
      "title": "Noema: The Digital Garden of Thoughts and Reflections",
-     "score": 0.2053
+     "score": 0.216
     }
    ]
   },
@@ -197,25 +167,25 @@
    "date": "2025-01-25",
    "words": 704,
    "xyz": [
-    -0.1116,
-    -0.5149,
-    -0.2929
+    0.1244,
+    0.6092,
+    -0.0214
    ],
    "near": [
     {
      "url": "/reflections/philosophy/2025-01-26-artificial-intelligence-ethics/",
      "title": "The Ethical Imperatives of Artificial Intelligence Development",
-     "score": 0.2421
+     "score": 0.2253
     },
     {
      "url": "/social-sciences/psychology/2025-03-19-obedience-to-authority-an-experimental-view/",
      "title": "Obedience to Authority: Milgram's Experiments Through a Bangladeshi Lens",
-     "score": 0.1954
+     "score": 0.196
     },
     {
      "url": "/reflections/about/2025-03-08-noema-digital-garden/",
      "title": "Noema: The Digital Garden of Thoughts and Reflections",
-     "score": 0.1685
+     "score": 0.1738
     }
    ]
   },
@@ -227,25 +197,25 @@
    "date": "2025-03-15",
    "words": 532,
    "xyz": [
-    0.5512,
-    0.4698,
-    0.0611
+    -0.7546,
+    -0.3937,
+    -0.105
    ],
    "near": [
     {
      "url": "/social-sciences/political-science/2025-03-15-patriotic-ambivalence/",
      "title": "Hope and Hopelessness: A Love-Hate Relationship with My Country",
-     "score": 0.3402
+     "score": 0.3895
     },
     {
      "url": "/social-sciences/political-science/2025-03-19-dialectical-thinking/",
      "title": "Dialectical Thinking: Holding Contradictions About My Country Without Falling Apart",
-     "score": 0.278
+     "score": 0.2892
     },
     {
      "url": "/social-sciences/political-science/2025-03-19-hopeful-pessimism/",
      "title": "Hopeful Pessimism and Tempered Optimism: Finding Balance in My View of Bangladesh",
-     "score": 0.243
+     "score": 0.2806
     }
    ]
   },
@@ -257,25 +227,25 @@
    "date": "2025-03-15",
    "words": 592,
    "xyz": [
-    0.4925,
-    0.582,
-    0.1161
+    -0.6971,
+    -0.5757,
+    0.0816
    ],
    "near": [
     {
      "url": "/social-sciences/political-science/2025-03-15-cognitive-dissonance/",
      "title": "Cognitive Dissonance: Loving and Questioning My Country at the Same Time",
-     "score": 0.3402
-    },
-    {
-     "url": "/social-sciences/political-science/2025-03-19-dialectical-thinking/",
-     "title": "Dialectical Thinking: Holding Contradictions About My Country Without Falling Apart",
-     "score": 0.2542
+     "score": 0.3895
     },
     {
      "url": "/social-sciences/political-science/2025-03-19-hopeful-pessimism/",
      "title": "Hopeful Pessimism and Tempered Optimism: Finding Balance in My View of Bangladesh",
-     "score": 0.2463
+     "score": 0.284
+    },
+    {
+     "url": "/social-sciences/political-science/2025-03-19-dialectical-thinking/",
+     "title": "Dialectical Thinking: Holding Contradictions About My Country Without Falling Apart",
+     "score": 0.2698
     }
    ]
   },
@@ -287,25 +257,25 @@
    "date": "2025-03-19",
    "words": 396,
    "xyz": [
-    0.4961,
-    0.3816,
-    -0.0893
+    -0.5908,
+    -0.2545,
+    0.5745
    ],
    "near": [
     {
      "url": "/social-sciences/political-science/2025-03-15-cognitive-dissonance/",
      "title": "Cognitive Dissonance: Loving and Questioning My Country at the Same Time",
-     "score": 0.278
+     "score": 0.2892
     },
     {
      "url": "/social-sciences/political-science/2025-03-15-patriotic-ambivalence/",
      "title": "Hope and Hopelessness: A Love-Hate Relationship with My Country",
-     "score": 0.2542
+     "score": 0.2698
     },
     {
-     "url": "/contemporary/politics/2026-08-08-the-reform-has-to-pass-through-the-party-it-was-written-against/",
-     "title": "The Reform Has to Pass Through the Party It Was Written Against",
-     "score": 0.1435
+     "url": "/social-sciences/political-science/2025-03-19-hopeful-pessimism/",
+     "title": "Hopeful Pessimism and Tempered Optimism: Finding Balance in My View of Bangladesh",
+     "score": 0.154
     }
    ]
   },
@@ -317,25 +287,25 @@
    "date": "2025-03-19",
    "words": 366,
    "xyz": [
-    0.4615,
-    0.2663,
-    -0.0385
+    -0.5977,
+    -0.192,
+    -0.7581
    ],
    "near": [
     {
      "url": "/social-sciences/political-science/2025-03-15-patriotic-ambivalence/",
      "title": "Hope and Hopelessness: A Love-Hate Relationship with My Country",
-     "score": 0.2463
+     "score": 0.284
     },
     {
      "url": "/social-sciences/political-science/2025-03-15-cognitive-dissonance/",
      "title": "Cognitive Dissonance: Loving and Questioning My Country at the Same Time",
-     "score": 0.243
+     "score": 0.2806
     },
     {
-     "url": "/contemporary/politics/2026-08-08-the-reform-has-to-pass-through-the-party-it-was-written-against/",
-     "title": "The Reform Has to Pass Through the Party It Was Written Against",
-     "score": 0.1765
+     "url": "/social-sciences/political-science/2025-03-19-dialectical-thinking/",
+     "title": "Dialectical Thinking: Holding Contradictions About My Country Without Falling Apart",
+     "score": 0.154
     }
    ]
   },
@@ -347,25 +317,25 @@
    "date": "2025-03-19",
    "words": 795,
    "xyz": [
-    -0.0579,
-    -0.3639,
-    -0.6452
+    0.0738,
+    0.2649,
+    0.8805
    ],
    "near": [
     {
-     "url": "/contemporary/politics/2026-08-08-the-reform-has-to-pass-through-the-party-it-was-written-against/",
-     "title": "The Reform Has to Pass Through the Party It Was Written Against",
-     "score": 0.2449
+     "url": "/reflections/philosophy/2025-01-26-artificial-intelligence-ethics/",
+     "title": "The Ethical Imperatives of Artificial Intelligence Development",
+     "score": 0.2006
     },
     {
      "url": "/reflections/philosophy/stoicism/",
      "title": "What is Stoicism? The Basics of the World’s Greatest Practical Philosophy",
-     "score": 0.1954
+     "score": 0.196
     },
     {
-     "url": "/reflections/philosophy/2025-01-26-artificial-intelligence-ethics/",
-     "title": "The Ethical Imperatives of Artificial Intelligence Development",
-     "score": 0.1921
+     "url": "/natural-sciences/statistics/2026-08-12-bayes-tells-you-what-you-want-mcmc-gets-it/",
+     "title": "Bayes' Theorem Tells You What You Want. MCMC Gets It For You",
+     "score": 0.181
     }
    ]
   }
