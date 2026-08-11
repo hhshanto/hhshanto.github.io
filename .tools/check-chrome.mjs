@@ -1379,9 +1379,71 @@ const rest = (page) => page.evaluate(() => new Promise((resolve) => {
   await ctx.close();
 }
 
+// ── Math (KaTeX, page-scoped) ──────────────────────────────────────────────
+//
+// The whole-site sideways audit below cannot see the failure this section is
+// really about. A display equation wider than the article column does not widen
+// the page; an ancestor clips it, so the audit stays green while the reader
+// loses the right-hand side of the formula with no way to reach it. That is why
+// the overflow assertion here reads computed overflow-x rather than trusting
+// the page-level check.
+{
+  const MATH_POST = '/natural-sciences/statistics/2026-08-12-bayes-tells-you-what-you-want-mcmc-gets-it/';
+  const PLAIN_POST = '/natural-sciences/physics/2025-03-08-higgs-boson-discovery-implications/';
+
+  const ctx = await browser.newContext({ viewport: { width: 375, height: 800 } });
+  const page = await ctx.newPage();
+  await page.goto(`http://localhost:${PORT}${MATH_POST}`);
+  await page.waitForFunction(() => document.querySelectorAll('.katex').length > 0,
+    null, { timeout: 10000 }).catch(() => {});
+
+  const rendered = await page.locator('.katex').count();
+  check('a math post typesets its equations', rendered > 0, `${rendered} .katex nodes`);
+
+  // Kramdown hands KaTeX \[ ... \] rather than the $$ written in the source, so
+  // a delimiter surviving into the rendered text means math.js never claimed it.
+  const leftover = await page.evaluate(() => {
+    const body = document.querySelector('[data-article-body]');
+    return body ? (body.innerText.match(/\\\[|\\\]|\$\$/g) || []).length : -1;
+  });
+  check('no math delimiter survives unrendered', leftover === 0, `${leftover} left`);
+
+  const displays = await page.evaluate(() =>
+    [...document.querySelectorAll('.katex-display')].map((el) => ({
+      overflowX: getComputedStyle(el).overflowX,
+      reachable: getComputedStyle(el).overflowX === 'auto' || el.scrollWidth <= el.clientWidth + 1
+    })));
+  check('a wide equation is scrollable, not clipped',
+    displays.length > 0 && displays.every((d) => d.reachable),
+    `${displays.length} display blocks, ${displays.filter((d) => !d.reachable).length} unreachable`);
+
+  // KaTeX ships no colours of its own, so math must land on exactly the prose
+  // colour. If this ever drifts it means a colour got introduced somewhere and
+  // contrast.mjs would need a target for it.
+  const colours = await page.evaluate(() => {
+    const math = document.querySelector('.katex');
+    const prose = document.querySelector('[data-article-body] p');
+    return [getComputedStyle(math).color, getComputedStyle(prose).color];
+  });
+  check('math inherits the prose colour', colours[0] === colours[1],
+    `${colours[0]} vs ${colours[1]}`);
+
+  // The payload is 272KB of JS and 296KB of fonts. A post without equations
+  // must not pay it.
+  const asked = [];
+  page.on('request', (r) => { if (r.url().includes('katex')) asked.push(r.url()); });
+  await page.goto(`http://localhost:${PORT}${PLAIN_POST}`);
+  check('a post without math loads no KaTeX', asked.length === 0, `${asked.length} requests`);
+
+  await ctx.close();
+}
+
 // ── Phase 8: whole-site audits ─────────────────────────────────────────────
 const PAGES = ['/', '/about/', '/tags/', '/all-posts/', '/reflections/',
   '/reflections/philosophy/stoicism/', '/styleguide/', '/constellation/', '/atlas/', '/retrieval/', '/tokenizer/', '/model/',
+  // A math post, so the audits below cover the one page type that loads a
+  // vendored stylesheet of its own and injects markup after first paint.
+  '/natural-sciences/statistics/2026-08-12-bayes-tells-you-what-you-want-mcmc-gets-it/',
   '/404.html'];
 
 // Keyboard pass. Every focusable control must take a visible ring, and it must

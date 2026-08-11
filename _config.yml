@@ -29,6 +29,19 @@ markdown: kramdown
 highlighter: rouge
 permalink: /:categories/:title/
 
+# Kramdown has its own math handling and it is on by default. Left alone it
+# converts $$...$$ into <script type="math/tex">, the format MathJax reads;
+# KaTeX's auto-renderer walks text nodes and would never see it, so the
+# equation would render as nothing at all.
+#
+# With `math_engine: nil` kramdown still claims the block but emits it as
+# \[ ... \] instead. It does not hand back the dollar signs, so assets/js/math.js
+# has to register \[ \] and \( \) as delimiters alongside $$ and $ — the source
+# is written with dollars and the browser only ever sees brackets. Single-dollar
+# inline math is left untouched by kramdown and arrives as written.
+kramdown:
+  math_engine: nil
+
 # Collections
 #
 # All five live under _content/ rather than at the repo root, which kept ten

@@ -1,0 +1,29 @@
+/* Math
+ *
+ * The parts of KaTeX's output that have to answer to this site's layout rather
+ * than to KaTeX's own defaults. The library itself is vendored, unmodified, at
+ * assets/css/katex.min.css and is not imported here: it carries its own
+ * @font-face rules, it is loaded only by pages with `math: true`, and pulling
+ * it through Sass would make every reader download it.
+ *
+ * Colour needs nothing. The vendored stylesheet declares no colours anywhere,
+ * so every symbol inherits --color-text from the prose it sits in and measures
+ * exactly what the surrounding paragraph measures. Do not add a token for it;
+ * there is nothing to tune.
+ *
+ * Width is the part KaTeX gets wrong for a narrow column. A display equation is
+ * typeset at its natural size and then simply overflows its container. The
+ * three-term posterior ratio in the MCMC post is 477px wide and the article
+ * column on a 375px phone is 335px, so a third of it sat outside the box.
+ * It did not show up as a sideways-scrolling page, because an ancestor clips
+ * the overflow — which is worse than a scrollbar, not better. The reader loses
+ * the right-hand side of the equation and gets no indication it exists.
+ */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  /* Room for the scrollbar on the platforms that reserve space for one, so it
+   * cannot land on top of a fraction's descender. */
+  padding-block: var(--space-1);
+}

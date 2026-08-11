@@ -875,3 +875,45 @@ Format: `date — decision — why`.
   and both of those assume a categorical ramp, which this is not: ink reads gray
   because it is ink. Identity does not rest on colour either way; both lines are
   direct-labelled and validation is dashed.
+- **2026-08-12 — Math is KaTeX, vendored, and loaded only by pages with
+  `math: true`.** The spec never anticipated equations. Three constraints
+  decided it between them: GitHub Pages fixes the plugin list, so `jekyll-katex`
+  and every other server-side renderer is unavailable; the no-third-party-origin
+  audit rules out a CDN; and there is no build step to run a transform in. That
+  leaves a vendored client-side library, the same shape as `lunr` and `marked`.
+  KaTeX was chosen over a MathML converter for fidelity, at a real cost: 272KB
+  of JS and 296KB of fonts against lunr's 29KB. Only the woff2 fonts are
+  committed and the woff/ttf `src` entries were stripped from the stylesheet,
+  matching the woff2-only convention already in `assets/fonts/`; that is the
+  difference between 296KB and 1.2MB. Page-scoping is not only about weight.
+  The auto-renderer treats a bare `$` as an inline delimiter, so loading it
+  sitewide would turn any post mentioning a price into broken math.
+- **2026-08-12 — `kramdown: math_engine: nil`, and `math.js` registers four
+  delimiter pairs rather than two.** Kramdown claims math blocks by default and
+  emits `<script type="math/tex">` for MathJax, which KaTeX's text-node walker
+  never sees; the equation renders as nothing. Setting the engine to nil does
+  not hand the dollars back — kramdown still claims the block and emits
+  `\[ ... \]`. So a post is written with `$$` and the browser only ever receives
+  brackets, and both pairs have to be registered. Single-`$` inline math is not
+  claimed by kramdown and arrives as written. `pre` and `code` are in
+  `ignoredTags` so a stray `$` in a shell snippet cannot open an expression.
+- **2026-08-12 — `.katex-display` gets `overflow-x: auto`; the whole-site
+  sideways audit cannot catch this.** A display equation is typeset at its
+  natural width and overflows its container rather than widening the page, so an
+  ancestor clips it and the audit stays green. The three-term posterior ratio
+  measured 477px inside a 335px column at 375px: a third of the formula was
+  unreachable, with no scrollbar to suggest it existed. Clipping is worse than a
+  scrollbar, not better. The new assertion in `check-chrome.mjs` reads computed
+  `overflow-x` on each display block for this reason, rather than trusting the
+  page-level check. No colour token was added and none is needed — the vendored
+  stylesheet declares no colours at all, so math inherits `--color-text` and
+  measures whatever the surrounding paragraph measures.
+- **2026-08-12 — `/arts-literature/` and `/contemporary/` render zero notes,
+  and always have on the deployed site.** Found, not introduced, while removing
+  two local drafts. Neither collection has ever had a tracked document
+  (`git log --diff-filter=A` over both paths is empty), so the two domain pages
+  have been shipping empty since the redesign; the untracked drafts masked it
+  on this machine only. `check-chrome.mjs` asserts every domain page renders at
+  least one `.category-note`, which is the assertion catching it. Left failing
+  rather than papered over: the fix is either real content in those collections
+  or an empty state in `_layouts/category.html`, and that is a content decision.

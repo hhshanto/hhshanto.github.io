@@ -70,6 +70,26 @@
           href="{{ '/assets/fonts/lora-normal-latin.woff2' | relative_url }}">
 
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+
+    {%- comment -%}
+    KaTeX, on the pages that ask for it with `math: true` in their front matter.
+
+    Page-scoped for two reasons. The payload is 272KB of JS plus 296KB of fonts,
+    an order of magnitude past lunr and marked, and a reader of a post with no
+    equations in it should not pay that. The second reason matters more: the
+    auto-renderer treats a bare `$` as an inline delimiter, so running it
+    sitewide would turn any post mentioning a price into broken math. Opting in
+    per page means only a post that actually contains equations is scanned.
+
+    The stylesheet is vendored rather than imported into style.scss. It carries
+    its own @font-face rules and no colours at all, so it neither needs a token
+    nor threatens rule 1. Its font URLs were rewritten to ../fonts/ and the
+    woff/ttf duplicates dropped, matching the woff2-only convention in
+    assets/fonts/.
+    {%- endcomment -%}
+    {%- if page.math %}
+    <link rel="stylesheet" href="{{ '/assets/css/katex.min.css' | relative_url }}">
+    {%- endif %}
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -125,5 +145,16 @@
     working if the site ever moves under a baseurl.
     {%- endcomment -%}
     <script src="{{ '/assets/js/search.js' | relative_url }}" defer></script>
+    {%- comment -%}
+    All three are deferred, and deferred scripts run in document order, so
+    katex.min.js is defined before auto-render calls into it and both are ready
+    before math.js runs. math.js listens for DOMContentLoaded, which fires after
+    the deferred set has executed.
+    {%- endcomment -%}
+    {%- if page.math %}
+    <script src="{{ '/assets/js/katex.min.js' | relative_url }}" defer></script>
+    <script src="{{ '/assets/js/katex-auto-render.min.js' | relative_url }}" defer></script>
+    <script src="{{ '/assets/js/math.js' | relative_url }}" defer></script>
+    {%- endif %}
 </body>
 </html>
