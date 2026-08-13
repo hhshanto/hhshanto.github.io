@@ -1,41 +1,62 @@
 {%- comment -%}
-Related posts for the current document.
+Related posts for the current document, ranked in three passes.
 
-The previous version looped over `site.posts`, but this site keeps all
-writing in collections and has no _posts directory, so it could never
-match anything. This version searches the current document's own
-collection and ranks candidates in two passes:
+  1. documents sharing at least one tag        — authored
+  2. the document's nearest neighbours in the  — computed
+     atlas, by TF-IDF cosine
+  3. documents from the same subdirectory      — filed
 
-  1. documents sharing at least one tag
-  2. documents from the same subcategory folder
+Authored beats computed beats filed, and the passes run in that order.
 
-Nothing is emitted at all when there are no matches, so a post without
-siblings does not grow an empty "Related Posts" heading.
+Pass 2 is the change: `_data/atlas.json` already carries a `near[]` list of
+the three closest documents for every piece, computed by `.tools/embed.mjs`
+and read by Liquid at build time, and until now exactly one page on the site
+looked at it. Falling back to "same folder" meant relatedness was decided by
+where a file happened to be saved: the two physics posts pointed at each
+other, and `statistics`, `psychology` and `about` hold one document apiece,
+so those posts got no Related section at all.
+
+Pass 3 is kept rather than replaced. `atlas.json` is generated offline and
+nothing rebuilds it automatically, so a document written today is not in it
+until `.tools/embed.mjs` runs again. Without the fallback a new post would
+silently lose its Related section, which looks like a bug in this include
+rather than a stale index.
+
+The candidate pool spans every collection, not just the current document's.
+The atlas does not respect domain boundaries and should not — the Higgs
+post's second-nearest neighbour is a psychology piece, and that crossing is
+the most interesting thing the list has to say.
+
+Each card states which pass picked it. This site's instruments all show their
+working, and "related" is otherwise a claim the reader has no way to check.
+
+Nothing is emitted when no pass matches, so a document with no siblings does
+not grow an empty heading.
 {%- endcomment -%}
 
 {%- assign max_related = 3 -%}
-{%- assign pool = site[page.collection] | sort: 'date' | reverse -%}
 
-{%- assign segments = page.path | split: '/' -%}
-{%- assign current_group = '' -%}
-{%- if segments.size > 2 -%}
-    {%- assign current_group = segments[1] -%}
-{%- endif -%}
+{%- assign pool = '' | split: '' -%}
+{%- for d in site.data.domains -%}
+    {%- assign pool = pool | concat: site[d.collection] -%}
+{%- endfor -%}
 
 {%- comment -%}
-Membership is tracked as a delimited string because Liquid has no way to
-append to an array. Keys are wrapped in '|' on both sides so one URL can
-never match as a prefix of another.
+Picks are accumulated as one delimited string because Liquid cannot append to
+an array. Each record is `url::why::score`, and membership is probed against a
+second string with keys wrapped in '|' on both sides so one URL can never
+match as a prefix of another.
 {%- endcomment -%}
-{%- assign picked = '|' -%}
+{%- assign picked = '' -%}
+{%- assign seen = '|' -%}
 {%- assign picked_count = 0 -%}
 
-{%- comment -%} Pass 1: shared tags. {%- endcomment -%}
+{%- comment -%} Pass 1: shared tags. Authored, so it outranks the rest. {%- endcomment -%}
 {%- if page.tags and page.tags.size > 0 -%}
     {%- for doc in pool -%}
         {%- if picked_count < max_related and doc.url != page.url -%}
             {%- assign key = doc.url | prepend: '|' | append: '|' -%}
-            {%- unless picked contains key -%}
+            {%- unless seen contains key -%}
                 {%- assign shares_tag = false -%}
                 {%- for tag in doc.tags -%}
                     {%- if page.tags contains tag -%}
@@ -43,7 +64,8 @@ never match as a prefix of another.
                     {%- endif -%}
                 {%- endfor -%}
                 {%- if shares_tag -%}
-                    {%- assign picked = picked | append: doc.url | append: '|' -%}
+                    {%- assign picked = picked | append: doc.url | append: '::tag::|' -%}
+                    {%- assign seen = seen | append: doc.url | append: '|' -%}
                     {%- assign picked_count = picked_count | plus: 1 -%}
                 {%- endif -%}
             {%- endunless -%}
@@ -51,15 +73,58 @@ never match as a prefix of another.
     {%- endfor -%}
 {%- endif -%}
 
-{%- comment -%} Pass 2: same subcategory folder. {%- endcomment -%}
+{%- comment -%}
+Pass 2: nearest in the atlas. `near` is already sorted by descending cosine,
+so appending in order preserves the ranking.
+{%- endcomment -%}
+{%- assign entry = site.data.atlas.docs | where: 'url', page.url | first -%}
+{%- if entry -%}
+    {%- for n in entry.near -%}
+        {%- if picked_count < max_related and n.url != page.url -%}
+            {%- assign key = n.url | prepend: '|' | append: '|' -%}
+            {%- unless seen contains key -%}
+                {%- comment -%}
+                `round: 2` drops a trailing zero, so 0.20 renders as "0.2" and
+                the scores stop lining up in a column set in tabular figures.
+                Padded by hand, the way archive.html does its thousands
+                separator — Liquid has no format filter.
+                {%- endcomment -%}
+                {%- assign pct = n.score | times: 100 | round -%}
+                {%- if pct >= 100 -%}
+                    {%- assign score = '1.00' -%}
+                {%- elsif pct < 10 -%}
+                    {%- assign score = pct | prepend: '0.0' -%}
+                {%- else -%}
+                    {%- assign score = pct | prepend: '0.' -%}
+                {%- endif -%}
+                {%- assign picked = picked | append: n.url | append: '::atlas::' | append: score | append: '|' -%}
+                {%- assign seen = seen | append: n.url | append: '|' -%}
+                {%- assign picked_count = picked_count | plus: 1 -%}
+            {%- endunless -%}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endif -%}
+
+{%- comment -%}
+Pass 3: same subdirectory. The fallback for a document the atlas has not been
+regenerated for yet. Restricted to the current collection, because a
+subdirectory name only means anything within its own domain.
+{%- endcomment -%}
+{%- assign segments = page.path | split: '/' -%}
+{%- assign current_group = '' -%}
+{%- if segments.size > 2 -%}
+    {%- assign current_group = segments[1] -%}
+{%- endif -%}
 {%- if current_group != '' -%}
-    {%- for doc in pool -%}
+    {%- assign siblings = site[page.collection] | sort: 'date' | reverse -%}
+    {%- for doc in siblings -%}
         {%- if picked_count < max_related and doc.url != page.url -%}
             {%- assign key = doc.url | prepend: '|' | append: '|' -%}
-            {%- unless picked contains key -%}
+            {%- unless seen contains key -%}
                 {%- assign doc_segments = doc.path | split: '/' -%}
                 {%- if doc_segments.size > 2 and doc_segments[1] == current_group -%}
-                    {%- assign picked = picked | append: doc.url | append: '|' -%}
+                    {%- assign picked = picked | append: doc.url | append: '::folder::|' -%}
+                    {%- assign seen = seen | append: doc.url | append: '|' -%}
                     {%- assign picked_count = picked_count | plus: 1 -%}
                 {%- endif -%}
             {%- endunless -%}
@@ -67,14 +132,31 @@ never match as a prefix of another.
     {%- endfor -%}
 {%- endif -%}
 
-{%- if picked_count > 0 -%}
+{%- assign records = picked | split: '|' -%}
+{%- if records.size > 0 %}
 <section class="related">
     <h2 class="related-heading t-label rule-head">Related</h2>
     <div class="related-grid">
-        {%- for doc in pool -%}
-            {%- assign key = doc.url | prepend: '|' | append: '|' -%}
-            {%- if picked contains key %}
+        {%- comment -%}
+        Rendered in pick order rather than by date, because the order is the
+        ranking. The previous version re-looped the pool, which silently
+        re-sorted the results newest-first and threw the ranking away.
+        {%- endcomment -%}
+        {%- for record in records -%}
+            {%- assign parts = record | split: '::' -%}
+            {%- assign doc = pool | where: 'url', parts[0] | first -%}
+            {%- if doc %}
         <a class="related-card n-card pcard" href="{{ doc.url | relative_url }}">
+            <span class="related-why t-meta-sm">
+                {%- case parts[1] -%}
+                    {%- when 'tag' -%}
+                        shares a tag
+                    {%- when 'atlas' -%}
+                        near in the atlas <span class="tnum">{{ parts[2] }}</span>
+                    {%- when 'folder' -%}
+                        same sub-topic
+                {%- endcase -%}
+            </span>
             <h3 class="n-card-title">{{ doc.title }}</h3>
             <p class="n-card-body">
                 {%- if doc.abstract -%}
@@ -88,7 +170,7 @@ never match as a prefix of another.
             </span>
         </a>
             {%- endif -%}
-        {%- endfor -%}
+        {%- endfor %}
     </div>
 </section>
-{%- endif -%}
+{%- endif %}

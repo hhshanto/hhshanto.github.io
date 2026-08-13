@@ -967,3 +967,43 @@ Format: `date — decision — why`.
   is barred already, since the ramp inverts with the theme. Neither half is
   dimmed. **The general rule: if a colour cannot be measured, it cannot ship,
   and `opacity` on text defeats the measurement.**
+- **2026-08-13 — Related posts rank in three passes: authored, then computed,
+  then filed.** Shared tags first, then the document's nearest neighbours in
+  `_data/atlas.json`, then the same subdirectory. The middle pass is the new
+  one. `.tools/embed.mjs` has been writing a `near[]` list of the three
+  closest documents for every piece since the atlas landed, Liquid can read it
+  at build time, and exactly one page on the site was looking at it. Before
+  this, relatedness was decided by where a file happened to be saved: the two
+  physics posts pointed at each other, and `statistics`, `psychology` and
+  `about` hold one document apiece, so three of eleven posts rendered no
+  Related section at all. Now every post has one.
+- **2026-08-13 — The folder pass is kept, not replaced, because `atlas.json`
+  is generated offline.** Nothing rebuilds it automatically, so a post written
+  today is not in it until `.tools/embed.mjs` runs again. Without the
+  fallback a new document would silently lose its Related section, and the
+  symptom would read as a bug in the include rather than as a stale index.
+  Worth stating plainly: **today the fallback never fires and neither does the
+  tag pass.** No document carries `tags:`, and the atlas always supplies three
+  neighbours, so every card currently on the site comes from pass 2. The other
+  two passes are correctness insurance for states the corpus will reach.
+- **2026-08-13 — The candidate pool spans every collection.** It used to be
+  `site[page.collection]`. The atlas does not respect domain boundaries and
+  should not: the Higgs post's second-nearest neighbour is a psychology piece.
+  That crossing is the most interesting thing the list has to say, and a
+  same-collection pool cannot render it.
+- **2026-08-13 — Cards render in pick order, which is the ranking.** The
+  previous version re-looped the candidate pool to render, which silently
+  re-sorted the results newest-first and threw the ranking away. A screenshot
+  cannot show this — the cards look identical either way — so
+  `check-chrome.mjs` now asserts the cosines descend.
+- **2026-08-13 — Every card says which pass picked it.** Every other
+  instrument on this site shows its working, and "related" is otherwise a
+  claim the reader has no way to check. A shared tag, a cosine out of the
+  atlas, or a sub-topic are three quite different claims about two documents,
+  and the number makes the weak ones legible as weak: most of this corpus sits
+  around 0.17–0.24, and only the two physics posts reach 0.56.
+- **2026-08-13 — The cosine is padded to two decimals by hand.** Liquid's
+  `round: 2` drops a trailing zero, so 0.20 renders as "0.2" and the scores
+  stop lining up in a column set in tabular figures. Liquid has no format
+  filter; this is the same manual workaround `_layouts/archive.html` uses for
+  its thousands separator.

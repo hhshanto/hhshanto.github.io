@@ -353,6 +353,61 @@ const RATED = `http://localhost:${PORT}/reflections/philosophy/2025-01-26-artifi
   await ctx.close();
 }
 
+// Related posts. Ranked in three passes — shared tag, then nearest in the
+// atlas, then same folder — and rendered in pick order, which is the ranking.
+// The previous version re-looped the candidate pool to render, silently
+// re-sorting the results newest-first and throwing the ranking away; that is
+// invisible in a screenshot, since the cards look identical either way.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+
+  // Every published document, so the ones that used to get nothing are covered.
+  const posts = await page.goto(`http://localhost:${PORT}/all-posts/`)
+    .then(() => page.$$eval('.post-row', (rows) => rows.map((r) => r.getAttribute('href'))));
+
+  let missing = 0;
+  let selfRef = 0;
+  let unordered = 0;
+  let unlabelled = 0;
+
+  for (const href of posts) {
+    await page.goto(`http://localhost:${PORT}${href}`);
+    const rel = await page.evaluate(() => {
+      const cards = Array.from(document.querySelectorAll('.related-card'));
+      return {
+        count: cards.length,
+        hrefs: cards.map((c) => new URL(c.href).pathname),
+        whys: cards.map((c) => c.querySelector('.related-why')?.textContent.trim() || ''),
+      };
+    });
+
+    if (rel.count === 0) missing++;
+    if (rel.hrefs.includes(href)) selfRef++;
+    if (rel.whys.some((w) => w === '')) unlabelled++;
+
+    // Atlas picks carry a cosine and must descend. Cards from other passes
+    // carry no number and are skipped rather than compared against one.
+    const scores = rel.whys
+      .map((w) => w.match(/([01]\.\d\d)$/))
+      .filter(Boolean)
+      .map((m) => Number(m[1]));
+    for (let i = 1; i < scores.length; i++) {
+      if (scores[i] > scores[i - 1]) unordered++;
+    }
+  }
+
+  check('every post has related reading', missing === 0,
+    `${posts.length} posts, ${missing} without`);
+  check('no post is related to itself', selfRef === 0, `${selfRef} self-references`);
+  check('every related card says which pass picked it', unlabelled === 0,
+    `${unlabelled} unlabelled`);
+  check('atlas picks are rendered in descending similarity', unordered === 0,
+    `${unordered} out of order`);
+
+  await ctx.close();
+}
+
 // Contents are built by Liquid, not by JS, so they must be in the HTML for a
 // reader with scripting off and for a crawler. The old include built them in a
 // DOMContentLoaded handler, which satisfied neither.

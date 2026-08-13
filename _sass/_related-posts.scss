@@ -1,9 +1,14 @@
 // Related posts at the foot of an article.
 //
 // Not in the handoff — 1c ends at prev/next — but the site already computes
-// related documents from shared tags and subfolder, and dropping working
-// navigation to match a mock that never considered it would be a loss. Built
-// on the design system's .n-card so it belongs to the same page.
+// related documents, and dropping working navigation to match a mock that
+// never considered it would be a loss. Built on the design system's .n-card
+// so it belongs to the same page.
+//
+// Each card carries a line saying which pass picked it: a shared tag, a
+// cosine distance out of the atlas, or the folder it sits in. Every other
+// instrument on this site shows its working, and "related" is otherwise a
+// claim the reader has no way to check.
 
 .related {
   margin-top: var(--space-8);
@@ -36,6 +41,15 @@
     text-decoration-thickness: 1px;
     text-underline-offset: 3px;
   }
+}
+
+// Why this card is here. Sits above the title as a kicker, in the same faint
+// step the card's date line uses — it is provenance, not content, and should
+// not compete with the title it explains.
+.related-why {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--color-text-faint);
 }
 
 .related-meta {

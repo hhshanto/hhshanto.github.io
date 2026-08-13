@@ -202,6 +202,7 @@ const TARGETS = [
   { sel: '.is-current .post-toc-link', name: 'contents link (current)', url: POST },
   { sel: '.post-rail-stat dd', name: 'rail stats', url: POST },
   { sel: '.post-nav-dir', name: 'prev/next direction', url: POST },
+  { sel: '.related-why', name: 'related provenance', url: POST },
   { sel: '.related-meta', name: 'related meta', url: POST },
 
   // Code block — its own dark ground, identical in both themes.
