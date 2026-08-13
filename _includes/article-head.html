@@ -45,5 +45,9 @@ in, which is how this site has always organised subtopics
         <time class="article-date t-meta-sm" datetime="{{ page.date | date_to_xmlschema }}">
             {{ page.date | date: "%d %b %Y" }}
         </time>
+        {%- comment -%}
+        Renders nothing unless the document sets `confidence:`. See the include.
+        {%- endcomment -%}
+        {%- include maturity.html -%}
     </div>
 </header>

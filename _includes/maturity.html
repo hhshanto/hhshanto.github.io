@@ -1,0 +1,45 @@
+{%- comment -%}
+The maturity chip: how far the author will stand behind a piece.
+
+Driven by `confidence:` (high | medium | low), a key three documents already
+carry and which nothing has ever rendered. This is the one signal a garden
+needs and a blog does not: it is what makes it reasonable to publish a
+half-formed 400-word thought instead of not publishing it.
+
+Renders nothing at all when the key is absent — the same rule
+article-head.html applies to the standfirst. Defaulting an unrated piece to
+some middle value would be inventing an author's judgement on their behalf,
+which is the one thing a site that draws its own model's loss curve at the
+top of the page should not do. Nine of twelve documents therefore show no
+chip until someone rates them; that is the honest reading of the data, and
+the reason to go and set the key.
+
+`status:` deliberately does not appear here. Its only interesting value is
+`draft`, and a draft cannot reach a reader: the compose tool writes
+`published: false`, which Jekyll excludes from the build entirely. A chip for
+it would be dead code with a colour token attached.
+
+No colour coding by level, either. Three levels would mean three new token
+pairs and three new contrast targets, and spending colour on an ordinal scale
+collides with the five --color-domain-* tokens, which already mean something
+categorical everywhere else on the site. The text says which level it is.
+{%- endcomment -%}
+
+{%- assign doc = include.document | default: page -%}
+{%- assign level = doc.confidence -%}
+
+{%- if level and level != '' -%}
+    {%- case level -%}
+        {%- when 'high' -%}
+            {%- assign hint = 'Well sourced, and I would defend it as written.' -%}
+        {%- when 'medium' -%}
+            {%- assign hint = 'Broadly right, but parts of it are still moving.' -%}
+        {%- when 'low' -%}
+            {%- assign hint = 'A thought in progress. Read it as a question.' -%}
+        {%- else -%}
+            {%- assign hint = '' -%}
+    {%- endcase -%}
+    {%- if hint != '' -%}
+<span class="maturity n-tag n-tag-neutral" title="{{ hint }}"><span class="maturity-level">{{ level }}</span> confidence</span>
+    {%- endif -%}
+{%- endif -%}

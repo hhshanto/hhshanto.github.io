@@ -46,6 +46,9 @@ const ratio = (a, b) => {
 // and fail in light while the real thing is identical in both.
 const POST = '/reflections/philosophy/stoicism/';
 const GUIDE = '/styleguide/';
+// stoicism.md sets no `confidence:`, so the maturity chip does not exist on
+// POST. Measure it where it actually renders.
+const RATED = '/reflections/philosophy/2025-01-26-artificial-intelligence-ethics/';
 
 const TARGETS = [
   { sel: '.masthead-brand', name: 'brand' },
@@ -189,6 +192,11 @@ const TARGETS = [
   { sel: '.article-standfirst', name: 'standfirst', url: POST },
   { sel: '.article-author', name: 'byline name', url: POST },
   { sel: '.article-date', name: 'byline date', url: POST },
+  // The maturity chip paints --tag-accent-bg's neutral sibling, not the page,
+  // so it names its own ground. Both halves take the same ink deliberately:
+  // see _maturity.scss on why neither a ramp step nor an opacity can dim one.
+  { sel: '.maturity', name: 'maturity chip', url: RATED, ground: '.maturity' },
+  { sel: '.maturity-level', name: 'maturity level', url: RATED, ground: '.maturity' },
   { sel: '.article-body p', name: 'body prose', url: POST },
   { sel: '.post-toc-link', name: 'contents link', url: POST },
   { sel: '.is-current .post-toc-link', name: 'contents link (current)', url: POST },

@@ -938,3 +938,32 @@ Format: `date — decision — why`.
   in `.category-empty`, with links to `/all-posts/` and `/constellation/`.
   Those anchors set `--color-accent-ink` themselves, because the site still
   has no default inline-link style outside `.article-body`.
+- **2026-08-13 — The maturity chip reads `confidence:`, and renders nothing
+  when it is absent.** Three documents have carried `status:` and
+  `confidence:` since before the redesign and nothing has ever rendered
+  either. `confidence` is the one a garden needs: it is what makes it
+  reasonable to publish a half-formed 400-word thought rather than not
+  publishing it. Nine of twelve documents show no chip until someone rates
+  them, and defaulting them to a middle value was rejected — that would be
+  inventing an author's judgement on their behalf, on a site whose model page
+  draws its own loss curve at the top precisely so it does not overclaim.
+  The blank is the honest reading and the reason to go and set the key.
+- **2026-08-13 — `status:` gets no chip, because a draft cannot reach a
+  reader.** Its only interesting value is `draft`, and the compose tool writes
+  `published: false` for those, which Jekyll drops from the build entirely.
+  A chip for it would be dead code with a colour token attached.
+- **2026-08-13 — The chip is not colour-coded by level.** Three levels would
+  mean three token pairs and three contrast targets, and spending colour on an
+  ordinal scale collides with the five `--color-domain-*` tokens, which mean
+  something categorical everywhere else — the same argument that kept the loss
+  curve off two domain hues. The text names the level; case and tracking
+  separate it from the word.
+- **2026-08-13 — `opacity` is not an available way to dim text on this site.**
+  The chip's quieter half was written as `opacity: 0.72` and that is
+  unmeasurable: `contrast.mjs` composites translucent *backgrounds* over their
+  ground, but a computed `color` carries no trace of an opacity applied to the
+  element painting it, so the chip would have measured at full strength and
+  shipped at 72% of it. A step off the neutral ramp was the other option and
+  is barred already, since the ramp inverts with the theme. Neither half is
+  dimmed. **The general rule: if a colour cannot be measured, it cannot ship,
+  and `opacity` on text defeats the measurement.**

@@ -1,0 +1,36 @@
+// The maturity chip — how far the author will stand behind a piece.
+//
+// Every colour and both type faces come from .n-tag / .n-tag-neutral, which
+// are already measured by contrast.mjs against their own ground. This partial
+// owns placement and the one thing the primitive does not give it: a level
+// that reads as the emphasised half of the phrase.
+
+.maturity {
+  flex: none;
+  gap: 0.4em;
+  white-space: nowrap;
+  cursor: help;
+}
+
+.maturity-level {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+// "confidence" is the quieter half of the phrase and the first instinct is to
+// dim it. Both available ways of doing that are wrong here. A step off the
+// neutral ramp is out because the ramp inverts with the theme, so one step
+// cannot serve both grounds. `opacity` is worse: contrast.mjs composites
+// translucent *backgrounds* over their ground, but a computed `color` says
+// nothing about an opacity applied to the element painting it, so the chip
+// would measure at full strength and ship at 72% of it — an unmeasurable
+// colour, which is the one thing this stylesheet is not allowed to contain.
+//
+// So neither half is dimmed. The level is separated by case and tracking
+// instead, which is the stronger signal on a 11px mono face anyway.
+
+// In the byline strip the date already carries `margin-left: auto`, so the
+// chip sits to its right and the pair reads as one right-hand group.
+.article-byline .maturity {
+  margin-left: var(--space-3);
+}

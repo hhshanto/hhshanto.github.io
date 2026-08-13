@@ -318,6 +318,40 @@ for (const width of [375, 700, 1160, 1440]) {
 
 // ── Post layout (screen 1c) ────────────────────────────────────────────────
 const POST = `http://localhost:${PORT}/reflections/philosophy/stoicism/`;
+// stoicism.md sets no `confidence:`; this one does. The pair is what makes the
+// maturity chip testable at all.
+const RATED = `http://localhost:${PORT}/reflections/philosophy/2025-01-26-artificial-intelligence-ethics/`;
+
+// The maturity chip. The assertion that matters is the negative one: an
+// unrated document must render no chip whatsoever, not an empty one and not a
+// default level. A chip that quietly claims a confidence its author never
+// stated is worse than no chip, and it is invisible in a screenshot of the
+// page that does have one.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+
+  await page.goto(RATED);
+  const rated = await page.evaluate(() => {
+    const chip = document.querySelector('.article-byline .maturity');
+    return {
+      present: !!chip,
+      level: chip?.querySelector('.maturity-level')?.textContent.trim(),
+      text: chip?.textContent.replace(/\s+/g, ' ').trim(),
+      hint: chip?.getAttribute('title') || '',
+    };
+  });
+
+  check('a rated post shows its confidence', rated.present && rated.level === 'high',
+    `${rated.text}`);
+  check('the chip explains itself on hover', rated.hint.length > 10, rated.hint);
+
+  await page.goto(POST);
+  const unrated = await page.locator('.maturity').count();
+  check('an unrated post shows no chip at all', unrated === 0, `${unrated} chips`);
+
+  await ctx.close();
+}
 
 // Contents are built by Liquid, not by JS, so they must be in the HTML for a
 // reader with scripting off and for a crawler. The old include built them in a
