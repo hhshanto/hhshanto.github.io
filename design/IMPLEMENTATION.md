@@ -917,3 +917,24 @@ Format: `date — decision — why`.
   least one `.category-note`, which is the assertion catching it. Left failing
   rather than papered over: the fix is either real content in those collections
   or an empty state in `_layouts/category.html`, and that is a content decision.
+- **2026-08-13 — The empty-domain assertion was the thing that was wrong, not
+  the empty domains.** The check above asserted `.category-note > 0` on all
+  five domain pages, so it stayed red for as long as two collections held
+  nothing, and a check that is permanently red is a check you learn to skip.
+  An empty domain is a content state. What is worth asserting is that exactly
+  one of the two branches renders: notes, or the empty state, never both and
+  never neither. Both-or-neither is the failure a screenshot would not show,
+  because each branch looks fine on its own. A second check asserts the empty
+  state links somewhere, so a domain with nothing in it is never a dead end.
+- **2026-08-13 — The empty domain's head band is left exactly as it is, and the
+  emptiness is answered below it.** The obvious tidy-up is to drop the
+  "Sub-topics / Nothing filed under a sub-topic yet" aside when the domain has
+  no documents at all. It cannot be done that way: `.category-head` is a
+  two-cell hairline grid pinned to `minmax(0, 1fr) 340px`, and removing the
+  second cell leaves a 340px column of bare divider colour — the same ragged
+  grid problem `_includes/hgrid-fill.html` exists to solve, arrived at from
+  the other direction. The page said no three times (a `0 NOTES` kicker, an
+  empty aside, one grey line) and offered nowhere to go; it now says it once,
+  in `.category-empty`, with links to `/all-posts/` and `/constellation/`.
+  Those anchors set `--color-accent-ink` themselves, because the site still
+  has no default inline-link style outside `.article-body`.

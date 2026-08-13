@@ -646,14 +646,33 @@ for (const width of [375, 1440]) {
   const domains = ['natural-sciences', 'social-sciences', 'arts-literature',
     'reflections', 'contemporary'];
 
+  // This asserted `.category-note > 0` on all five, which meant it was red for
+  // as long as arts-literature and contemporary held nothing — and a check that
+  // is permanently red teaches you to ignore the checker. An empty domain is a
+  // content state, not a bug. What is actually worth asserting is that exactly
+  // one of the two branches renders: a page showing notes AND an empty state,
+  // or neither, is broken in a way no screenshot would make obvious.
+  let deadEnds = 0;
+  const empties = [];
+
   for (const d of domains) {
     const response = await page.goto(`http://localhost:${PORT}/${d}/`);
+    const notes = await page.locator('.category-note').count();
+    const empty = await page.locator('.category-empty').count();
     const ok = response.status() === 200 &&
       (await page.locator('.category-head').count()) === 1 &&
-      (await page.locator('.category-note').count()) > 0;
+      ((notes > 0) !== (empty === 1));
     if (!ok) broken++;
+    if (empty === 1) {
+      empties.push(d);
+      // An empty domain that offers nowhere to go is a dead end.
+      if ((await page.locator('.category-empty-links a').count()) === 0) deadEnds++;
+    }
   }
-  check('all five domain pages render their notes', broken === 0, `${broken} broken`);
+  check('every domain page renders notes or an empty state, never both',
+    broken === 0, `${broken} broken`);
+  check('an empty domain still offers a way onward', deadEnds === 0,
+    empties.length ? `empty: ${empties.join(', ')}` : 'no empty domains');
   await ctx.close();
 }
 

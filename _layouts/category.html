@@ -130,9 +130,30 @@ keys are probed wrapped in pipes so one cannot match as a prefix of another.
 
     </div>
     {%- else %}
-    <p class="category-none t-body t-muted">
-        Nothing published in this domain yet.
-    </p>
+    {%- comment -%}
+    A domain with nothing in it is a real state, not a broken page. Two of the
+    five have never held a tracked document, and for a while the only thing
+    they said was "0 notes" in the kicker, "Nothing filed under a sub-topic
+    yet" in the aside and one grey line here — three ways of saying no, and no
+    way onward. The empty state now names the domain, says plainly that it is
+    declared and waiting, and points at the two screens that do have something
+    on them.
+
+    The head above is left alone deliberately: it is a two-cell hairline grid
+    at `1fr 340px`, and dropping the aside would leave a 340px column of bare
+    divider colour — the ragged-grid problem hgrid-fill.html exists to solve.
+    {%- endcomment -%}
+    <div class="category-empty">
+        <p class="category-empty-lead t-body">
+            Nothing is filed under {{ domain.title | default: page.title }} yet.
+            The domain is declared and waiting for its first note.
+        </p>
+        <p class="category-empty-links t-body-sm">
+            <a href="{{ '/all-posts/' | relative_url }}">Everything written so far</a>
+            <span aria-hidden="true">·</span>
+            <a href="{{ '/constellation/' | relative_url }}">the garden as a map</a>
+        </p>
+    </div>
     {%- endif %}
 
     {%- comment -%}

@@ -176,6 +176,31 @@
   color: var(--color-text-faint);
 }
 
-.category-none {
+// ── Empty domain ───────────────────────────────────────────────────────────
+// Two of the five domains have never held a document. This is what they show.
+.category-empty {
+  max-width: 48ch;
   margin-top: var(--space-6);
+
+  @media (min-width: $bp-md) {
+    margin-top: 44px;
+  }
+}
+
+.category-empty-lead {
+  color: var(--color-text-muted);
+}
+
+.category-empty-links {
+  margin: var(--space-4) 0 0;
+  color: var(--color-text-faint);
+
+  // The site has no default inline-link style outside .article-body, so a bare
+  // <a> here would take the UA blue on an all-warm-neutral screen. Anything
+  // writing prose outside a post sets this itself.
+  a {
+    color: var(--color-accent-ink);
+    text-decoration-color: var(--color-accent);
+    text-underline-offset: 3px;
+  }
 }
